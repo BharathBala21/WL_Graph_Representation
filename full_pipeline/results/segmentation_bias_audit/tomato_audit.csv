@@ -1,0 +1,3 @@
+group,count,mean_mask_area_ratio,median_mask_area_ratio,failure_types
+Accepted,580,0.07981355927499419,0.07027455400884625,{'Accepted': 580}
+Excluded,218,0.0551058340184433,0.0,"{'Empty/Tiny Mask': 206, 'Over-segmented': 12}"
