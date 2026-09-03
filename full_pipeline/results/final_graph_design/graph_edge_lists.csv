@@ -1,155 +1,170 @@
 graph_type,node_1,node_2,edge_weight,edge_source
-Correlation,area,convex_area,0.9790487915878336,correlation
-Correlation,area,major_axis_length,0.9218680434747019,correlation
-Correlation,area,minor_axis_length,0.9397172184130272,correlation
-Correlation,circularity,solidity,0.8274923859469918,correlation
-Correlation,extent,solidity,0.7755928761473724,correlation
-Correlation,extent,glcm_homogeneity,-0.9127893874868068,correlation
-Correlation,extent,glcm_energy,-0.999763436202329,correlation
-Correlation,solidity,glcm_homogeneity,-0.7296664483282741,correlation
-Correlation,solidity,glcm_energy,-0.7725182390635789,correlation
-Correlation,convex_area,major_axis_length,0.910550077749817,correlation
-Correlation,convex_area,minor_axis_length,0.9536697476915336,correlation
-Correlation,major_axis_length,minor_axis_length,0.8310929355569605,correlation
-Correlation,minor_axis_length,eccentricity,-0.7040633381470944,correlation
-Correlation,mean_R,mean_G,0.9659769203350742,correlation
-Correlation,mean_R,mean_B,0.7262851392118009,correlation
-Correlation,mean_R,mean_V,0.967768055897505,correlation
-Correlation,mean_R,mean_L,0.9760393315189106,correlation
-Correlation,std_R,std_G,0.984318281594385,correlation
-Correlation,std_R,std_B,0.7914737405459787,correlation
-Correlation,std_R,std_S,0.7444440030198136,correlation
-Correlation,std_R,std_V,0.9854542471308624,correlation
-Correlation,std_R,std_L,0.9834719070760105,correlation
-Correlation,std_R,std_a,0.8193026897964741,correlation
-Correlation,std_R,std_b,0.7864047034039302,correlation
-Correlation,mean_G,mean_V,0.9996897921100668,correlation
-Correlation,mean_G,mean_L,0.9982652892598282,correlation
-Correlation,std_G,std_B,0.7904745534497604,correlation
-Correlation,std_G,std_S,0.7668968903145447,correlation
-Correlation,std_G,std_V,0.9997794218818887,correlation
-Correlation,std_G,std_L,0.9989451863381859,correlation
-Correlation,std_G,std_a,0.8540974015330983,correlation
-Correlation,std_G,std_b,0.7773975904527235,correlation
-Correlation,mean_B,mean_S,-0.9012920230455254,correlation
-Correlation,mean_B,mean_L,0.7239567094672779,correlation
-Correlation,mean_B,green_ratio,-0.9064344399592277,correlation
-Correlation,mean_B,yellow_ratio,-0.8645245579567762,correlation
-Correlation,mean_B,core_yellow_ratio,-0.7924658829053369,correlation
-Correlation,mean_B,edge_yellow_ratio,-0.8702336107375699,correlation
-Correlation,std_B,std_S,0.8324198981150228,correlation
-Correlation,std_B,std_V,0.7891075800928403,correlation
-Correlation,std_B,std_L,0.7815042321615073,correlation
-Correlation,mean_H,core_mean_H,0.9739535130516155,correlation
-Correlation,mean_H,edge_mean_H,0.9983315202937283,correlation
-Correlation,mean_S,mean_b,0.7029149056562015,correlation
-Correlation,mean_S,green_ratio,0.901118610345699,correlation
-Correlation,mean_S,yellow_ratio,0.9910648041351146,correlation
-Correlation,mean_S,core_yellow_ratio,0.9376569758482228,correlation
-Correlation,mean_S,edge_yellow_ratio,0.9904399658395281,correlation
-Correlation,std_S,std_V,0.7664743264834761,correlation
-Correlation,std_S,mean_L,-0.7078765300658906,correlation
-Correlation,std_S,std_L,0.7618089770755129,correlation
-Correlation,std_S,std_a,0.7027167028458763,correlation
-Correlation,std_S,std_b,0.7075351758200422,correlation
-Correlation,mean_V,mean_L,0.9983798683842376,correlation
-Correlation,std_V,std_L,0.9989421787268682,correlation
-Correlation,std_V,std_a,0.8549206899400759,correlation
-Correlation,std_V,std_b,0.7787929596988765,correlation
-Correlation,std_L,std_a,0.8543471516473867,correlation
-Correlation,std_L,std_b,0.7782117597429127,correlation
-Correlation,std_a,std_b,0.8216370292032823,correlation
-Correlation,mean_b,yellow_ratio,0.7216827179944669,correlation
-Correlation,mean_b,core_yellow_ratio,0.715503096206104,correlation
-Correlation,mean_b,edge_yellow_ratio,0.7131816743998854,correlation
-Correlation,green_ratio,yellow_ratio,0.866810805193196,correlation
-Correlation,green_ratio,core_yellow_ratio,0.7987971943002836,correlation
-Correlation,green_ratio,edge_yellow_ratio,0.8713714279800964,correlation
-Correlation,yellow_ratio,core_yellow_ratio,0.9535337223651037,correlation
-Correlation,yellow_ratio,edge_yellow_ratio,0.9975851437531713,correlation
-Correlation,glcm_contrast,glcm_correlation,-0.78379315179203,correlation
-Correlation,glcm_homogeneity,glcm_energy,0.9158088485229917,correlation
-Correlation,core_mean_H,edge_mean_H,0.9594816035924442,correlation
-Correlation,core_yellow_ratio,edge_yellow_ratio,0.9306990203824439,correlation
+Correlation,area,convex_area,0.9768082438594209,correlation
+Correlation,area,major_axis_length,0.7958855647234584,correlation
+Correlation,area,minor_axis_length,0.905838844835325,correlation
+Correlation,perimeter,circularity,-0.7424076003687545,correlation
+Correlation,circularity,solidity,0.7655853127373649,correlation
+Correlation,extent,glcm_homogeneity,-0.9464913882368279,correlation
+Correlation,extent,glcm_energy,-0.9998798222276398,correlation
+Correlation,convex_area,major_axis_length,0.8406976925093977,correlation
+Correlation,convex_area,minor_axis_length,0.9071413323026439,correlation
+Correlation,mean_R,std_R,-0.7419898161859447,correlation
+Correlation,mean_R,mean_G,0.9723886131182389,correlation
+Correlation,mean_R,std_G,-0.7446748895601957,correlation
+Correlation,mean_R,std_B,-0.7167932733762982,correlation
+Correlation,mean_R,mean_V,0.9731583026289848,correlation
+Correlation,mean_R,std_V,-0.7457773746159461,correlation
+Correlation,mean_R,mean_L,0.9829000354453976,correlation
+Correlation,mean_R,std_L,-0.7323648029950551,correlation
+Correlation,mean_R,glcm_correlation,0.801278142893645,correlation
+Correlation,std_R,mean_G,-0.8077161575118995,correlation
+Correlation,std_R,std_G,0.9919316846855892,correlation
+Correlation,std_R,std_B,0.9306606187785245,correlation
+Correlation,std_R,std_H,0.7215521888380553,correlation
+Correlation,std_R,std_S,0.7602932981515714,correlation
+Correlation,std_R,mean_V,-0.807330806734145,correlation
+Correlation,std_R,std_V,0.991987984927983,correlation
+Correlation,std_R,mean_L,-0.7964590914455544,correlation
+Correlation,std_R,std_L,0.9912421660094164,correlation
+Correlation,mean_G,std_G,-0.8058637079483766,correlation
+Correlation,mean_G,std_B,-0.7691509698347722,correlation
+Correlation,mean_G,mean_V,0.99996640048063,correlation
+Correlation,mean_G,std_V,-0.8066529569751666,correlation
+Correlation,mean_G,mean_L,0.9982094564474814,correlation
+Correlation,mean_G,std_L,-0.7966380128508967,correlation
+Correlation,mean_G,glcm_correlation,0.783529012527828,correlation
+Correlation,std_G,std_B,0.9025767024778326,correlation
+Correlation,std_G,std_H,0.732366648047391,correlation
+Correlation,std_G,std_S,0.7333689350375293,correlation
+Correlation,std_G,mean_V,-0.805561581137139,correlation
+Correlation,std_G,std_V,0.9999848380019636,correlation
+Correlation,std_G,mean_L,-0.7955305133943641,correlation
+Correlation,std_G,std_L,0.9993137230603509,correlation
+Correlation,mean_B,mean_S,-0.8444309458567111,correlation
+Correlation,mean_B,green_ratio,-0.9077632718175318,correlation
+Correlation,mean_B,yellow_ratio,-0.8156790347879035,correlation
+Correlation,mean_B,core_yellow_ratio,-0.7013253188831645,correlation
+Correlation,mean_B,edge_yellow_ratio,-0.830033835693063,correlation
+Correlation,std_B,std_S,0.8907470058651278,correlation
+Correlation,std_B,mean_V,-0.7687750920211208,correlation
+Correlation,std_B,std_V,0.9023842417209239,correlation
+Correlation,std_B,mean_L,-0.7603856411231721,correlation
+Correlation,std_B,std_L,0.8984735464172512,correlation
+Correlation,std_B,glcm_contrast,0.7441855654004368,correlation
+Correlation,std_B,glcm_correlation,-0.7294713046835088,correlation
+Correlation,mean_H,core_mean_H,0.9709985155749072,correlation
+Correlation,mean_H,edge_mean_H,0.9979047838307128,correlation
+Correlation,std_H,std_V,0.7323100689502131,correlation
+Correlation,std_H,std_L,0.7386618275158293,correlation
+Correlation,mean_S,mean_a,-0.7061724501017336,correlation
+Correlation,mean_S,mean_b,0.8413095846618306,correlation
+Correlation,mean_S,green_ratio,0.9435918900083576,correlation
+Correlation,mean_S,yellow_ratio,0.9911430526618595,correlation
+Correlation,mean_S,core_yellow_ratio,0.9388708727656341,correlation
+Correlation,mean_S,edge_yellow_ratio,0.9878707910017265,correlation
+Correlation,std_S,std_V,0.7331084889998485,correlation
+Correlation,std_S,std_L,0.7292253936718862,correlation
+Correlation,mean_V,std_V,-0.8063841531773291,correlation
+Correlation,mean_V,mean_L,0.9983007242313022,correlation
+Correlation,mean_V,std_L,-0.7963177365186299,correlation
+Correlation,mean_V,glcm_correlation,0.7836046764597479,correlation
+Correlation,std_V,mean_L,-0.7963757946931583,correlation
+Correlation,std_V,std_L,0.9993050582849151,correlation
+Correlation,mean_L,std_L,-0.7856889579020085,correlation
+Correlation,mean_L,glcm_correlation,0.7918270314740533,correlation
+Correlation,mean_a,green_ratio,-0.773902351842957,correlation
+Correlation,mean_b,yellow_ratio,0.8541486249373724,correlation
+Correlation,mean_b,core_yellow_ratio,0.9000193373073513,correlation
+Correlation,mean_b,edge_yellow_ratio,0.8295306833740316,correlation
+Correlation,green_ratio,yellow_ratio,0.9034239422085196,correlation
+Correlation,green_ratio,core_yellow_ratio,0.8187620388519616,correlation
+Correlation,green_ratio,edge_yellow_ratio,0.9089428526920504,correlation
+Correlation,yellow_ratio,core_yellow_ratio,0.946677961155938,correlation
+Correlation,yellow_ratio,edge_yellow_ratio,0.9969623010735551,correlation
+Correlation,glcm_contrast,glcm_correlation,-0.9624263185005608,correlation
+Correlation,glcm_homogeneity,glcm_energy,0.9492770992727549,correlation
+Correlation,core_mean_H,edge_mean_H,0.9541960801323269,correlation
+Correlation,core_yellow_ratio,edge_yellow_ratio,0.9197497908799626,correlation
 Feature-Similarity kNN,area,convex_area,,feature_similarity
 Feature-Similarity kNN,area,minor_axis_length,,feature_similarity
 Feature-Similarity kNN,area,major_axis_length,,feature_similarity
-Feature-Similarity kNN,area,extent,,feature_similarity
-Feature-Similarity kNN,perimeter,std_S,,feature_similarity
+Feature-Similarity kNN,area,perimeter,,feature_similarity
 Feature-Similarity kNN,perimeter,convex_area,,feature_similarity
-Feature-Similarity kNN,perimeter,std_L,,feature_similarity
-Feature-Similarity kNN,aspect_ratio,green_ratio,,feature_similarity
-Feature-Similarity kNN,aspect_ratio,mean_S,,feature_similarity
-Feature-Similarity kNN,aspect_ratio,core_yellow_ratio,,feature_similarity
+Feature-Similarity kNN,perimeter,minor_axis_length,,feature_similarity
+Feature-Similarity kNN,aspect_ratio,glcm_homogeneity,,feature_similarity
+Feature-Similarity kNN,aspect_ratio,glcm_correlation,,feature_similarity
+Feature-Similarity kNN,aspect_ratio,mean_G,,feature_similarity
 Feature-Similarity kNN,circularity,solidity,,feature_similarity
+Feature-Similarity kNN,circularity,mean_G,,feature_similarity
+Feature-Similarity kNN,circularity,mean_V,,feature_similarity
 Feature-Similarity kNN,circularity,extent,,feature_similarity
-Feature-Similarity kNN,circularity,mean_B,,feature_similarity
 Feature-Similarity kNN,extent,solidity,,feature_similarity
-Feature-Similarity kNN,solidity,mean_L,,feature_similarity
+Feature-Similarity kNN,extent,glcm_contrast,,feature_similarity
+Feature-Similarity kNN,solidity,mean_B,,feature_similarity
 Feature-Similarity kNN,convex_area,minor_axis_length,,feature_similarity
 Feature-Similarity kNN,convex_area,major_axis_length,,feature_similarity
 Feature-Similarity kNN,major_axis_length,minor_axis_length,,feature_similarity
-Feature-Similarity kNN,eccentricity,mean_a,,feature_similarity
-Feature-Similarity kNN,eccentricity,mean_B,,feature_similarity
-Feature-Similarity kNN,eccentricity,mean_R,,feature_similarity
+Feature-Similarity kNN,major_axis_length,glcm_homogeneity,,feature_similarity
+Feature-Similarity kNN,major_axis_length,glcm_energy,,feature_similarity
+Feature-Similarity kNN,minor_axis_length,mean_a,,feature_similarity
+Feature-Similarity kNN,eccentricity,glcm_homogeneity,,feature_similarity
+Feature-Similarity kNN,eccentricity,glcm_energy,,feature_similarity
+Feature-Similarity kNN,eccentricity,mean_G,,feature_similarity
 Feature-Similarity kNN,mean_R,mean_L,,feature_similarity
 Feature-Similarity kNN,mean_R,mean_V,,feature_similarity
 Feature-Similarity kNN,mean_R,mean_G,,feature_similarity
 Feature-Similarity kNN,mean_R,mean_B,,feature_similarity
+Feature-Similarity kNN,mean_R,glcm_correlation,,feature_similarity
 Feature-Similarity kNN,std_R,std_V,,feature_similarity
 Feature-Similarity kNN,std_R,std_G,,feature_similarity
 Feature-Similarity kNN,std_R,std_L,,feature_similarity
 Feature-Similarity kNN,std_R,std_B,,feature_similarity
-Feature-Similarity kNN,std_R,std_b,,feature_similarity
+Feature-Similarity kNN,std_R,std_S,,feature_similarity
+Feature-Similarity kNN,std_R,std_a,,feature_similarity
 Feature-Similarity kNN,std_R,glcm_contrast,,feature_similarity
 Feature-Similarity kNN,mean_G,mean_V,,feature_similarity
 Feature-Similarity kNN,mean_G,mean_L,,feature_similarity
 Feature-Similarity kNN,mean_G,mean_B,,feature_similarity
-Feature-Similarity kNN,mean_G,glcm_correlation,,feature_similarity
 Feature-Similarity kNN,std_G,std_V,,feature_similarity
 Feature-Similarity kNN,std_G,std_L,,feature_similarity
 Feature-Similarity kNN,std_G,std_B,,feature_similarity
 Feature-Similarity kNN,std_G,std_H,,feature_similarity
 Feature-Similarity kNN,std_G,std_S,,feature_similarity
-Feature-Similarity kNN,std_G,std_a,,feature_similarity
 Feature-Similarity kNN,mean_B,mean_L,,feature_similarity
 Feature-Similarity kNN,mean_B,mean_a,,feature_similarity
+Feature-Similarity kNN,std_B,std_V,,feature_similarity
 Feature-Similarity kNN,std_B,std_S,,feature_similarity
+Feature-Similarity kNN,std_B,std_b,,feature_similarity
 Feature-Similarity kNN,std_B,glcm_contrast,,feature_similarity
 Feature-Similarity kNN,mean_H,edge_mean_H,,feature_similarity
 Feature-Similarity kNN,mean_H,core_mean_H,,feature_similarity
-Feature-Similarity kNN,mean_H,std_H,,feature_similarity
+Feature-Similarity kNN,mean_H,glcm_contrast,,feature_similarity
 Feature-Similarity kNN,std_H,std_L,,feature_similarity
 Feature-Similarity kNN,std_H,std_V,,feature_similarity
 Feature-Similarity kNN,std_H,mean_a,,feature_similarity
-Feature-Similarity kNN,std_H,edge_mean_H,,feature_similarity
 Feature-Similarity kNN,mean_S,yellow_ratio,,feature_similarity
 Feature-Similarity kNN,mean_S,edge_yellow_ratio,,feature_similarity
-Feature-Similarity kNN,mean_S,core_yellow_ratio,,feature_similarity
 Feature-Similarity kNN,mean_S,green_ratio,,feature_similarity
-Feature-Similarity kNN,std_S,std_V,,feature_similarity
+Feature-Similarity kNN,mean_S,mean_b,,feature_similarity
+Feature-Similarity kNN,mean_S,core_yellow_ratio,,feature_similarity
+Feature-Similarity kNN,std_S,std_b,,feature_similarity
 Feature-Similarity kNN,std_S,glcm_contrast,,feature_similarity
-Feature-Similarity kNN,std_S,glcm_energy,,feature_similarity
-Feature-Similarity kNN,std_S,core_mean_H,,feature_similarity
 Feature-Similarity kNN,mean_V,mean_L,,feature_similarity
 Feature-Similarity kNN,mean_V,glcm_correlation,,feature_similarity
 Feature-Similarity kNN,std_V,std_L,,feature_similarity
-Feature-Similarity kNN,std_V,std_a,,feature_similarity
-Feature-Similarity kNN,std_V,std_b,,feature_similarity
 Feature-Similarity kNN,mean_L,glcm_correlation,,feature_similarity
 Feature-Similarity kNN,std_L,std_a,,feature_similarity
 Feature-Similarity kNN,std_a,std_b,,feature_similarity
-Feature-Similarity kNN,std_a,glcm_homogeneity,,feature_similarity
-Feature-Similarity kNN,std_a,glcm_energy,,feature_similarity
-Feature-Similarity kNN,mean_b,yellow_ratio,,feature_similarity
 Feature-Similarity kNN,mean_b,core_yellow_ratio,,feature_similarity
-Feature-Similarity kNN,mean_b,edge_yellow_ratio,,feature_similarity
-Feature-Similarity kNN,std_b,glcm_homogeneity,,feature_similarity
+Feature-Similarity kNN,mean_b,yellow_ratio,,feature_similarity
 Feature-Similarity kNN,green_ratio,edge_yellow_ratio,,feature_similarity
 Feature-Similarity kNN,green_ratio,yellow_ratio,,feature_similarity
 Feature-Similarity kNN,yellow_ratio,edge_yellow_ratio,,feature_similarity
 Feature-Similarity kNN,yellow_ratio,core_yellow_ratio,,feature_similarity
+Feature-Similarity kNN,glcm_contrast,core_mean_H,,feature_similarity
+Feature-Similarity kNN,glcm_contrast,edge_mean_H,,feature_similarity
 Feature-Similarity kNN,glcm_homogeneity,glcm_energy,,feature_similarity
+Feature-Similarity kNN,glcm_homogeneity,glcm_correlation,,feature_similarity
 Feature-Similarity kNN,core_mean_H,edge_mean_H,,feature_similarity
 Feature-Similarity kNN,core_yellow_ratio,edge_yellow_ratio,,feature_similarity
 Feature-Family,area,perimeter,,family
@@ -182,21 +197,21 @@ Feature-Family,circularity,convex_area,,family
 Feature-Family,circularity,major_axis_length,,family
 Feature-Family,circularity,minor_axis_length,,family
 Feature-Family,circularity,eccentricity,,family
-Feature-Family,circularity,std_G,0.6497770898537774,family_bridge
-Feature-Family,circularity,std_V,0.6496600220565082,family_bridge
-Feature-Family,circularity,std_L,0.6547151147460755,family_bridge
-Feature-Family,circularity,edge_yellow_ratio,0.4106910743470196,family_bridge
+Feature-Family,circularity,std_R,0.5625909933794729,family_bridge
+Feature-Family,circularity,std_S,0.5638072845889914,family_bridge
+Feature-Family,circularity,std_L,0.5623071101310329,family_bridge
 Feature-Family,extent,solidity,,family
 Feature-Family,extent,convex_area,,family
 Feature-Family,extent,major_axis_length,,family
 Feature-Family,extent,minor_axis_length,,family
 Feature-Family,extent,eccentricity,,family
-Feature-Family,extent,glcm_energy,0.999763436202329,family_bridge
+Feature-Family,extent,glcm_energy,0.9998798222276398,family_bridge
+Feature-Family,extent,edge_mean_H,0.33283706858812345,family_bridge
 Feature-Family,solidity,convex_area,,family
 Feature-Family,solidity,major_axis_length,,family
 Feature-Family,solidity,minor_axis_length,,family
 Feature-Family,solidity,eccentricity,,family
-Feature-Family,solidity,green_ratio,0.44787509973093387,family_bridge
+Feature-Family,solidity,yellow_ratio,0.26783671223152394,family_bridge
 Feature-Family,convex_area,major_axis_length,,family
 Feature-Family,convex_area,minor_axis_length,,family
 Feature-Family,convex_area,eccentricity,,family
@@ -208,6 +223,7 @@ Feature-Family,mean_R,mean_G,,family
 Feature-Family,mean_R,std_G,,family
 Feature-Family,mean_R,mean_B,,family
 Feature-Family,mean_R,std_B,,family
+Feature-Family,mean_R,glcm_correlation,0.801278142893645,family_bridge
 Feature-Family,std_R,mean_G,,family
 Feature-Family,std_R,std_G,,family
 Feature-Family,std_R,mean_B,,family
@@ -215,20 +231,19 @@ Feature-Family,std_R,std_B,,family
 Feature-Family,mean_G,std_G,,family
 Feature-Family,mean_G,mean_B,,family
 Feature-Family,mean_G,std_B,,family
-Feature-Family,mean_G,glcm_correlation,0.583598187018942,family_bridge
 Feature-Family,std_G,mean_B,,family
 Feature-Family,std_G,std_B,,family
-Feature-Family,std_G,std_V,0.9997794218818887,family_bridge
-Feature-Family,std_G,std_L,0.9989451863381859,family_bridge
+Feature-Family,std_G,std_V,0.9999848380019636,family_bridge
+Feature-Family,std_G,std_L,0.9993137230603509,family_bridge
 Feature-Family,mean_B,std_B,,family
-Feature-Family,mean_B,green_ratio,0.9064344399592277,family_bridge
-Feature-Family,mean_B,edge_yellow_ratio,0.8702336107375699,family_bridge
+Feature-Family,mean_B,green_ratio,0.9077632718175318,family_bridge
+Feature-Family,mean_B,edge_yellow_ratio,0.830033835693063,family_bridge
 Feature-Family,mean_H,std_H,,family
 Feature-Family,mean_H,mean_S,,family
 Feature-Family,mean_H,std_S,,family
 Feature-Family,mean_H,mean_V,,family
 Feature-Family,mean_H,std_V,,family
-Feature-Family,mean_H,edge_mean_H,0.9983315202937283,family_bridge
+Feature-Family,mean_H,edge_mean_H,0.9979047838307128,family_bridge
 Feature-Family,std_H,mean_S,,family
 Feature-Family,std_H,std_S,,family
 Feature-Family,std_H,mean_V,,family
@@ -236,18 +251,18 @@ Feature-Family,std_H,std_V,,family
 Feature-Family,mean_S,std_S,,family
 Feature-Family,mean_S,mean_V,,family
 Feature-Family,mean_S,std_V,,family
-Feature-Family,mean_S,yellow_ratio,0.9910648041351146,family_bridge
+Feature-Family,mean_S,yellow_ratio,0.9911430526618595,family_bridge
 Feature-Family,std_S,mean_V,,family
 Feature-Family,std_S,std_V,,family
-Feature-Family,std_S,glcm_correlation,0.5913774721999365,family_bridge
 Feature-Family,mean_V,std_V,,family
-Feature-Family,std_V,std_L,0.9989421787268682,family_bridge
+Feature-Family,mean_V,glcm_correlation,0.7836046764597479,family_bridge
+Feature-Family,std_V,std_L,0.9993050582849151,family_bridge
 Feature-Family,mean_L,std_L,,family
 Feature-Family,mean_L,mean_a,,family
 Feature-Family,mean_L,std_a,,family
 Feature-Family,mean_L,mean_b,,family
 Feature-Family,mean_L,std_b,,family
-Feature-Family,mean_L,glcm_correlation,0.5865745607058533,family_bridge
+Feature-Family,mean_L,glcm_correlation,0.7918270314740533,family_bridge
 Feature-Family,std_L,mean_a,,family
 Feature-Family,std_L,std_a,,family
 Feature-Family,std_L,mean_b,,family
@@ -258,51 +273,52 @@ Feature-Family,mean_a,std_b,,family
 Feature-Family,std_a,mean_b,,family
 Feature-Family,std_a,std_b,,family
 Feature-Family,mean_b,std_b,,family
-Feature-Family,mean_b,yellow_ratio,0.7216827179944669,family_bridge
-Feature-Family,mean_b,core_yellow_ratio,0.715503096206104,family_bridge
+Feature-Family,mean_b,yellow_ratio,0.8541486249373724,family_bridge
+Feature-Family,mean_b,core_yellow_ratio,0.9000193373073513,family_bridge
 Feature-Family,green_ratio,yellow_ratio,,family
-Feature-Family,green_ratio,glcm_correlation,0.3772049011271037,family_bridge
-Feature-Family,yellow_ratio,edge_yellow_ratio,0.9975851437531713,family_bridge
+Feature-Family,green_ratio,glcm_correlation,0.4574309039656232,family_bridge
+Feature-Family,yellow_ratio,edge_yellow_ratio,0.9969623010735551,family_bridge
 Feature-Family,glcm_contrast,glcm_homogeneity,,family
 Feature-Family,glcm_contrast,glcm_energy,,family
 Feature-Family,glcm_contrast,glcm_correlation,,family
 Feature-Family,glcm_homogeneity,glcm_energy,,family
 Feature-Family,glcm_homogeneity,glcm_correlation,,family
 Feature-Family,glcm_energy,glcm_correlation,,family
-Feature-Family,glcm_correlation,core_mean_H,0.36843474103360907,family_bridge
+Feature-Family,glcm_correlation,core_mean_H,0.5174599873364283,family_bridge
 Feature-Family,core_mean_H,core_yellow_ratio,,family
 Feature-Family,core_mean_H,edge_mean_H,,family
 Feature-Family,core_mean_H,edge_yellow_ratio,,family
 Feature-Family,core_yellow_ratio,edge_mean_H,,family
 Feature-Family,core_yellow_ratio,edge_yellow_ratio,,family
 Feature-Family,edge_mean_H,edge_yellow_ratio,,family
-Spatial/Regional,mean_R,core_mean_H,0.6540644720535618,spatial_global_link
-Spatial/Regional,mean_R,edge_mean_H,0.6510797289319166,spatial_global_link
-Spatial/Regional,mean_B,core_yellow_ratio,0.7924658829053369,spatial_global_link
-Spatial/Regional,mean_B,edge_yellow_ratio,0.8702336107375699,spatial_global_link
-Spatial/Regional,mean_H,core_mean_H,0.9739535130516155,spatial_global_link
-Spatial/Regional,mean_H,edge_mean_H,0.9983315202937283,spatial_global_link
-Spatial/Regional,mean_S,core_yellow_ratio,0.9376569758482228,spatial_global_link
-Spatial/Regional,mean_S,edge_yellow_ratio,0.9904399658395281,spatial_global_link
-Spatial/Regional,mean_b,core_yellow_ratio,0.715503096206104,spatial_global_link
-Spatial/Regional,mean_b,edge_yellow_ratio,0.7131816743998854,spatial_global_link
-Spatial/Regional,std_b,edge_yellow_ratio,0.6540893064088674,spatial_global_link
-Spatial/Regional,green_ratio,core_yellow_ratio,0.7987971943002836,spatial_global_link
-Spatial/Regional,green_ratio,edge_yellow_ratio,0.8713714279800964,spatial_global_link
-Spatial/Regional,yellow_ratio,core_yellow_ratio,0.9535337223651037,spatial_global_link
-Spatial/Regional,yellow_ratio,edge_yellow_ratio,0.9975851437531713,spatial_global_link
+Spatial/Regional,mean_R,core_mean_H,0.6661247621304639,spatial_global_link
+Spatial/Regional,mean_R,edge_mean_H,0.6499497150565146,spatial_global_link
+Spatial/Regional,mean_B,core_yellow_ratio,0.7013253188831645,spatial_global_link
+Spatial/Regional,mean_B,edge_yellow_ratio,0.830033835693063,spatial_global_link
+Spatial/Regional,mean_H,core_mean_H,0.9709985155749072,spatial_global_link
+Spatial/Regional,mean_H,edge_mean_H,0.9979047838307128,spatial_global_link
+Spatial/Regional,mean_S,core_yellow_ratio,0.9388708727656341,spatial_global_link
+Spatial/Regional,mean_S,edge_yellow_ratio,0.9878707910017265,spatial_global_link
+Spatial/Regional,mean_a,core_yellow_ratio,0.6418037488210296,spatial_global_link
+Spatial/Regional,mean_a,edge_yellow_ratio,0.6110269370016351,spatial_global_link
+Spatial/Regional,mean_b,core_yellow_ratio,0.9000193373073513,spatial_global_link
+Spatial/Regional,mean_b,edge_yellow_ratio,0.8295306833740316,spatial_global_link
+Spatial/Regional,green_ratio,core_yellow_ratio,0.8187620388519616,spatial_global_link
+Spatial/Regional,green_ratio,edge_yellow_ratio,0.9089428526920504,spatial_global_link
+Spatial/Regional,yellow_ratio,core_yellow_ratio,0.946677961155938,spatial_global_link
+Spatial/Regional,yellow_ratio,edge_yellow_ratio,0.9969623010735551,spatial_global_link
 Spatial/Regional,core_mean_H,core_yellow_ratio,,spatial_core
 Spatial/Regional,core_mean_H,edge_mean_H,,spatial_bridge
 Spatial/Regional,core_yellow_ratio,edge_yellow_ratio,,spatial_bridge
 Spatial/Regional,edge_mean_H,edge_yellow_ratio,,spatial_edge
 Hybrid,area,convex_area,,multiple
-Hybrid,area,major_axis_length,,multiple
 Hybrid,area,minor_axis_length,,multiple
 Hybrid,area,perimeter,,family
 Hybrid,area,aspect_ratio,,family
 Hybrid,area,circularity,,family
 Hybrid,area,extent,,family
 Hybrid,area,solidity,,family
+Hybrid,area,major_axis_length,,family
 Hybrid,area,eccentricity,,family
 Hybrid,perimeter,aspect_ratio,,family
 Hybrid,perimeter,circularity,,family
@@ -319,16 +335,15 @@ Hybrid,aspect_ratio,convex_area,,family
 Hybrid,aspect_ratio,major_axis_length,,family
 Hybrid,aspect_ratio,minor_axis_length,,family
 Hybrid,aspect_ratio,eccentricity,,family
-Hybrid,circularity,solidity,,multiple
 Hybrid,circularity,extent,,family
+Hybrid,circularity,solidity,,family
 Hybrid,circularity,convex_area,,family
 Hybrid,circularity,major_axis_length,,family
 Hybrid,circularity,minor_axis_length,,family
 Hybrid,circularity,eccentricity,,family
-Hybrid,circularity,std_G,,family
-Hybrid,circularity,std_V,,family
+Hybrid,circularity,std_R,,family
+Hybrid,circularity,std_S,,family
 Hybrid,circularity,std_L,,family
-Hybrid,circularity,edge_yellow_ratio,,family
 Hybrid,extent,glcm_homogeneity,,correlation
 Hybrid,extent,glcm_energy,,multiple
 Hybrid,extent,solidity,,family
@@ -336,42 +351,44 @@ Hybrid,extent,convex_area,,family
 Hybrid,extent,major_axis_length,,family
 Hybrid,extent,minor_axis_length,,family
 Hybrid,extent,eccentricity,,family
+Hybrid,extent,edge_mean_H,,family
 Hybrid,solidity,convex_area,,family
 Hybrid,solidity,major_axis_length,,family
 Hybrid,solidity,minor_axis_length,,family
 Hybrid,solidity,eccentricity,,family
-Hybrid,solidity,green_ratio,,family
+Hybrid,solidity,yellow_ratio,,family
 Hybrid,convex_area,major_axis_length,,multiple
 Hybrid,convex_area,minor_axis_length,,multiple
 Hybrid,convex_area,eccentricity,,family
-Hybrid,major_axis_length,minor_axis_length,,multiple
+Hybrid,major_axis_length,minor_axis_length,,family
 Hybrid,major_axis_length,eccentricity,,family
 Hybrid,minor_axis_length,eccentricity,,family
 Hybrid,mean_R,mean_G,,multiple
 Hybrid,mean_R,mean_V,,correlation
 Hybrid,mean_R,mean_L,,correlation
+Hybrid,mean_R,glcm_correlation,,multiple
 Hybrid,mean_R,std_R,,family
 Hybrid,mean_R,std_G,,family
 Hybrid,mean_R,mean_B,,family
 Hybrid,mean_R,std_B,,family
+Hybrid,std_R,mean_G,,multiple
 Hybrid,std_R,std_G,,multiple
+Hybrid,std_R,std_B,,multiple
+Hybrid,std_R,mean_V,,correlation
 Hybrid,std_R,std_V,,correlation
 Hybrid,std_R,std_L,,correlation
-Hybrid,std_R,std_a,,correlation
-Hybrid,std_R,mean_G,,family
 Hybrid,std_R,mean_B,,family
-Hybrid,std_R,std_B,,family
+Hybrid,mean_G,std_G,,multiple
 Hybrid,mean_G,mean_V,,correlation
+Hybrid,mean_G,std_V,,correlation
 Hybrid,mean_G,mean_L,,correlation
-Hybrid,mean_G,std_G,,family
 Hybrid,mean_G,mean_B,,family
 Hybrid,mean_G,std_B,,family
-Hybrid,mean_G,glcm_correlation,,family
+Hybrid,std_G,std_B,,multiple
+Hybrid,std_G,mean_V,,correlation
 Hybrid,std_G,std_V,,multiple
 Hybrid,std_G,std_L,,multiple
-Hybrid,std_G,std_a,,correlation
 Hybrid,std_G,mean_B,,family
-Hybrid,std_G,std_B,,family
 Hybrid,mean_B,mean_S,,correlation
 Hybrid,mean_B,green_ratio,,multiple
 Hybrid,mean_B,yellow_ratio,,correlation
@@ -379,6 +396,8 @@ Hybrid,mean_B,edge_yellow_ratio,,multiple
 Hybrid,mean_B,std_B,,family
 Hybrid,mean_B,core_yellow_ratio,,spatial
 Hybrid,std_B,std_S,,correlation
+Hybrid,std_B,std_V,,correlation
+Hybrid,std_B,std_L,,correlation
 Hybrid,mean_H,core_mean_H,,multiple
 Hybrid,mean_H,edge_mean_H,,multiple
 Hybrid,mean_H,std_H,,family
@@ -390,6 +409,7 @@ Hybrid,std_H,mean_S,,family
 Hybrid,std_H,std_S,,family
 Hybrid,std_H,mean_V,,family
 Hybrid,std_H,std_V,,family
+Hybrid,mean_S,mean_b,,correlation
 Hybrid,mean_S,green_ratio,,correlation
 Hybrid,mean_S,yellow_ratio,,multiple
 Hybrid,mean_S,core_yellow_ratio,,multiple
@@ -399,39 +419,38 @@ Hybrid,mean_S,mean_V,,family
 Hybrid,mean_S,std_V,,family
 Hybrid,std_S,mean_V,,family
 Hybrid,std_S,std_V,,family
-Hybrid,std_S,glcm_correlation,,family
+Hybrid,mean_V,std_V,,multiple
 Hybrid,mean_V,mean_L,,correlation
-Hybrid,mean_V,std_V,,family
+Hybrid,mean_V,glcm_correlation,,family
 Hybrid,std_V,std_L,,multiple
-Hybrid,std_V,std_a,,correlation
 Hybrid,mean_L,std_L,,family
 Hybrid,mean_L,mean_a,,family
 Hybrid,mean_L,std_a,,family
 Hybrid,mean_L,mean_b,,family
 Hybrid,mean_L,std_b,,family
 Hybrid,mean_L,glcm_correlation,,family
-Hybrid,std_L,std_a,,multiple
 Hybrid,std_L,mean_a,,family
+Hybrid,std_L,std_a,,family
 Hybrid,std_L,mean_b,,family
 Hybrid,std_L,std_b,,family
 Hybrid,mean_a,std_a,,family
 Hybrid,mean_a,mean_b,,family
 Hybrid,mean_a,std_b,,family
-Hybrid,std_a,std_b,,multiple
 Hybrid,std_a,mean_b,,family
-Hybrid,mean_b,std_b,,family
-Hybrid,mean_b,yellow_ratio,,family
+Hybrid,std_a,std_b,,family
+Hybrid,mean_b,yellow_ratio,,multiple
 Hybrid,mean_b,core_yellow_ratio,,multiple
-Hybrid,mean_b,edge_yellow_ratio,,spatial
+Hybrid,mean_b,edge_yellow_ratio,,multiple
+Hybrid,mean_b,std_b,,family
 Hybrid,green_ratio,yellow_ratio,,multiple
+Hybrid,green_ratio,core_yellow_ratio,,multiple
 Hybrid,green_ratio,edge_yellow_ratio,,multiple
 Hybrid,green_ratio,glcm_correlation,,family
-Hybrid,green_ratio,core_yellow_ratio,,spatial
 Hybrid,yellow_ratio,core_yellow_ratio,,multiple
 Hybrid,yellow_ratio,edge_yellow_ratio,,multiple
+Hybrid,glcm_contrast,glcm_correlation,,multiple
 Hybrid,glcm_contrast,glcm_homogeneity,,family
 Hybrid,glcm_contrast,glcm_energy,,family
-Hybrid,glcm_contrast,glcm_correlation,,family
 Hybrid,glcm_homogeneity,glcm_energy,,multiple
 Hybrid,glcm_homogeneity,glcm_correlation,,family
 Hybrid,glcm_energy,glcm_correlation,,family
