@@ -21,17 +21,7 @@ Author: Final Year Project – WL Graph Representation
 # ============================================================
 # SECTION 0: Imports & Configuration
 # ============================================================
-import sys, io
-# Force UTF-8 output on Windows to handle special characters
-if sys.stdout.encoding != 'utf-8':
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-if sys.stderr.encoding != 'utf-8':
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
-
-import os
-import time
-import json
-import warnings
+import sys, io, os, time, json, warnings
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -52,6 +42,19 @@ from sklearn.metrics import (
 )
 
 warnings.filterwarnings('ignore')
+
+# Explicitly verify required packages (Item 3)
+assert pd is not None
+assert np is not None
+assert sp is not None
+assert nx is not None
+assert SVC is not None
+assert RandomForestClassifier is not None
+assert KBinsDiscretizer is not None
+assert StandardScaler is not None
+assert NearestNeighbors is not None
+assert all(f is not None for f in [accuracy_score, f1_score, precision_score, recall_score, balanced_accuracy_score, roc_auc_score, average_precision_score, confusion_matrix])
+print("All required imports verified.")
 
 # -- Reproducibility -----------------------------------------
 RANDOM_STATE = 42
@@ -107,6 +110,14 @@ print("Config assertions (GRAPH_TYPES, WL_HEIGHTS): PASSED")
 # SECTION 1: Data Loading & Verification
 # ============================================================
 csv_path    = '../olid_full_features.csv'
+folds_path  = '../cv_fold_assignments.csv'
+
+if not os.path.exists(csv_path) or not os.path.exists(folds_path):
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Expected feature path    : {os.path.abspath(csv_path)}")
+    print(f"Expected folds path      : {os.path.abspath(folds_path)}")
+    raise FileNotFoundError("Required data files not found!")
+
 df_full     = pd.read_csv(csv_path)
 df_accepted = df_full[df_full['quality_flag'] == 'ACCEPT'].copy().reset_index(drop=True)
 
@@ -121,7 +132,7 @@ print(f"\nAccepted images : {len(df_accepted)}")
 print(f"Feature columns : {len(feature_cols)}")
 
 # -- Load fold assignments (same as NB13/NB14) ---------------
-df_folds    = pd.read_csv('../cv_fold_assignments.csv')
+df_folds    = pd.read_csv(folds_path)
 df_accepted = df_accepted.merge(df_folds[['image_path', 'fold']],
                                 on='image_path', how='left')
 assert df_accepted['fold'].isna().sum() == 0, "Missing fold assignments!"
@@ -150,7 +161,9 @@ FEATURE_FAMILIES = {
 
 all_family_features = [f for fam in FEATURE_FAMILIES.values() for f in fam]
 assert sorted(all_family_features) == sorted(feature_cols), "Feature family mismatch!"
-print("Feature family assignment: OK (all 38 features mapped)")
+assert len(all_family_features) == len(set(all_family_features)), "A feature is assigned to multiple families!"
+assert len(all_family_features) == 38, "Total features assigned to families must be exactly 38!"
+print("Feature family assignment: OK (all 38 features mapped uniquely)")
 
 # ============================================================
 # SECTION 2: Condition -> Stressed / Non-Stressed Mapping
@@ -471,6 +484,73 @@ def build_kernel_matrix(Phi_train, Phi_val=None):
 print("WL engine components loaded (verbatim validated implementation from NB12).")
 
 # ============================================================
+# SECTION 3.5: Graph & WL Engine Smoke Tests
+# ============================================================
+print("\n" + "=" * 65)
+print("SECTION 3.5: Graph & WL Engine Smoke Tests")
+print("=" * 65)
+
+tr_idx_smk = df_accepted[df_accepted['fold'] != 0].index
+va_idx_smk = df_accepted[df_accepted['fold'] == 0].index
+X_tr_smk = df_accepted.loc[tr_idx_smk, feature_cols]
+X_va_smk = df_accepted.loc[va_idx_smk, feature_cols]
+y_tr_smk = df_accepted.loc[tr_idx_smk, 'binary_label'].values
+
+print("Running Graph Constructor structural smoke test...")
+for gt_key in GRAPH_TYPES:
+    constructor_smk = GRAPH_BUILDERS[gt_key](feature_cols)
+    if gt_key == 'correlation':
+        constructor_smk.fit(X_tr_smk, threshold=CORR_THRESH)
+    elif gt_key == 'knn':
+        constructor_smk.fit(X_tr_smk, k=KNN_K)
+    elif gt_key == 'family':
+        constructor_smk.fit(X_tr_smk, FEATURE_FAMILIES)
+    elif gt_key == 'spatial':
+        constructor_smk.fit(X_tr_smk, SPATIAL_FEATURES)
+    elif gt_key == 'hybrid':
+        constructor_smk.fit(X_tr_smk)
+    
+    G_smk = constructor_smk.base_graph
+    assert len(G_smk.nodes) == 38, f"{gt_key}: Expected 38 nodes, got {len(G_smk.nodes)}"
+    assert sorted(G_smk.nodes) == sorted(feature_cols), f"{gt_key}: Node names mismatch!"
+    
+    n_edges = len(G_smk.edges)
+    n_components = nx.number_connected_components(G_smk)
+    n_isolated = len(list(nx.isolates(G_smk)))
+    print(f"  {gt_key:<15} : 38 nodes | {n_edges:>4} edges | {n_components:>2} components | {n_isolated:>2} isolated")
+
+print("\nRunning WL Engine smoke test (Correlation, h=0 and h=1)...")
+constructor_smk = GRAPH_BUILDERS['correlation'](feature_cols)
+constructor_smk.fit(X_tr_smk, threshold=CORR_THRESH)
+disc_smk = fit_discretizer(X_tr_smk, n_bins=N_BINS)
+
+g_tr_smk = constructor_smk.transform(transform_discretizer(X_tr_smk, disc_smk))
+g_va_smk = constructor_smk.transform(transform_discretizer(X_va_smk, disc_smk))
+
+for smk_h in [0, 1]:
+    Phi_tr_smk, Phi_va_smk, _, _ = wl_subtree_features(g_tr_smk, g_va_smk, max_height=smk_h)
+    K_tr_smk, K_va_smk = build_kernel_matrix(Phi_tr_smk, Phi_va_smk)
+    
+    assert Phi_tr_smk.shape[0] == len(X_tr_smk), f"Phi_tr shape mismatch at h={smk_h}"
+    assert Phi_va_smk.shape[0] == len(X_va_smk), f"Phi_va shape mismatch at h={smk_h}"
+    assert K_tr_smk.shape == (len(X_tr_smk), len(X_tr_smk)), f"K_tr shape mismatch at h={smk_h}"
+    assert K_va_smk.shape == (len(X_va_smk), len(X_tr_smk)), f"K_va shape mismatch at h={smk_h}"
+    assert np.all(np.isfinite(K_tr_smk)), f"K_tr contains NaN/Inf at h={smk_h}"
+    assert np.all(np.isfinite(K_va_smk)), f"K_va contains NaN/Inf at h={smk_h}"
+    assert np.allclose(K_tr_smk, K_tr_smk.T), f"K_tr is not symmetric at h={smk_h}"
+    
+    svm_smk = SVC(kernel='precomputed', C=SVM_C, class_weight=SVM_CLASS_WEIGHT, probability=True, random_state=RANDOM_STATE)
+    svm_smk.fit(K_tr_smk, y_tr_smk)
+    pred_smk = svm_smk.predict(K_va_smk)
+    assert len(pred_smk) == len(X_va_smk), "SVM prediction failed"
+    print(f"  WL Engine h={smk_h} OK. Kernel shapes: Train {K_tr_smk.shape}, Val {K_va_smk.shape}")
+
+print("\nSMOKE TEST PASSED")
+if SMOKE_TEST:
+    print("Smoke test mode enabled. Exiting early.")
+    sys.exit(0)
+
+# ============================================================
 # SECTION 4: 5-Fold Cross-Validation (WL Kernel + SVM)
 # ============================================================
 print("\n" + "=" * 65)
@@ -544,11 +624,8 @@ for gt_key in GRAPH_TYPES_TO_RUN:
             wf1  = f1_score(y_va, y_pred, average='weighted', zero_division=0)
             prec = precision_score(y_va, y_pred, average='macro', zero_division=0)
             rec  = recall_score(y_va, y_pred, average='macro', zero_division=0)
-            try:
-                auc    = roc_auc_score(y_va, y_prob)
-                pr_auc = average_precision_score(y_va, y_prob)
-            except ValueError:
-                auc, pr_auc = float('nan'), float('nan')
+            auc    = roc_auc_score(y_va, y_prob)
+            pr_auc = average_precision_score(y_va, y_prob)
 
             fold_results_wl.append({
                 'Method':            'WL + SVM',
@@ -884,8 +961,8 @@ def analyze_cm(y_true, y_pred, label):
 cm_wl = analyze_cm(df_best_wl_oof['true_binary'].values, df_best_wl_oof['pred_binary'].values,
                    f"Globally Best WL Model ({best_wl_gt} h={best_wl_h})")
 
-cm_rf = analyze_cm(tom_rf['true_binary'].values, tom_rf['pred_binary'].values,
-                   "Flat Random Forest Baseline (Tomato subset)")
+cm_rf = analyze_cm(df_rf_oof['true_binary'].values, df_rf_oof['pred_binary'].values,
+                   "Flat Random Forest Baseline (Global)")
 
 # False negative breakdown by original condition
 fn_wl = df_best_wl_oof[(df_best_wl_oof['true_binary'] == 1) & (df_best_wl_oof['pred_binary'] == 0)]
@@ -1261,19 +1338,19 @@ Q2: Does any graph construction become competitive with or outperform the flat b
 
 Q3: Which graph construction performs best?
     The best-performing Level-1 WL configuration was {best_wl_gt} at h={best_wl_h}, achieving Macro-F1={best_wl_mf1:.4f}.
-    Feature-Family and Hybrid graphs provide dense feature interactions that effectively capture co-occurring stress manifestations.
+    The measured results dynamically indicate {best_wl_gt} provides the most effective topological structure for capturing stress symptom co-occurrence in this binary task.
 
 Q4: Which WL height performs best?
-    Across WL iterations, mean performance progressed from h=0 ({h0_mf1:.4f}) to h=1 ({h1_mf1:.4f}), h=2 ({h2_mf1:.4f}), and h=3 ({h3_mf1:.4f}),
-    peaking at higher heights where multi-hop symptom coordination is fully aggregated.
+    Across WL iterations, mean performance was: h=0 ({h0_mf1:.4f}), h=1 ({h1_mf1:.4f}), h=2 ({h2_mf1:.4f}), and h=3 ({h3_mf1:.4f}).
+    The highest average performance occurred at h={[h0_mf1, h1_mf1, h2_mf1, h3_mf1].index(max(h0_mf1, h1_mf1, h2_mf1, h3_mf1))}, showing the optimal neighborhood aggregation depth.
 
 Q5: Is the ranking of graph constructions similar to the original 57-class experiment?
-    In both tasks, graphs incorporating dense multi-modal relationships (Hybrid, Feature-Family, kNN) outperform sparse spatial graphs.
-    However, under binary stress detection, the Hybrid and Feature-Family architectures achieve the highest Macro-F1 scores.
+    In the 57-class task, {hist['57_best_wl']['graph']} (h={hist['57_best_wl']['height']}) was optimal.
+    In the binary task, {best_wl_gt} (h={best_wl_h}) proved optimal, demonstrating that the ideal topological construction is task-dependent.
 
 Q6: Does simplification of the target make graph structure more useful?
-    Under the binary target, the subtree feature hashing of the WL kernel is no longer fragmented across 57 joint classes,
-    allowing the structural feature signatures of systemic plant stress to concentrate into a clean binary decision boundary.
+    Under the binary target, the subtree feature hashing of the WL kernel is no longer fragmented across 57 joint classes.
+    {'The strong performance improvement (Delta=' + str(round(delta_wl, 4)) + ') suggests structural signatures concentrate effectively into a cleaner binary boundary.' if delta_wl > 0.05 else 'However, the results suggest task simplification alone did not drastically alter the fundamental limits of the representation.'}
 
 Q7: Implications for Graph/WL Representations in Plant Phenotyping:
     The measured results demonstrate that graph construction and WL subtree kernels are highly capable
