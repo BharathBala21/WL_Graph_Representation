@@ -14,3 +14,8 @@ inspect_nb.py
 fix_source.py
 build_nb21.py
 full_pipeline/15_markdown.txt
+
+# Dependencies & Datasets
+node_modules/
+**/node_modules/
+dataset/
