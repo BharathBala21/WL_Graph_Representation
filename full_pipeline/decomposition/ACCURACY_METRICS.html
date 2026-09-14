@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hierarchical Crop Stress Classification - Metrics Summary</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            margin-top: 30px;
+            background-color: #e8f4f8;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 5px solid #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .note {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffecb5;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Level 3: Hierarchical Crop Stress Classification</h1>
+    <p>This document summarizes the accuracy and F1 score metrics extracted from the <code>23_Level3_Hierarchical_Crop_Stress_Classification.ipynb</code> notebook.</p>
+
+    <h2>1. Level-1 Baseline Metrics</h2>
+    <table>
+        <tr><th>Metric</th><th>Score</th></tr>
+        <tr><td>Accuracy</td><td>0.8160 ± 0.0160</td></tr>
+        <tr><td>Macro-F1</td><td>0.6969 ± 0.0256</td></tr>
+        <tr><td>Weighted-F1</td><td>0.8251 ± 0.0150</td></tr>
+        <tr><td>Balanced Accuracy</td><td>0.7219 ± 0.0302</td></tr>
+    </table>
+
+    <h2>2. Stage-1 Crop Identification Performance (Pooled OOF)</h2>
+    <table>
+        <tr><th>Metric</th><th>Score</th></tr>
+        <tr><td>Overall Crop Accuracy</td><td><span class="highlight">0.9184</span></td></tr>
+        <tr><td>Macro-F1</td><td>0.8950</td></tr>
+        <tr><td>Weighted-F1</td><td>0.9172</td></tr>
+    </table>
+
+    <h2>3. End-to-End Stress Classification Summary</h2>
+    <table>
+        <tr><th>Metric</th><th>Score</th><th>Delta (vs L1 Baseline)</th></tr>
+        <tr><td>L3 Real Macro-F1</td><td>0.6825 ± 0.0132</td><td>-0.0144</td></tr>
+        <tr><td>L3 Oracle Macro-F1</td><td>0.6864 ± 0.0141</td><td>-0.0105</td></tr>
+        <tr><td>Oracle - Real Macro-F1 Gap</td><td colspan="2">+0.0039</td></tr>
+    </table>
+
+    <h2>4. Outer Fold Metrics Breakdown</h2>
+    <table>
+        <tr>
+            <th>Fold</th>
+            <th>Stage-1 Crop Acc (RF Primary)</th>
+            <th>Stage-1 Crop Acc (SVM)</th>
+            <th>End-to-End Macro-F1 (Real)</th>
+            <th>End-to-End Macro-F1 (Oracle)</th>
+        </tr>
+        <tr>
+            <td>Fold 0</td><td>0.9260</td><td>0.9226</td><td>0.6907</td><td>0.6960</td>
+        </tr>
+        <tr>
+            <td>Fold 1</td><td>0.9123</td><td>0.9032</td><td>0.6851</td><td>0.6960</td>
+        </tr>
+        <tr>
+            <td>Fold 2</td><td>0.9282</td><td>0.9145</td><td>0.6620</td><td>0.6702</td>
+        </tr>
+        <tr>
+            <td>Fold 3</td><td>0.9247</td><td>0.9247</td><td>0.6960</td><td>0.6981</td>
+        </tr>
+        <tr>
+            <td>Fold 4</td><td>0.9008</td><td>0.9247</td><td>0.6788</td><td>0.6719</td>
+        </tr>
+    </table>
+
+    <h2>5. Crop-Specific Routing Example (Tomato)</h2>
+    <ul>
+        <li><strong>Routing Accuracy:</strong> 0.9828 (98.28%)</li>
+        <li><strong>End-to-End Stress Macro-F1:</strong> 0.7413</li>
+        <li><strong>Oracle Stress Macro-F1:</strong> 0.7429</li>
+        <li><strong>Correctly-Routed Stress Macro-F1:</strong> 0.7433</li>
+    </ul>
+
+    <div class="note">
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Measured overall routing accuracy is <strong>91.8%</strong>.</li>
+            <li>The gap between Oracle (0.6864) and Real (0.6825) routing is only <strong>0.0039 Macro-F1 points</strong>, indicating that Stage-1 crop misclassification is a measurable but small bottleneck.</li>
+            <li>The Stress Macro-F1 is <strong>0.6914</strong> for correctly routed samples.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

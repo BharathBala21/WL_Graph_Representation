@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Graph Comparison Metrics</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 2px solid #27ae60;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            margin-top: 30px;
+            background-color: #eafaf1;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 5px solid #27ae60;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #d35400;
+        }
+        .graph-type {
+            font-weight: bold;
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Comprehensive Graph Comparison Metrics (Level-1 Binary Stress)</h1>
+    <p>This document presents a comprehensive comparison of all graph topologies, heights, and baseline methods extracted from <code>level1_comprehensive_comparison.csv</code>.</p>
+
+    <h2>1. Non-Graph Baselines (Flat Features)</h2>
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Accuracy</th>
+            <th>Macro-F1</th>
+            <th>Weighted-F1</th>
+            <th>Balanced Acc</th>
+            <th>ROC-AUC</th>
+        </tr>
+        <tr>
+            <td>Flat Random Forest</td>
+            <td>0.8678</td>
+            <td>0.6522</td>
+            <td>0.8370</td>
+            <td>0.6182</td>
+            <td>0.8677</td>
+        </tr>
+        <tr>
+            <td>Flat RBF SVM</td>
+            <td>0.7449</td>
+            <td>0.6642</td>
+            <td>0.7753</td>
+            <td>0.7607</td>
+            <td>0.8434</td>
+        </tr>
+    </table>
+
+    <h2>2. Weisfeiler-Lehman (WL) Graph Topologies Comparison</h2>
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Graph Topology</th>
+            <th>Height (h)</th>
+            <th>Accuracy</th>
+            <th>Macro-F1</th>
+            <th>Weighted-F1</th>
+            <th>Balanced Acc</th>
+            <th>ROC-AUC</th>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Hybrid</td><td>3</td><td>0.8160</td><td class="highlight">0.6969</td><td>0.8251</td><td>0.7219</td><td>0.8134</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Hybrid</td><td>2</td><td>0.7971</td><td>0.6874</td><td>0.8124</td><td>0.7303</td><td>0.8145</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Hybrid</td><td>1</td><td>0.7575</td><td>0.6591</td><td>0.7826</td><td>0.7259</td><td>0.8058</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Feature-Family</td><td>3</td><td>0.8092</td><td class="highlight">0.6914</td><td>0.8201</td><td>0.7212</td><td>0.8116</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Feature-Family</td><td>2</td><td>0.7891</td><td>0.6817</td><td>0.8065</td><td>0.7301</td><td>0.8115</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Feature-Family</td><td>1</td><td>0.7534</td><td>0.6557</td><td>0.7794</td><td>0.7240</td><td>0.8054</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Feature-Sim. kNN</td><td>3</td><td>0.7787</td><td>0.6737</td><td>0.7985</td><td>0.7291</td><td>0.8078</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Feature-Sim. kNN</td><td>2</td><td>0.7620</td><td>0.6647</td><td>0.7865</td><td>0.7332</td><td>0.8064</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Feature-Sim. kNN</td><td>1</td><td>0.7237</td><td>0.6374</td><td>0.7567</td><td>0.7256</td><td>0.8004</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Correlation</td><td>3</td><td>0.7094</td><td>0.6216</td><td>0.7445</td><td>0.7068</td><td>0.7783</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Correlation</td><td>2</td><td>0.6996</td><td>0.6170</td><td>0.7369</td><td>0.7100</td><td>0.7762</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Correlation</td><td>1</td><td>0.6914</td><td>0.6117</td><td>0.7303</td><td>0.7090</td><td>0.7781</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Spatial/Regional</td><td>3</td><td>0.7082</td><td>0.6212</td><td>0.7437</td><td>0.7073</td><td>0.7883</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Spatial/Regional</td><td>2</td><td>0.7064</td><td>0.6216</td><td>0.7424</td><td>0.7113</td><td>0.7905</td>
+        </tr>
+        <tr>
+            <td>WL + SVM</td><td class="graph-type">Spatial/Regional</td><td>1</td><td>0.6987</td><td>0.6175</td><td>0.7363</td><td>0.7129</td><td>0.7855</td>
+        </tr>
+    </table>
+
+</body>
+</html>
