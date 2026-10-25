@@ -18,7 +18,7 @@ export const PROJECT = {
   team: 'Team 49',
   department: 'School of Computing, Coimbatore',
   guide: {
-    name: 'Sriram S.',
+    name: 'Mr. Sriram S.',
     role: 'Assistant Professor (OC)',
     department: 'School of Computing, Coimbatore',
     institution: 'Amrita Vishwa Vidyapeetham',
