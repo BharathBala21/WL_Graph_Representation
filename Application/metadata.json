@@ -1,6 +1,0 @@
-{
-  "name": "PlantCare AI",
-  "description": "Precision agronomy and plant health screening platform utilizing deep learning computer vision to detect crop stresses, chlorosis, and water deficit anomalies.",
-  "requestFramePermissions": ["camera"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

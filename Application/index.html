@@ -1,22 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PlantCare AI</title>
-    <meta name="description" content="Precision agronomy and plant health screening platform utilizing deep learning computer vision to detect crop stresses, chlorosis, and water deficit anomalies." />
-    <meta property="og:title" content="PlantCare AI" />
-    <meta property="og:description" content="Precision agronomy and plant health screening platform utilizing deep learning computer vision to detect crop stresses, chlorosis, and water deficit anomalies." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="description" content="WL-LeafKernel — Weisfeiler–Lehman graph kernel research project for plant-stress classification from leaf images. Systematically compares five feature-graph construction strategies." />
+    <meta name="theme-color" content="#08120c" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+    <!-- icon font used by the PlantCare AI pages -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <title>WL-LeafKernel · WL Graph Kernels for Plant-Stress Classification</title>
+    <script>
+      try { document.documentElement.dataset.theme = localStorage.getItem('wl-theme') || 'dark' } catch (e) {}
+    </script>
   </head>
-  <body class="bg-[#faf8ff] text-[#131b2e] antialiased">
+  <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-

@@ -1,0 +1,91 @@
+/* PlantCare AI palette as RGB triplets (see `pc` colours in tailwind.config.js).
+   Light values are the original PlantCare design; dark values follow the portal's dark theme. */
+:root,
+:root[data-theme='dark'] {
+  --pc-bg: 11 24 16;
+  --pc-card: 15 32 22;
+  --pc-low: 18 38 26;
+  --pc-cont: 22 44 31;
+  --pc-high: 27 52 37;
+  --pc-line: 40 70 52;
+  --pc-ink: 236 248 240;
+  --pc-ink2: 184 208 192;
+  --pc-muted: 140 172 152;
+  --pc-outline: 74 110 88;
+  --pc-green: 74 222 128;
+  --pc-green-bg: 22 140 64;
+  --pc-deep: 20 83 45;
+  --pc-deep-ink: 134 239 172;
+  --pc-forest: 22 101 52;
+  --pc-mint: 26 92 52;
+  --pc-mint-ink: 167 243 190;
+  --pc-amber-bg: 74 42 14;
+  --pc-amber: 255 183 125;
+  --pc-amber-ink: 255 214 186;
+  --pc-err-bg: 92 24 24;
+  --pc-err-ink: 255 180 172;
+  --pc-err: 248 113 113;
+}
+
+:root[data-theme='light'] {
+  --pc-bg: 250 248 255;
+  --pc-card: 255 255 255;
+  --pc-low: 242 243 255;
+  --pc-cont: 234 237 255;
+  --pc-high: 226 231 255;
+  --pc-line: 218 226 253;
+  --pc-ink: 19 27 46;
+  --pc-ink2: 64 73 65;
+  --pc-muted: 113 121 112;
+  --pc-outline: 192 201 190;
+  --pc-green: 0 110 45;
+  --pc-green-bg: 0 110 45;
+  --pc-deep: 0 59 27;
+  --pc-deep-ink: 0 59 27;
+  --pc-forest: 20 83 45;
+  --pc-mint: 124 249 148;
+  --pc-mint-ink: 0 114 48;
+  --pc-amber-bg: 255 220 195;
+  --pc-amber: 112 58 0;
+  --pc-amber-ink: 79 39 0;
+  --pc-err-bg: 255 218 214;
+  --pc-err-ink: 147 0 10;
+  --pc-err: 186 26 26;
+}
+
+/* Type scale from the PlantCare design, using the portal's fonts. */
+.plantcare .font-headline-lg { @apply font-display; font-size: 32px; line-height: 40px; letter-spacing: -0.02em; font-weight: 700; }
+.plantcare .font-headline-md { @apply font-display; font-size: 24px; line-height: 32px; letter-spacing: -0.015em; font-weight: 600; }
+.plantcare .font-headline-sm { @apply font-display; font-size: 20px; line-height: 28px; letter-spacing: -0.01em; font-weight: 600; }
+.plantcare .font-title-md { @apply font-sans; font-size: 16px; line-height: 24px; letter-spacing: -0.01em; font-weight: 600; }
+.plantcare .font-title-sm { @apply font-sans; font-size: 14px; line-height: 20px; font-weight: 600; }
+.plantcare .font-body-lg { @apply font-sans; font-size: 16px; line-height: 24px; font-weight: 400; }
+.plantcare .font-body-md { @apply font-sans; font-size: 14px; line-height: 20px; font-weight: 400; }
+.plantcare .font-body-sm { @apply font-sans; font-size: 12px; line-height: 16px; font-weight: 400; }
+.plantcare .font-label-md { @apply font-sans; font-size: 12px; line-height: 16px; letter-spacing: 0.04em; font-weight: 600; }
+.plantcare .font-label-sm { @apply font-sans; font-size: 11px; line-height: 14px; letter-spacing: 0.06em; font-weight: 600; }
+.plantcare .font-code-sm { @apply font-mono; font-size: 12px; line-height: 16px; letter-spacing: 0.02em; font-weight: 500; }
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Stand-in for the tailwindcss-animate `animate-in` utility used by the PlantCare popovers. */
+.plantcare .animate-in { animation: pc-in 0.18s ease-out; }
+@keyframes pc-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plantcare .animate-in { animation: none; }
+}
