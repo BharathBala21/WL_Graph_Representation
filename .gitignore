@@ -18,4 +18,6 @@ full_pipeline/15_markdown.txt
 # Dependencies & Datasets
 node_modules/
 **/node_modules/
-dataset/
+dataset/
+mohans_project/
+*.zip
