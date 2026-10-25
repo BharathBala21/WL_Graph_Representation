@@ -594,7 +594,7 @@ export default function Home() {
                   <button type="button" disabled className="btn-primary px-6 py-3">
                     <Github size={18} /> View on GitHub
                   </button>
-                  <p className="mt-2 text-xs text-warn">Set LINKS.github in src/lib/content.js</p>
+                  {/* <p className="mt-2 text-xs text-warn">Set LINKS.github in src/lib/content.js</p> */}
                 </div>
               ) : (
                 <a href={LINKS.github} target="_blank" rel="noreferrer" className="btn-primary px-6 py-3">

@@ -2,7 +2,7 @@
 // Items marked TODO_* should be replaced before publishing.
 
 export const LINKS = {
-  github: 'TODO_GITHUB_URL', // Set to your actual repo URL, e.g. 'https://github.com/YOUR_USER/YOUR_REPO'
+  github: 'https://github.com/BharathBala21/WL_Graph_Representation',
   video: 'TODO_DEMO_VIDEO_URL', // YouTube embed URL or /video/demo.mp4
 }
 
