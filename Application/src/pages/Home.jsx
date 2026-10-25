@@ -150,8 +150,8 @@ function Results() {
           onChange={setTab}
           tabs={[
             { value: 'tomato', label: 'Tomato binary' },
-            { value: 'multiclass', label: '57-class task' },
-            { value: 'farm', label: 'Farm evaluation' },
+            // { value: 'multiclass', label: '57-class task' },
+            // { value: 'farm', label: 'Farm evaluation' },
           ]}
         />
       </Reveal>
