@@ -15,11 +15,17 @@ export const PROJECT = {
   tagline:
     'Systematically comparing five feature-graph topologies for WL kernel-based plant-stress classification.',
   type: 'Type 1: Research Project',
-  team: 'TODO_TEAM_NAME', // e.g. 'Team 21'
-  department: 'TODO_DEPARTMENT', // e.g. 'Department of CSE'
+  team: 'Team 21',
+  department: 'School of Computing, Coimbatore',
   guide: {
-    name: 'TODO_SUPERVISOR_NAME', // e.g. 'Dr. Jane Smith'
-    role: 'TODO_SUPERVISOR_ROLE', // e.g. 'Associate Professor, Department of CSE'
+    name: 'Sriram S.',
+    role: 'Assistant Professor (OC)',
+    department: 'School of Computing, Coimbatore',
+    institution: 'Amrita Vishwa Vidyapeetham',
+    qualification: 'B. E., M. E.',
+    email: 's_sriram@cb.amrita.edu',
+    scholar: 'https://scholar.google.com/citations?view_op=search_authors&mauthors=Sriram+S+Amrita',
+    researchInterests: 'Cybersecurity, Big Data Analytics and IoT',
   },
 }
 
@@ -264,13 +270,15 @@ export const TEAM = [
     name:     'Merugumala Sandeep',
     reg:      '23CSE664',
     photo:    '/team/23CSE664.jpg',
+    photoPos: 'object-center',
     linkedin: 'https://www.linkedin.com/in/sandeep-merugumala',
     github:   'https://github.com/Sandeep-Merugumala',
   },
   {
     name:     'Chilukuri Subrahmanya Sri Prakash',
     reg:      '23CSE610',
-    photo:    '',
+    photo:    '/team/23CSE610.jpg',
+    photoPos: 'object-center',
     linkedin: 'https://www.linkedin.com/in/chilukuriprakash',
     github:   'https://github.com/prakashchilukuri',
   },
@@ -278,6 +286,7 @@ export const TEAM = [
     name:     'Bala Bharath Chandra Sai',
     reg:      '23CSE609',
     photo:    '/team/23CSE609.jpg',
+    photoPos: 'object-center',
     linkedin: 'https://www.linkedin.com/in/bharathbala21/',
     github:   'https://github.com/BharathBala21',
   },
@@ -285,6 +294,7 @@ export const TEAM = [
     name:     'Muppagowni Vamsidhar',
     reg:      '23CSE613',
     photo:    '/team/23CSE613.jpg',
+    photoPos: 'object-center',
     linkedin: 'https://www.linkedin.com/in/vamsidhar-muppagowni-723797382',
     github:   'https://github.com/Vamsidhar-Muppagowni',
   },
@@ -292,6 +302,7 @@ export const TEAM = [
     name:     'Yerneni Vishnu Vardhan',
     reg:      '23CSE154',
     photo:    '/team/23CSE154.jpg',
+    photoPos: 'object-center',
     linkedin: 'https://www.linkedin.com/in/vishnu-vardhan-yerneni-1158a1298',
     github:   'https://github.com/vishnuyerneni-maker',
   },

@@ -13,6 +13,7 @@ import {
   HelpCircle,
   Leaf,
   Lightbulb,
+  Mail,
   Network,
   PlayCircle,
   Target,
@@ -488,16 +489,56 @@ export default function Home() {
       {/* Team */}
       <Section id="team" eyebrow="Team details" title={isTodo(PROJECT.team) ? 'Project team' : PROJECT.team}>
         <Reveal className="mb-8">
-          <Card className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-primary to-accent text-white">
-              <GraduationCap size={26} />
-            </span>
-            <div>
-              <p className="label">Project supervisor</p>
-              <p className="font-display text-xl font-semibold">{PROJECT.guide.name}</p>
-              <p className="text-sm text-muted">{PROJECT.guide.role}</p>
-              {isTodo(PROJECT.guide.name) && (
-                <p className="mt-1 text-xs text-warn">Update PROJECT.guide in src/lib/content.js</p>
+          <Card className="flex flex-col gap-5 p-6 md:flex-row md:items-center md:justify-between spotlight">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-primary to-accent text-white shadow-lg shadow-primary/20">
+                <GraduationCap size={30} />
+              </span>
+              <div>
+                <p className="label text-primary font-semibold tracking-wider">Project Supervisor</p>
+                <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                  <p className="font-display text-2xl font-bold tracking-tight text-ink">{PROJECT.guide.name}</p>
+                  {PROJECT.guide.qualification && (
+                    <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary ring-1 ring-primary/25">
+                      Qualification: {PROJECT.guide.qualification}
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1 text-sm font-medium text-ink/90">
+                  {PROJECT.guide.role}, {PROJECT.guide.department}
+                </p>
+                {PROJECT.guide.researchInterests && (
+                  <p className="mt-1.5 text-xs text-muted">
+                    <span className="text-ink/80 font-semibold">Research Interest:</span>{' '}
+                    <span className="text-muted">{PROJECT.guide.researchInterests}</span>
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-line/15 md:border-t-0 md:pt-0">
+              {PROJECT.guide.email && (
+                <a
+                  href={`mailto:${PROJECT.guide.email}`}
+                  className="inline-flex items-center gap-2 rounded-xl bg-elev px-3.5 py-2 text-xs font-medium text-ink ring-1 ring-line/20 transition hover:ring-primary/40 hover:text-primary"
+                  title="Send email to supervisor"
+                >
+                  <Mail size={14} className="text-primary" />
+                  <span>{PROJECT.guide.email}</span>
+                </a>
+              )}
+              {PROJECT.guide.scholar && (
+                <a
+                  href={PROJECT.guide.scholar}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-primary text-xs flex items-center gap-2 px-4 py-2"
+                  title="Open Google Scholar Profile"
+                >
+                  <BookOpen size={14} />
+                  <span>Google Scholar Profile</span>
+                  <ExternalLink size={12} className="opacity-80" />
+                </a>
               )}
             </div>
           </Card>

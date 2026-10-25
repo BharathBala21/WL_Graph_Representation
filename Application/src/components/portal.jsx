@@ -252,7 +252,12 @@ export function TeamCard({ m, i }) {
       {/* avatar */}
       <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-primary/30 to-accent/30">
         {hasPic ? (
-          <img src={m.photo} alt={m.name} className="h-full w-full object-cover object-top" loading="lazy" />
+          <img
+            src={m.photo}
+            alt={m.name}
+            className={cx('h-full w-full object-cover', m.photoPos || 'object-center')}
+            loading="lazy"
+          />
         ) : (
           <span className="font-display text-3xl font-bold text-primary/60">
             {isPlaceholder ? '?' : m.name.charAt(0)}
