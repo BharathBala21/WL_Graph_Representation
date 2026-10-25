@@ -217,14 +217,7 @@ function SidebarBody({ collapsed, onToggle, onClose }) {
         ))}
       </nav>
 
-      {!collapsed && (
-        <div className="m-3 rounded-xl bg-warn/[0.08] p-3 text-[11px] leading-relaxed text-muted ring-1 ring-warn/20">
-          <p className="mb-0.5 flex items-center gap-1.5 font-semibold text-warn">
-            <Activity size={12} /> Research prototype
-          </p>
-          PlantCare AI shows recorded out-of-fold results on OLID-I; new uploads are not scored yet.
-        </div>
-      )}
+      
     </div>
   )
 }
