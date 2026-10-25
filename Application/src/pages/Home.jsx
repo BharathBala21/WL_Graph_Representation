@@ -113,11 +113,11 @@ function HowToUse() {
       intro="The interface is a research prototype. Backend inference is in progress. The steps below describe the intended workflow."
       className="bg-elev/40"
     >
-      <Reveal>
+      {/* <Reveal>
         <Notice tone="warn">
           <strong>Prototype notice:</strong> The image upload and WL inference endpoint are currently in progress. Steps are shown for planning purposes and will be labeled clearly when functional.
         </Notice>
-      </Reveal>
+      </Reveal> */}
       <Reveal className="mt-6">
         <HowToSteps />
       </Reveal>
