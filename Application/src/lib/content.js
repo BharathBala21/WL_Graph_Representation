@@ -15,7 +15,7 @@ export const PROJECT = {
   tagline:
     'Systematically comparing five feature-graph topologies for WL kernel-based plant-stress classification.',
   type: 'Type 1: Research Project',
-  team: 'Team 21',
+  team: 'Team 49',
   department: 'School of Computing, Coimbatore',
   guide: {
     name: 'Sriram S.',
@@ -31,53 +31,53 @@ export const PROJECT = {
 
 // ── 12 home-page sections (section bar + command palette) ──────────────────
 export const HOME_SECTIONS = [
-  { id: 'overview',     label: 'Overview' },
-  { id: 'how-to-use',  label: 'How to use' },
-  { id: 'objectives',  label: 'Objectives' },
-  { id: 'problem',     label: 'Problem' },
+  { id: 'overview', label: 'Overview' },
+  { id: 'how-to-use', label: 'How to use' },
+  { id: 'objectives', label: 'Objectives' },
+  { id: 'problem', label: 'Problem' },
   { id: 'methodology', label: 'Methodology' },
-  { id: 'results',     label: 'Results' },
-  { id: 'novelty',     label: 'Novelty' },
-  { id: 'team',        label: 'Team' },
-  { id: 'progress',    label: 'Progress' },
-  { id: 'docs',        label: 'Docs' },
-  { id: 'github',      label: 'GitHub' },
-  { id: 'video',       label: 'Video' },
+  { id: 'results', label: 'Results' },
+  { id: 'novelty', label: 'Novelty' },
+  { id: 'team', label: 'Team' },
+  { id: 'progress', label: 'Progress' },
+  { id: 'docs', label: 'Docs' },
+  { id: 'github', label: 'GitHub' },
+  // { id: 'video', label: 'Video' },
 ]
 
 // ── Overview hero stats ────────────────────────────────────────────────────
 export const HERO_STATS = [
-  { v: 38,    l: 'handcrafted features per image' },
-  { v: 5,     l: 'graph-construction strategies' },
-  { v: 4,     l: 'WL subtree heights (h = 0–3)' },
-  { v: 4387,  l: 'OLID-I images (quality-controlled)' },
+  { v: 38, l: 'handcrafted features per image' },
+  { v: 5, l: 'graph-construction strategies' },
+  { v: 4, l: 'WL subtree heights (h = 0–3)' },
+  { v: 4387, l: 'OLID-I images (quality-controlled)' },
 ]
 
 // ── Research objectives ────────────────────────────────────────────────────
 export const OBJECTIVES = [
   {
     title: 'Evaluate graph topology impact',
-    body:  'Measure how the choice of feature-graph construction strategy affects WL graph-kernel classification performance on plant-stress data.',
+    body: 'Measure how the choice of feature-graph construction strategy affects WL graph-kernel classification performance on plant-stress data.',
   },
   {
     title: 'Compare five graph topologies',
-    body:  'Systematically benchmark Correlation, Feature-Similarity kNN, Feature-Family, Spatial/Regional and Hybrid graph-construction strategies.',
+    body: 'Systematically benchmark Correlation, Feature-Similarity kNN, Feature-Family, Spatial/Regional and Hybrid graph-construction strategies.',
   },
   {
     title: 'Investigate WL subtree heights',
-    body:  'Assess the effect of WL subtree-refinement height h ∈ {0, 1, 2, 3} on kernel expressiveness and downstream classification.',
+    body: 'Assess the effect of WL subtree-refinement height h ∈ {0, 1, 2, 3} on kernel expressiveness and downstream classification.',
   },
   {
     title: 'Compare against ML baselines',
-    body:  'Benchmark WL kernel SVM against conventional tabular classifiers — Random Forest and RBF SVM — under the same leakage-safe nested cross-validation protocol.',
+    body: 'Benchmark WL kernel SVM against conventional tabular classifiers — Random Forest and RBF SVM — under the same leakage-safe nested cross-validation protocol.',
   },
   {
     title: 'Class-wise evaluation',
-    body:  'Analyse accuracy, balanced accuracy, Macro-F1, per-class recall and confusion matrices to surface class-imbalance effects beyond aggregate accuracy.',
+    body: 'Analyse accuracy, balanced accuracy, Macro-F1, per-class recall and confusion matrices to surface class-imbalance effects beyond aggregate accuracy.',
   },
   {
     title: 'Prospective farm evaluation',
-    body:  'Prepare for independent external evaluation on leaf images collected during a future farm visit, assessing generalization to real-world field conditions.',
+    body: 'Prepare for independent external evaluation on leaf images collected during a future farm visit, assessing generalization to real-world field conditions.',
   },
 ]
 
@@ -85,17 +85,17 @@ export const OBJECTIVES = [
 export const PROBLEMS = [
   {
     title: 'Field variation and class imbalance',
-    body:  'Leaf-stress classification is challenging under real field variation in lighting, background, and growth stage, compounded by strong class imbalance between healthy and stressed samples.',
+    body: 'Leaf-stress classification is challenging under real field variation in lighting, background, and growth stage, compounded by strong class imbalance between healthy and stressed samples.',
     icon: 'Leaf',
   },
   {
     title: 'Flat vectors miss feature relationships',
-    body:  'Conventional tabular representations treat all 38 handcrafted features as independent, discarding the relational structure among morphology, colour, texture and spatial feature groups.',
+    body: 'Conventional tabular representations treat all 38 handcrafted features as independent, discarding the relational structure among morphology, colour, texture and spatial feature groups.',
     icon: 'Network',
   },
   {
     title: 'Graph topology choice is underexplored',
-    body:  'A graph-based representation may preserve inter-feature relationships, but its utility for WL kernels depends critically on the topology used — a design choice rarely compared systematically in plant-pathology literature.',
+    body: 'A graph-based representation may preserve inter-feature relationships, but its utility for WL kernels depends critically on the topology used — a design choice rarely compared systematically in plant-pathology literature.',
     icon: 'GitBranch',
   },
 ]
@@ -103,15 +103,15 @@ export const PROBLEMS = [
 export const GAPS = [
   {
     title: 'Topology choice is rarely compared.',
-    body:  'Most graph-based plant-disease papers fix one topology without ablating alternatives. This project fills that gap by systematically comparing five engineered construction strategies.',
+    body: 'Most graph-based plant-disease papers fix one topology without ablating alternatives. This project fills that gap by systematically comparing five engineered construction strategies.',
   },
   {
     title: 'WL kernels on handcrafted features are understudied.',
-    body:  'WL kernels are well-studied on molecular and citation graphs; their application to handcrafted leaf-feature graphs for stress classification is largely unexplored.',
+    body: 'WL kernels are well-studied on molecular and citation graphs; their application to handcrafted leaf-feature graphs for stress classification is largely unexplored.',
   },
   {
     title: 'Class imbalance reporting is often incomplete.',
-    body:  'Reporting only overall accuracy can mask poor recall on the minority (healthy) class. This project evaluates balanced accuracy, Macro-F1 and per-class recall explicitly.',
+    body: 'Reporting only overall accuracy can mask poor recall on the minority (healthy) class. This project evaluates balanced accuracy, Macro-F1 and per-class recall explicitly.',
   },
 ]
 
@@ -123,7 +123,7 @@ export const STAGES = [
     sub: 'OLID-I field / greenhouse image',
     color: 'muted',
     details: {
-      what:    'A leaf image from the OLID-I dataset (field or greenhouse) enters the pipeline. Images pass segmentation quality control before features are extracted.',
+      what: 'A leaf image from the OLID-I dataset (field or greenhouse) enters the pipeline. Images pass segmentation quality control before features are extracted.',
       bullets: ['Eight crops, 57 stress classes', '4,387 images accepted after QC', 'Tomato subset: 580 images (184 healthy, 396 stressed)'],
     },
   },
@@ -133,7 +133,7 @@ export const STAGES = [
     sub: '38 handcrafted morphology, colour, texture & spatial features',
     color: 'primary',
     details: {
-      what:    'Thirty-eight handcrafted features are computed from each segmented leaf region, covering four groups: morphology, colour statistics, texture (GLCM/LBP), and spatial/regional descriptors.',
+      what: 'Thirty-eight handcrafted features are computed from each segmented leaf region, covering four groups: morphology, colour statistics, texture (GLCM/LBP), and spatial/regional descriptors.',
       bullets: ['Morphology: area, perimeter, eccentricity, convexity…', 'Colour: mean/std per channel, colour ratios…', 'Texture: GLCM contrast, correlation, LBP histogram…', 'Spatial: lesion density, lesion distribution, lesion count…'],
     },
   },
@@ -143,7 +143,7 @@ export const STAGES = [
     sub: '5 topology strategies; nodes = feature channels',
     color: 'accent',
     details: {
-      what:    'Each image is represented as a graph where nodes correspond to the 38 feature channels (not pixels or images). Edges are added according to one of five topology strategies.',
+      what: 'Each image is represented as a graph where nodes correspond to the 38 feature channels (not pixels or images). Edges are added according to one of five topology strategies.',
       bullets: [
         'Correlation graph: edge if |Pearson r| > threshold on training fold',
         'Feature-similarity kNN: connect k nearest features by value similarity',
@@ -159,7 +159,7 @@ export const STAGES = [
     sub: 'Subtree-label refinement h = 0–3',
     color: 'primary',
     details: {
-      what:    'Node labels are discretized using training-fold statistics only (preventing leakage). The Weisfeiler–Lehman subtree kernel is computed by iteratively refining labels for h rounds and accumulating label-count histograms.',
+      what: 'Node labels are discretized using training-fold statistics only (preventing leakage). The Weisfeiler–Lehman subtree kernel is computed by iteratively refining labels for h rounds and accumulating label-count histograms.',
       bullets: [
         'h = 0: node-label histogram only (no structural information)',
         'h = 1–3: increasingly deep neighbourhood aggregation',
@@ -174,7 +174,7 @@ export const STAGES = [
     sub: 'Nested 5-fold CV · WL vs RF vs RBF SVM',
     color: 'ok',
     details: {
-      what:    'A support vector machine is trained on the WL kernel matrix. Evaluation uses nested cross-validation: five outer folds for held-out test estimates, five inner folds to select graph topology and WL height. Random Forest and RBF SVM baselines are evaluated under the same protocol.',
+      what: 'A support vector machine is trained on the WL kernel matrix. Evaluation uses nested cross-validation: five outer folds for held-out test estimates, five inner folds to select graph topology and WL height. Random Forest and RBF SVM baselines are evaluated under the same protocol.',
       bullets: [
         'Metrics: accuracy, balanced accuracy, Macro-F1, per-class recall',
         'Confusion matrices and configuration-selection stability',
@@ -192,8 +192,8 @@ export const DATASETS = [
     use: 'Plant-stress classification',
     stats: [
       { value: 4387, label: 'Accepted images (after QC)' },
-      { value: 8,    label: 'Crops' },
-      { value: 57,   label: 'Stress classes' },
+      { value: 8, label: 'Crops' },
+      { value: 57, label: 'Stress classes' },
     ],
     body: 'Open Leaf Image Dataset I — contains field and greenhouse leaf images across eight crops and 57 crop-stress combinations. 4,387 images pass segmentation quality control. The focused tomato binary experiment uses 580 images: 184 healthy and 396 stressed.',
   },
@@ -204,29 +204,29 @@ export const DATASETS = [
 export const TOMATO_RESULTS = [
   {
     model: 'Nested WL Kernel',
-    acc:   78.97, acc_sd: 6.38,
-    bacc:  75.33, bacc_sd: 7.78,
-    f1:    75.38, f1_sd:  7.64,
-    recall_healthy:  65.32, recall_healthy_sd: null,
+    acc: 78.97, acc_sd: 6.38,
+    bacc: 75.33, bacc_sd: 7.78,
+    f1: 75.38, f1_sd: 7.64,
+    recall_healthy: 65.32, recall_healthy_sd: null,
     recall_stressed: null,
     ours: true,
     note: 'Configuration selected by inner 5-fold CV from 5 topologies × 4 WL heights.',
   },
   {
     model: 'Random Forest',
-    acc:   83.45, acc_sd: 4.58,
-    bacc:  76.56, bacc_sd: 6.06,
-    f1:    78.66, f1_sd:  6.37,
-    recall_healthy:  57.67, recall_healthy_sd: null,
+    acc: 83.45, acc_sd: 4.58,
+    bacc: 76.56, bacc_sd: 6.06,
+    f1: 78.66, f1_sd: 6.37,
+    recall_healthy: 57.67, recall_healthy_sd: null,
     recall_stressed: null,
     ours: false,
   },
   {
     model: 'RBF SVM',
-    acc:   82.59, acc_sd: 5.04,
-    bacc:  77.24, bacc_sd: 6.08,
-    f1:    78.57, f1_sd:  6.33,
-    recall_healthy:  null, recall_healthy_sd: null,
+    acc: 82.59, acc_sd: 5.04,
+    bacc: 77.24, bacc_sd: 6.08,
+    f1: 78.57, f1_sd: 6.33,
+    recall_healthy: null, recall_healthy_sd: null,
     recall_stressed: null,
     ours: false,
   },
@@ -267,90 +267,90 @@ export const NOVELTY = [
 // ── Team ───────────────────────────────────────────────────────────────────
 export const TEAM = [
   {
-    name:     'Merugumala Sandeep',
-    reg:      '23CSE664',
-    photo:    '/team/23CSE664.jpg',
+    name: 'Merugumala Sandeep',
+    reg: '23CSE664',
+    photo: '/team/23CSE664.jpg',
     photoPos: 'object-center',
     linkedin: 'https://www.linkedin.com/in/sandeep-merugumala',
-    github:   'https://github.com/Sandeep-Merugumala',
+    github: 'https://github.com/Sandeep-Merugumala',
   },
   {
-    name:     'Chilukuri Subrahmanya Sri Prakash',
-    reg:      '23CSE610',
-    photo:    '/team/23CSE610.jpg',
+    name: 'Chilukuri Subrahmanya Sri Prakash',
+    reg: '23CSE610',
+    photo: '/team/23CSE610.jpg',
     photoPos: 'object-center',
     linkedin: 'https://www.linkedin.com/in/chilukuriprakash',
-    github:   'https://github.com/prakashchilukuri',
+    github: 'https://github.com/prakashchilukuri',
   },
   {
-    name:     'Bala Bharath Chandra Sai',
-    reg:      '23CSE609',
-    photo:    '/team/23CSE609.jpg',
+    name: 'Bala Bharath Chandra Sai',
+    reg: '23CSE609',
+    photo: '/team/23CSE609.jpg',
     photoPos: 'object-center',
     linkedin: 'https://www.linkedin.com/in/bharathbala21/',
-    github:   'https://github.com/BharathBala21',
+    github: 'https://github.com/BharathBala21',
   },
   {
-    name:     'Muppagowni Vamsidhar',
-    reg:      '23CSE613',
-    photo:    '/team/23CSE613.jpg',
+    name: 'Muppagowni Vamsidhar',
+    reg: '23CSE613',
+    photo: '/team/23CSE613.jpg',
     photoPos: 'object-center',
     linkedin: 'https://www.linkedin.com/in/vamsidhar-muppagowni-723797382',
-    github:   'https://github.com/Vamsidhar-Muppagowni',
+    github: 'https://github.com/Vamsidhar-Muppagowni',
   },
   {
-    name:     'Yerneni Vishnu Vardhan',
-    reg:      '23CSE154',
-    photo:    '/team/23CSE154.jpg',
+    name: 'Yerneni Vishnu Vardhan',
+    reg: '23CSE154',
+    photo: '/team/23CSE154.jpg',
     photoPos: 'object-center',
     linkedin: 'https://www.linkedin.com/in/vishnu-vardhan-yerneni-1158a1298',
-    github:   'https://github.com/vishnuyerneni-maker',
+    github: 'https://github.com/vishnuyerneni-maker',
   },
 ]
 
 // ── Progress timeline ──────────────────────────────────────────────────────
 export const TIMELINE = [
   {
-    phase:  'Phase 1',
-    title:  'Dataset preparation and quality control',
+    phase: 'Phase 1',
+    title: 'Dataset preparation and quality control',
     status: 'done',
-    body:   'OLID-I dataset curated: 4,387 images accepted after segmentation quality control across eight crops and 57 stress classes.',
+    body: 'OLID-I dataset curated: 4,387 images accepted after segmentation quality control across eight crops and 57 stress classes.',
   },
   {
-    phase:  'Phase 1',
-    title:  'Handcrafted feature extraction',
+    phase: 'Phase 1',
+    title: 'Handcrafted feature extraction',
     status: 'done',
-    body:   '38 morphology, colour, texture and spatial features extracted per segmented leaf image and saved as feature matrices.',
+    body: '38 morphology, colour, texture and spatial features extracted per segmented leaf image and saved as feature matrices.',
   },
   {
-    phase:  'Phase 2',
-    title:  'Graph construction and WL kernel experiments',
+    phase: 'Phase 2',
+    title: 'Graph construction and WL kernel experiments',
     status: 'done',
-    body:   'Five graph-construction strategies implemented and WL subtree kernel computed for h ∈ {0, 1, 2, 3}. Gram matrices saved.',
+    body: 'Five graph-construction strategies implemented and WL subtree kernel computed for h ∈ {0, 1, 2, 3}. Gram matrices saved.',
   },
   {
-    phase:  'Phase 2',
-    title:  'Conventional baseline evaluation',
+    phase: 'Phase 2',
+    title: 'Conventional baseline evaluation',
     status: 'done',
-    body:   'Random Forest and RBF SVM baselines evaluated on the tabular feature vectors under the same nested cross-validation protocol.',
+    body: 'Random Forest and RBF SVM baselines evaluated on the tabular feature vectors under the same nested cross-validation protocol.',
   },
   {
-    phase:  'Phase 3',
-    title:  'Tomato nested-CV audit',
+    phase: 'Phase 3',
+    title: 'Tomato nested-CV audit',
     status: 'done',
-    body:   'Nested five-fold CV results verified for the tomato binary stress task: 580 images (184 healthy, 396 stressed).',
+    body: 'Nested five-fold CV results verified for the tomato binary stress task: 580 images (184 healthy, 396 stressed).',
   },
   {
-    phase:  'Phase 3',
-    title:  'Results consolidation and frontend integration',
+    phase: 'Phase 3',
+    title: 'Results consolidation and frontend integration',
     status: 'active',
-    body:   'Verified results consolidated. Project presentation frontend adapted and integrated with the actual experimental outcomes.',
+    body: 'Verified results consolidated. Project presentation frontend adapted and integrated with the actual experimental outcomes.',
   },
   {
-    phase:  'Planned',
-    title:  'Farm-image collection and external evaluation',
+    phase: 'Planned',
+    title: 'Farm-image collection and external evaluation',
     status: 'planned',
-    body:   'Leaf images will be collected during a farm visit and used as a prospective external test set to assess generalisation to real-world field conditions. Not yet completed.',
+    body: 'Leaf images will be collected during a farm visit and used as a prospective external test set to assess generalisation to real-world field conditions. Not yet completed.',
   },
 ]
 
@@ -376,16 +376,16 @@ export const HOW_TO = {
 export const DOCUMENTS = [
   {
     title: 'Research methodology notes',
-    file:  null, // Set to actual path when available, e.g. '/pdf/methodology.pdf'
+    file: null, // Set to actual path when available, e.g. '/pdf/methodology.pdf'
     pages: null,
-    desc:  'Graph construction strategies, WL kernel algorithm, and nested cross-validation design.',
+    desc: 'Graph construction strategies, WL kernel algorithm, and nested cross-validation design.',
     internal: true,
   },
   {
     title: 'Tomato nested-CV audit report',
-    file:  null,
+    file: null,
     pages: null,
-    desc:  'Verified results for the tomato binary stress detection experiment (5 outer folds).',
+    desc: 'Verified results for the tomato binary stress detection experiment (5 outer folds).',
     internal: true,
   },
 ]

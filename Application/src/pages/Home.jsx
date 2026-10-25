@@ -436,11 +436,11 @@ export default function Home() {
               <p className="label mb-3 text-primary">Graph topology strategies</p>
               <ul className="space-y-3">
                 {[
-                  { name: 'Correlation',          desc: 'Edge if |Pearson r| > threshold (training fold only)' },
+                  { name: 'Correlation', desc: 'Edge if |Pearson r| > threshold (training fold only)' },
                   { name: 'Feature-similarity kNN', desc: 'Connect k nearest feature channels by value similarity' },
-                  { name: 'Feature-family',        desc: 'Intra-group edges within morphology / colour / texture / spatial' },
-                  { name: 'Spatial/Regional',      desc: 'Connect spatially co-located feature descriptors' },
-                  { name: 'Hybrid',                desc: 'Combine feature-family and correlation edges' },
+                  { name: 'Feature-family', desc: 'Intra-group edges within morphology / colour / texture / spatial' },
+                  { name: 'Spatial/Regional', desc: 'Connect spatially co-located feature descriptors' },
+                  { name: 'Hybrid', desc: 'Combine feature-family and correlation edges' },
                 ].map((t, i) => (
                   <li key={t.name} className="flex gap-3 text-sm">
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-primary/12 text-xs font-bold text-primary">{i + 1}</span>
@@ -527,7 +527,7 @@ export default function Home() {
                   <span>{PROJECT.guide.email}</span>
                 </a>
               )}
-              {PROJECT.guide.scholar && (
+              {/* {PROJECT.guide.scholar && (
                 <a
                   href={PROJECT.guide.scholar}
                   target="_blank"
@@ -539,7 +539,7 @@ export default function Home() {
                   <span>Google Scholar Profile</span>
                   <ExternalLink size={12} className="opacity-80" />
                 </a>
-              )}
+              )} */}
             </div>
           </Card>
         </Reveal>
@@ -606,7 +606,7 @@ export default function Home() {
         </Reveal>
       </Section>
 
-      {/* Video */}
+      {/* Video
       <Section id="video" eyebrow="Demonstration" title="Watch WL-LeafKernel in action">
         <Reveal>
           <VideoSection />
@@ -616,7 +616,7 @@ export default function Home() {
             <FlaskConical size={18} /> Explore the results
           </button>
         </Reveal>
-      </Section>
+      </Section> */}
     </>
   )
 }
