@@ -1,0 +1,22 @@
+{
+  "n_original": 4749,
+  "n_accepted": 4387,
+  "n_excluded": 362,
+  "n_features": 38,
+  "n_classes": 57,
+  "n_crops": 8,
+  "n_conditions": 20,
+  "cv": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "feature_identity_preserved_in_h0": true,
+  "source_basis": "Corrected WL subtree accumulation (counts over levels 0..H) and current patched feature-identity labels; reanalyzed because embedded notebook outputs were stale relative to source. Main graph result rows are re-evaluated on the same folds as flat baselines.",
+  "software_versions": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit_learn": "1.8.0",
+    "networkx": "3.6.1",
+    "matplotlib": "3.10.8"
+  },
+  "dataset_used_for_classification": "analysis/input/olid_full_features.csv (stored derived descriptors; not raw-image extraction)",
+  "main_result_source": "analysis/wl_fold_results.csv; graph results were freshly recomputed from the feature table using the current feature-identity labels and cumulative WL subtree counts"
+}

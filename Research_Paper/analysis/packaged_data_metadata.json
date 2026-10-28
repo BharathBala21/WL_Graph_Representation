@@ -1,0 +1,15 @@
+{
+  "source_archive": "full_pipeline.zip :: full_pipeline/olid_full_features.csv",
+  "input_shape_original": [
+    4749,
+    45
+  ],
+  "row_count": 4749,
+  "feature_count": 38,
+  "class_count": 57,
+  "crop_count": 8,
+  "accepted": 4387,
+  "excluded": 362,
+  "image_path_normalization": "Absolute local paths replaced with image_name in the package; numeric descriptors, class labels, crop/condition labels, and quality flags unchanged.",
+  "raw_image_archive_included": false
+}
