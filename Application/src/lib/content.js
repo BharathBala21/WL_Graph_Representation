@@ -292,8 +292,8 @@ export const TEAM = [
   },
   {
     name: 'Muppagowni Vamsidhar',
-    reg: '23CSE613',
-    photo: '/team/23CSE613.jpg',
+    reg: '23CSE163',
+    photo: '/team/23CSE163.jpg',
     photoPos: 'object-center',
     linkedin: 'https://www.linkedin.com/in/vamsidhar-muppagowni-723797382',
     github: 'https://github.com/Vamsidhar-Muppagowni',
