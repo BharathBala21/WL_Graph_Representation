@@ -1,4 +1,4 @@
-# IEEE-style full-dataset professor-review draft
+# IEEE-style full-dataset 
 
 ## Correct interpretation of the image subset
 
