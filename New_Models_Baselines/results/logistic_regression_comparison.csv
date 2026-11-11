@@ -1,0 +1,7 @@
+Method,Source,Accuracy,Macro-F1
+Linear SVM,NB-18 verified (classical_baselines_summary.csv),0.4855263465479489,0.471995282783943
+RBF SVM,NB-18 verified (classical_baselines_summary.csv),0.4554382693121871,0.4307205385080107
+Random Forest,NB-18 verified (classical_baselines_summary.csv),0.5853598543387973,0.5499141516968532
+k-NN (k=5),NB-18 verified (classical_baselines_summary.csv),0.4875751617519864,0.4102371962250107
+WL+SVM kNN-graph h=2,NB-14 verified (wl_svm_summary.csv),0.4248907151372846,0.3911098444644973
+Logistic Regression (NEW),This experiment (5-fold CV),0.4451827648096248,0.4206395683543148
