@@ -3,6 +3,8 @@ __pycache__/
 *.pkl
 *.pyc
 *.log
+*.blg
+.DS_Store
 results/
 full_pipeline/results/
 full_pipeline/decomposition/results/
