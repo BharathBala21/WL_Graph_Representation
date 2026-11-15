@@ -143,7 +143,7 @@
         \begin{tikzpicture}
             \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
                   rounded corners=4pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
-                {\scriptsize\bfseries\textcolor{amritaMaroon}{1. The Diagnostic Problem (OLID-I Benchmark)}}\\[3pt]
+                {\scriptsize\bfseries\textcolor{amritaMaroon}{1. The Diagnostic Problem }}\\[3pt]
                 \begin{itemize}\tiny
                     \item \textbf{Task:} Decide whether a leaf is \textbf{healthy or stressed} (8 crops). Diseases and deficiencies ($\text{N}$, $\text{K}$, $\text{Mg}$) look alike (e.g., edge vs.\ interveinal chlorosis).
                     \item \textbf{Imbalance:} 84\% of leaves are stressed, so accuracy alone misleads: always answering ``stressed'' scores 83.8\%.
@@ -706,14 +706,14 @@
 
 % ============================================================
 % SLIDE: Feature Application
-% ============================================================
-\begin{frame}{Example: One Leaf's 38 Measurements}
-    \framesubtitle{A tomato leaf compared with the average healthy tomato leaf (from our PlantCare AI app)}
+% % ============================================================
+% \begin{frame}{Example: One Leaf's 38 Measurements}
+%     \framesubtitle{A tomato leaf compared with the average healthy tomato leaf (from our PlantCare AI app)}
 
-    \centering
-    \includegraphics[width=0.92\textwidth, height=0.75\textheight, keepaspectratio]{feature_application.jpeg}\\[4pt]
-    {\tiny\itshape Bars: how many standard deviations each measurement is from healthy tomato leaves. These differences are what the graph nodes encode.}
-\end{frame}
+%     \centering
+%     \includegraphics[width=0.92\textwidth, height=0.75\textheight, keepaspectratio]{feature_application.jpeg}\\[4pt]
+%     {\tiny\itshape Bars: how many standard deviations each measurement is from healthy tomato leaves. These differences are what the graph nodes encode.}
+% \end{frame}
 
 
 % % ============================================================
@@ -1655,41 +1655,43 @@
 % ============================================================
 % SLIDE: Limitations & Future Work
 % ============================================================
-\begin{frame}{Limitations \& Future Work}
-    \begin{columns}[T, onlytextwidth]
-        \column{0.485\textwidth}
-        \begin{tikzpicture}
-            \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
-                  rounded corners=4pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
-                {\small\bfseries\textcolor{amritaMaroon}{Limitations}}\\[3pt]
-                \begin{itemize}\scriptsize
-                    \setlength{\itemsep}{2pt}
-                    \item \textbf{Exact condition (57 classes) not solved:} best model 0.57 macro-F1, WL 0.42. The 38 measurements are leaf \emph{averages}, so small local marks are washed out.
-                    \item \textbf{Healthy leaves are hard to find} for crops with few healthy photos (bottle, ridge, ash gourd).
-                    \item \textbf{Lab photos only:} one leaf on a dark background; field photos not tested.
-                    \item \textbf{No severity labels} in OLID-I, so no severity grading.
-                    \item \textbf{Speed:} segmenting the full 3,024\,px photo takes $\approx$1\,s.
-                \end{itemize}
-            };
-        \end{tikzpicture}
 
-        \column{0.485\textwidth}
-        \begin{tikzpicture}
-            \node[rectangle, draw=amritaMaroon, very thick, fill=amritaMaroon, text=white,
-                  rounded corners=4pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
-                {\small\bfseries Future Work}\\[3pt]
-                \begin{itemize}\scriptsize
-                    \setlength{\itemsep}{2pt}
-                    \item \textbf{Local spot features} as extra graph nodes, to approach the 57-class task.
-                    \item \textbf{Fine-tune the CNN} (currently frozen) for the strongest decision model.
-                    \item \textbf{Field photos} and other datasets to test real-world use.
-                    \item \textbf{Faster segmentation} on a smaller copy of the photo.
-                    \item \textbf{Learned graph edges} instead of hand-chosen rules.
-                \end{itemize}
-            };
-        \end{tikzpicture}
-    \end{columns}
-\end{frame}
+
+% \begin{frame}{Limitations \& Future Work}
+%     \begin{columns}[T, onlytextwidth]
+%         \column{0.485\textwidth}
+%         \begin{tikzpicture}
+%             \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
+%                   rounded corners=4pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
+%                 {\small\bfseries\textcolor{amritaMaroon}{Limitations}}\\[3pt]
+%                 \begin{itemize}\scriptsize
+%                     \setlength{\itemsep}{2pt}
+%                     \item \textbf{Exact condition (57 classes) not solved:} best model 0.57 macro-F1, WL 0.42. The 38 measurements are leaf \emph{averages}, so small local marks are washed out.
+%                     \item \textbf{Healthy leaves are hard to find} for crops with few healthy photos (bottle, ridge, ash gourd).
+%                     \item \textbf{Lab photos only:} one leaf on a dark background; field photos not tested.
+%                     \item \textbf{No severity labels} in OLID-I, so no severity grading.
+%                     \item \textbf{Speed:} segmenting the full 3,024\,px photo takes $\approx$1\,s.
+%                 \end{itemize}
+%             };
+%         \end{tikzpicture}
+
+%         \column{0.485\textwidth}
+%         \begin{tikzpicture}
+%             \node[rectangle, draw=amritaMaroon, very thick, fill=amritaMaroon, text=white,
+%                   rounded corners=4pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
+%                 {\small\bfseries Future Work}\\[3pt]
+%                 \begin{itemize}\scriptsize
+%                     \setlength{\itemsep}{2pt}
+%                     \item \textbf{Local spot features} as extra graph nodes, to approach the 57-class task.
+%                     \item \textbf{Fine-tune the CNN} (currently frozen) for the strongest decision model.
+%                     \item \textbf{Field photos} and other datasets to test real-world use.
+%                     \item \textbf{Faster segmentation} on a smaller copy of the photo.
+%                     \item \textbf{Learned graph edges} instead of hand-chosen rules.
+%                 \end{itemize}
+%             };
+%         \end{tikzpicture}
+%     \end{columns}
+% \end{frame}
 
 % ============================================================
 % SLIDE: Conclusion
