@@ -183,7 +183,11 @@ export const MLPipelineView: React.FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* 57-class */}
         <Card className="xl:col-span-2">
-          <SectionTitle icon="category" title={`Fine-grained ${RESEARCH.dataset.classes}-class task`} sub="Crop × condition classification, macro-F1" />
+          <SectionTitle
+            icon="category"
+            title={`Limitation: exact condition (${RESEARCH.dataset.classes} classes)`}
+            sub="Crop × condition in one step, macro-F1. Reference only: not the task the system is built for"
+          />
           <div className="flex flex-col gap-2.5">
             {[...RESEARCH.fineGrained]
               .sort((a, b) => b.macroF1 - a.macroF1)
@@ -202,14 +206,18 @@ export const MLPipelineView: React.FC = () => {
               ))}
           </div>
           <p className="font-body-sm text-[12px] text-pc-muted mt-3">
-            On the 57-class task the flat Random Forest is clearly ahead of every graph representation — the reason the project
-            decomposes the problem into crop routing plus per-crop binary stress detection.
+            Naming the exact condition among 57 classes is beyond what 38 whole-leaf measurements can support: many conditions
+            differ only in small local marks (mite dots, miner trails, small spots) that leaf-wide averages wash out. Even the
+            best model on the same measurements stays below 60%. The system therefore answers the question these measurements
+            can support (<b>healthy or stressed</b>, per crop) and gives the exact condition as a <b>top-3 shortlist</b>, which
+            contains the right condition for 83–98% of leaves depending on the crop. (WL here uses NB14's original labels; with
+            the corrected <span className="font-code-sm">feature::level</span> labels WL reaches 42.3%.)
           </p>
         </Card>
 
         {/* RF importances */}
         <Card>
-          <SectionTitle icon="leaderboard" title="Most informative features" sub="Random Forest importance, 57-class task" />
+          <SectionTitle icon="leaderboard" title="Most informative features" sub="Random Forest importance, exact-condition (57-class) reference" />
           <div className="flex flex-col gap-2">
             {RESEARCH.rfImportances.map((f) => (
               <div key={f.feature}>

@@ -338,7 +338,12 @@ class Predictor:
             'stress': {'status': 'stressed' if p_stress >= 0.5 else 'healthy',
                        'probability_stressed': round(p_stress, 4),
                        'confidence': round(max(p_stress, 1 - p_stress), 4),
-                       'reliability': {'accuracy': info['stress_accuracy'], 'macro_f1': info['stress_macro_f1']}},
+                       # balanced accuracy is the headline: 84% of leaves are stressed, so plain accuracy
+                       # looks good even for a model that always answers "stressed"
+                       'reliability': {'accuracy': info['stress_accuracy'], 'macro_f1': info['stress_macro_f1'],
+                                       'balanced_accuracy': info.get('stress_balanced_accuracy'),
+                                       'healthy_found': info.get('stress_healthy_found'),
+                                       'always_stressed_accuracy': info.get('always_stressed_accuracy')}},
             'conditions': conditions,
             'conditions_reliability': {'top1': info['condition_top1_accuracy'], 'top3': info['condition_top3_accuracy']},
             'model': {'graph': info['graph'], 'graph_name': info['graph_name'], 'wl_depth': info['wl_depth']},

@@ -15,7 +15,8 @@ export interface DiagnosisRecord {
     crop: { code: string; name: string; confidence: number; source: 'model' | 'user'; reliability: number;
             alternatives: { code: string; name: string; probability: number }[] };
     stress: { status: 'healthy' | 'stressed'; probability_stressed: number; confidence: number;
-              reliability: { accuracy: number; macro_f1: number } };
+              reliability: { accuracy: number; macro_f1: number; balanced_accuracy?: number | null;
+                             healthy_found?: number | null; always_stressed_accuracy?: number | null } };
     conditions: { code: string; name: string; type: string; probability: number }[];
     conditions_reliability: { top1: number; top3: number };
     model: { graph: string; graph_name: string; wl_depth: number };
@@ -47,6 +48,9 @@ export const DiagnosisResult: React.FC<Props> = ({ record, onDelete, onSaveNote,
   const r = record.result;
   const stressed = r.stress.status === 'stressed';
   const check = r.reliability_check;
+  const rel = r.stress.reliability;
+  // below 0.6 balanced accuracy the healthy/stressed call for this crop is close to guessing
+  const weakCrop = rel.balanced_accuracy != null && rel.balanced_accuracy < 0.6;
   // what the headline shows: the model's answer, or a hedge when the checks say it may be wrong
   const verdict: 'model' | 'unsure' | 'spots' =
     check?.status === 'unreliable' ? 'unsure' : r.spots?.flagged && !stressed ? 'spots' : 'model';
@@ -88,6 +92,11 @@ export const DiagnosisResult: React.FC<Props> = ({ record, onDelete, onSaveNote,
                     ? `${pct(r.stress.confidence, 0)} confident`
                     : `Model's best guess: ${stressed ? 'Stressed' : 'Healthy'} (${pct(r.stress.confidence, 0)})`}
                 </span>
+                {weakCrop && (
+                  <Chip className="bg-pc-amber-bg text-pc-amber">
+                    <span className="material-symbols-outlined text-[12px]">info</span> weak for {r.crop.name.toLowerCase()}
+                  </Chip>
+                )}
                 {check?.status === 'caution' && verdict === 'model' && (
                   <Chip className="bg-pc-amber-bg text-pc-amber">
                     <span className="material-symbols-outlined text-[12px]">info</span> use with care
@@ -105,9 +114,18 @@ export const DiagnosisResult: React.FC<Props> = ({ record, onDelete, onSaveNote,
                 </p>
               </div>
               <div className="p-3 rounded-xl bg-pc-low border border-pc-line/60">
-                <p className="font-label-sm text-[11px] uppercase tracking-wider text-pc-muted">Most likely condition</p>
-                <p className="font-title-md text-pc-ink mt-0.5">{r.conditions[0].name}</p>
-                <p className="font-body-sm text-[12px] text-pc-muted">{pct(r.conditions[0].probability, 0)} of the model's belief</p>
+                <p className="font-label-sm text-[11px] uppercase tracking-wider text-pc-muted">Likely conditions (shortlist)</p>
+                <ol className="mt-0.5 font-body-sm text-[13px] text-pc-ink">
+                  {r.conditions.map((c, i) => (
+                    <li key={c.code} className={i === 0 ? 'font-title-sm' : 'text-pc-ink2'}>
+                      {i + 1}. {c.name} <span className="text-pc-muted font-normal">· {pct(c.probability, 0)}</span>
+                    </li>
+                  ))}
+                </ol>
+                <p className="font-body-sm text-[12px] text-pc-muted mt-1">
+                  In testing, the right condition was in this top 3 for {pct(r.conditions_reliability.top3, 0)} of{' '}
+                  {r.crop.name.toLowerCase()} leaves.
+                </p>
               </div>
             </div>
 
@@ -214,7 +232,16 @@ export const DiagnosisResult: React.FC<Props> = ({ record, onDelete, onSaveNote,
                 • Measurements turned into a <b>{r.model.graph_name}</b> graph and compared with the <b>WL graph kernel</b> (depth {r.model.wl_depth}).
               </li>
               <li>
-                • SVM decided healthy vs stressed (accuracy {pct(r.stress.reliability.accuracy, 0)}, Macro-F1 {r.stress.reliability.macro_f1.toFixed(2)} for this crop).
+                • SVM decided healthy vs stressed.{' '}
+                {rel.balanced_accuracy != null ? (
+                  <>
+                    For {r.crop.name.toLowerCase()} leaves in testing: balanced accuracy {pct(rel.balanced_accuracy, 0)} (healthy and stressed
+                    leaves count equally), {rel.healthy_found != null && <>found {pct(rel.healthy_found, 0)} of healthy leaves, </>}
+                    Macro-F1 {rel.macro_f1.toFixed(2)}.
+                  </>
+                ) : (
+                  <>Accuracy {pct(rel.accuracy, 0)}, Macro-F1 {rel.macro_f1.toFixed(2)} for this crop.</>
+                )}
               </li>
             </ul>
           </div>

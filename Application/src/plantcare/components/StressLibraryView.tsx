@@ -99,7 +99,7 @@ export const StressLibraryView: React.FC<StressLibraryViewProps> = ({ onOpenSamp
                   onClick={() => setOpen(open === c.code ? null : c.code)}
                   className="mt-auto flex items-center gap-1 font-label-sm text-[11px] uppercase tracking-wider text-pc-green hover:underline w-fit"
                 >
-                  Per-class 57-way results
+                  Exact-condition reference (57-class)
                   <span className={`material-symbols-outlined text-[16px] transition-transform ${open === c.code ? 'rotate-180' : ''}`}>expand_more</span>
                 </button>
                 {open === c.code && (

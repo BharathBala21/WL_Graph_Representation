@@ -164,7 +164,7 @@ export const DiagnosticsView: React.FC<DiagnosticsViewProps> = ({ sample, onNavi
     },
     {
       icon: 'category',
-      title: '57-class reference',
+      title: 'Exact condition (57-class reference, not the main task)',
       model: 'Flat RBF SVM on 38 features',
       result: sample.fineGrainedPrediction ? classLabelName(sample.fineGrainedPrediction) : '—',
       truth: classLabelName(sample.classLabel),
