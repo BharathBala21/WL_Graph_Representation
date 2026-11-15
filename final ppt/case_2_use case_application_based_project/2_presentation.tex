@@ -121,7 +121,7 @@
             \hline
             4 & CB.SC.U4CSE23610 & CH.Prakash \\
             \hline
-            4 & CB.SC.U4CSE23664 & Sandeep Merugumala \\
+            5 & CB.SC.U4CSE23664 & Sandeep Merugumala \\
             \hline
         \end{tabular}
     \end{table}
@@ -135,7 +135,7 @@
 % SLIDE 2: Problem Statement & Why WL Graph Kernel?
 % ============================================================
 \begin{frame}{Problem Statement \& Why WL Graph Kernel?}
-    \framesubtitle{Why relational graph kernels outperform flat ML and deep learning for plant stress diagnosis}
+    \framesubtitle{Detecting stressed leaves from leaf measurements, with a model that can explain itself}
 
     \begin{columns}[T, onlytextwidth]
         % --- Left Column: The Problem & Why Other Methods Fall Short ---
@@ -145,8 +145,9 @@
                   rounded corners=4pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
                 {\scriptsize\bfseries\textcolor{amritaMaroon}{1. The Diagnostic Problem (OLID-I Benchmark)}}\\[3pt]
                 \begin{itemize}\tiny
-                    \item \textbf{Overlapping Symptoms:} Biotic diseases and abiotic deficiencies ($\text{N}$, $\text{K}$, $\text{Mg}$) look visually similar (e.g., edge vs.\ interveinal chlorosis), causing costly misdiagnosis across \textbf{8 crops (57 classes)}.
-                    \item \textbf{Relational Signature:} Stress is defined by \emph{co-occurring trait combinations} (e.g., yellow edge + normal core + rough texture), not single isolated features.
+                    \item \textbf{Task:} Decide whether a leaf is \textbf{healthy or stressed} (8 crops). Diseases and deficiencies ($\text{N}$, $\text{K}$, $\text{Mg}$) look alike (e.g., edge vs.\ interveinal chlorosis).
+                    \item \textbf{Imbalance:} 84\% of leaves are stressed, so accuracy alone misleads: always answering ``stressed'' scores 83.8\%.
+                    \item \textbf{Relational Signature:} Stress shows as \emph{co-occurring trait combinations} (e.g., yellow edge + normal core + rough texture), not single isolated features.
                 \end{itemize}
             };
         \end{tikzpicture}
@@ -157,8 +158,8 @@
                   rounded corners=4pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
                 {\scriptsize\bfseries\textcolor{amritaMaroon}{2. Why Standard Approaches Fall Short}}\\[3pt]
                 \begin{itemize}\tiny
-                    \item \textbf{Flat Tabular ML (SVM, RF):} Treats 38 leaf traits as independent columns, losing spatial and structural dependencies between traits.
-                    \item \textbf{Deep CNNs / GNNs:} Require massive labeled data per class, act as black boxes, and overfit easily on fine-grained agricultural datasets (4,387 images across 57 classes).
+                    \item \textbf{Flat Tabular ML (SVM, RF):} Treats the 38 leaf traits as independent columns; links between traits are not modelled explicitly.
+                    \item \textbf{Deep CNNs:} Accurate, but black boxes: they cannot say \emph{which} leaf property caused the decision, so a farmer cannot check it.
                 \end{itemize}
             };
         \end{tikzpicture}
@@ -171,7 +172,7 @@
                 {\scriptsize\bfseries\textcolor{amritaMaroon}{3. Why Weisfeiler--Lehman (WL) Graph Kernel?}}\\[3pt]
                 \begin{itemize}\tiny
                     \item \textbf{Captures Multi-Hop Trait Subtrees:} Iteratively aggregates neighbor trait labels ($h=0..3$) to encode exact local trait combinations.
-                    \item \textbf{Sample-Efficient \& Interpretable:} Works reliably on medium-sized datasets with deterministic subtree features and zero neural overfitting.
+                    \item \textbf{Interpretable \& Deterministic:} Every decision traces back to named leaf measurements and how they are linked; no training of millions of weights.
                 \end{itemize}
             };
         \end{tikzpicture}
@@ -407,8 +408,9 @@
                   rounded corners=4pt, inner sep=7pt, text width=0.93\columnwidth, align=left] {
                 {\small\bfseries\textcolor{amritaMaroon}{1. OLID Leaf Image Dataset \cite{orka2023olid}}}\\[4pt]
                 \begin{itemize}\scriptsize
-                    \item \textbf{Scale:} \textbf{21\,GB} comprising \textbf{4,749} raw leaf images.
-                    \item \textbf{Coverage:} Multi-crop dataset capturing stressed and non-stressed phenotypes.
+                    \item \textbf{Scale:} \textbf{21\,GB}, \textbf{4,749} raw leaf images, 8 crops.
+                    \item \textbf{Used:} \textbf{4,387} leaves pass the segmentation checks (next slide).
+                    \item \textbf{Labels:} 713 healthy, 3,674 stressed (\textbf{84\%}); no severity labels.
                 \end{itemize}
             };
         \end{tikzpicture}
@@ -666,11 +668,11 @@
             \node[rectangle, draw=amritaMaroon, very thick, fill=amritaMaroon, text=white,
                   rounded corners=4pt, inner sep=7pt, text width=0.93\columnwidth, align=left] {
                 {\scriptsize\bfseries Quantile Node Labeling ($k = 3$)}\\[3pt]
-                {\tiny Each of the \textbf{38 features} becomes a graph node, quantized via \texttt{KBinsDiscretizer} (\texttt{quantile}) \cite{pedregosa2011scikit, dougherty1995supervised}:}
+                {\tiny Each of the \textbf{38 features} becomes a node, binned by quantile \cite{pedregosa2011scikit, dougherty1995supervised}. Labels keep the feature name (\texttt{area::High} $\neq$ \texttt{green\_ratio::High}); bins come from training folds only.}
             };
         \end{tikzpicture}
 
-        \vspace{0.14cm}
+        \vspace{0.06cm}
         \begin{tikzpicture}
             \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
                   rounded corners=3pt, inner sep=5.5pt, text width=0.93\columnwidth, align=left] {
@@ -679,7 +681,7 @@
             };
         \end{tikzpicture}
 
-        \vspace{0.10cm}
+        \vspace{0.05cm}
         \begin{tikzpicture}
             \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
                   rounded corners=3pt, inner sep=5.5pt, text width=0.93\columnwidth, align=left] {
@@ -688,7 +690,7 @@
             };
         \end{tikzpicture}
 
-        \vspace{0.10cm}
+        \vspace{0.05cm}
         \begin{tikzpicture}
             \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
                   rounded corners=3pt, inner sep=5.5pt, text width=0.93\columnwidth, align=left] {
@@ -705,12 +707,12 @@
 % ============================================================
 % SLIDE: Feature Application
 % ============================================================
-\begin{frame}{Feature Application}
-    \framesubtitle{Overview of feature extraction and application pipeline}
+\begin{frame}{Example: One Leaf's 38 Measurements}
+    \framesubtitle{A tomato leaf compared with the average healthy tomato leaf (from our PlantCare AI app)}
 
     \centering
     \includegraphics[width=0.92\textwidth, height=0.75\textheight, keepaspectratio]{feature_application.jpeg}\\[4pt]
-    {\tiny\itshape Feature application workflow}
+    {\tiny\itshape Bars: how many standard deviations each measurement is from healthy tomato leaves. These differences are what the graph nodes encode.}
 \end{frame}
 
 
@@ -753,13 +755,13 @@
         \centering
         {\scriptsize\bfseries\color{amritaMaroon} 1. Correlation Graph}\\[4pt]
         \includegraphics[width=\linewidth, height=0.25\textheight, keepaspectratio]{correlation_graph.png}\\[4pt]
-        {\tiny $|r| \ge \tau, \; \tau \in \{0.6, 0.7, 0.8, 0.9\}$ \cite{pearson1895notes}}
+        {\tiny Edge if $|r| \ge 0.70$ \cite{pearson1895notes}}
 
         \column{0.32\textwidth}
         \centering
         {\scriptsize\bfseries\color{amritaMaroon} 2. Feature-Similarity $K$-NN}\\[4pt]
         \includegraphics[width=\linewidth, height=0.25\textheight, keepaspectratio]{knn_Graph.png}\\[4pt]
-        {\tiny Top-$K$ closest traits, $K \in \{2, 3, 4\}$ \cite{cover1967nearest}}
+        {\tiny Each trait linked to its $K{=}3$ closest traits \cite{cover1967nearest}}
 
         \column{0.32\textwidth}
         \centering
@@ -792,7 +794,7 @@
 % ============================================================
 % FRAME: WL Iterations & Subtree Feature Vector (1/2)
 % ============================================================
-\begin{frame}{WL Iterations: Neighborhood Propagation}
+\begin{frame}{WL Iterations and the Subtree Feature Vector}
     \framesubtitle{Iterative label refinement from local features to larger subtrees \cite{shervashidze2011weisfeiler}}
 
     \begin{columns}[T]
@@ -826,11 +828,12 @@
             \item With each hop, the compressed label captures an expanding subtree receptive field around each feature node.
         \end{itemize}
 
-        \vspace{0.35cm}
+        \vspace{0.12cm}
         \begin{tikzpicture}
-            \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
-                  rounded corners=2pt, inner sep=6pt, text width=0.92\columnwidth] {
-                \scriptsize\textbf{Structural Context:} Higher $h$ encodes deeper cross-feature interaction patterns across the leaf network.
+            \node[rectangle, draw=amritaMaroon, very thick, fill=maroonSoft,
+                  rounded corners=2pt, inner sep=5pt, text width=0.92\columnwidth] {
+                \scriptsize\textbf{4. Subtree Feature Vector:} the labels from every iteration are counted and joined:\\[2pt]
+                \centering $\phi(G) = \big[\mathbf{c}_0(G) \,\|\, \mathbf{c}_1(G) \,\|\, \mathbf{c}_2(G) \,\|\, \mathbf{c}_3(G)\big]$
             };
         \end{tikzpicture}
     \end{columns}
@@ -839,137 +842,35 @@
 % ============================================================
 % FRAME: WL Iterations & Subtree Feature Vector (2/2)
 % ============================================================
-\begin{frame}{Generating the WL Subtree Feature Vector}
-    \framesubtitle{Constructing the final numerical embedding for classification \cite{shervashidze2011weisfeiler}}
-
-    \begin{columns}[c]
-        \column{0.52\textwidth}
-        \textbf{Vector Construction Workflow}
-        \vspace{0.15cm}
-        \begin{itemize}\footnotesize
-            \item \textbf{Label Histogramming:} At each height ($h = 0, 1, 2, 3$), all generated unique labels across the graph are counted.
-            \item \textbf{Feature Concatenation:} The label frequencies from all iterations are accumulated into a single global vector:
-            \begin{center}
-                \scriptsize $\phi(G) = \big[\mathbf{c}_0(G) \,\|\, \mathbf{c}_1(G) \,\|\, \mathbf{c}_2(G) \,\|\, \mathbf{c}_3(G)\big]$
-            \end{center}
-            \item \textbf{Embedding Interpretation:} The vector measures the precise occurrence frequencies of distinct subtree patterns within the leaf graph.
-        \end{itemize}
-
-        \column{0.44\textwidth}
-        \centering
-        \begin{tikzpicture}[every node/.style={transform shape}]
-            \tikzset{vecstep/.style={rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
-                     rounded corners=2pt, minimum width=3.8cm, minimum height=0.55cm, font=\scriptsize, align=center}}
-            
-            \node[vecstep] (s0) {$h=0$: Base Label Counts ($\mathbf{c}_0$)};
-            \node[vecstep, below=0.35cm of s0] (s1) {$h=1$: 1-Hop Subtrees ($\mathbf{c}_1$)};
-            \node[vecstep, below=0.35cm of s1] (s2) {$h=2$: 2-Hop Subtrees ($\mathbf{c}_2$)};
-            \node[vecstep, below=0.35cm of s2] (s3) {$h=3$: 3-Hop Subtrees ($\mathbf{c}_3$)};
-            \node[vecstep, fill=amritaMaroon, text=white, below=0.5cm of s3] (vec) {\textbf{WL Subtree Vector} $\phi(G)$};
-
-            \draw[-{Latex[length=2mm]}, thick, draw=amritaMaroon] (s0) -- (s1);
-            \draw[-{Latex[length=2mm]}, thick, draw=amritaMaroon] (s1) -- (s2);
-            \draw[-{Latex[length=2mm]}, thick, draw=amritaMaroon] (s2) -- (s3);
-            \draw[-{Latex[length=2mm]}, thick, draw=amritaMaroon] (s3) -- (vec);
-        \end{tikzpicture}
-    \end{columns}
-
-    \vspace{0.35cm}
-    \begin{tikzpicture}
-        \node[rectangle, draw=amritaMaroon, very thick, fill=maroonSoft,
-              rounded corners=3pt, inner sep=6pt, text width=0.92\textwidth, align=center] {
-            \footnotesize\textbf{Classifier Ready:} Standard kernel methods (e.g., SVM) directly evaluate similarity between these subtree frequency vectors to predict the crop class.
-        };
-    \end{tikzpicture}
-\end{frame}
+% (merged into "WL Iterations and the Subtree Feature Vector")
 
 % ============================================================
 % FRAME: WL Subtree Feature Representations & Kernel Construction
 % ============================================================
-\begin{frame}{WL Subtree Representations \& Kernel Matrix}
-    \framesubtitle{From label frequency vectors to pairwise graph similarity matrices \cite{shervashidze2011weisfeiler, scholkopf2002learning}}
+\begin{frame}{From Subtree Vectors to a Normalized Kernel}
+    \framesubtitle{Pairwise leaf-graph similarity, computed inside each cross-validation fold \cite{shervashidze2011weisfeiler, scholkopf2002learning}}
 
     \begin{columns}[T]
         \column{0.48\textwidth}
-        \textbf{1. Subtree Feature Matrix ($\Phi$)}
-        \vspace{0.15cm}
-
+        \textbf{1. Kernel Matrices (inner products)}
+        \vspace{0.1cm}
         \begin{itemize}\footnotesize
-            \item Each leaf image is represented by a discrete \textbf{WL subtree feature vector}.
-            \item Elements correspond to occurrence frequencies of unique WL labels accumulated across iterations ($h = 0, 1, 2, 3$).
-            \item Stacking all sample vectors yields the global representation matrix $\Phi$.
+            \item Stack the vectors $\phi(G)$ of all leaves into $\Phi$.
+            \item \textbf{Training:} $K_{\text{train}} = \Phi_{\text{train}} \Phi_{\text{train}}^T$ \quad ($N_{\text{train}} \times N_{\text{train}}$)
+            \item \textbf{Test fold:} $K_{\text{test}} = \Phi_{\text{test}} \Phi_{\text{train}}^T$ \quad ($N_{\text{test}} \times N_{\text{train}}$)
+            \item Each entry counts the subtree patterns two leaves share.
         \end{itemize}
 
-        \vspace{0.3cm}
-        \begin{tikzpicture}
-            \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
-                  rounded corners=2pt, inner sep=6pt, text width=0.92\columnwidth] {
-                \scriptsize\textbf{Interpretation:} Rows in $\Phi$ embed the topological fingerprint of each individual leaf graph.
-            };
-        \end{tikzpicture}
-
         \column{0.48\textwidth}
-        \textbf{2. Kernel Matrix Construction}
-        \vspace{0.1cm}
-
-        {\footnotesize Computed via inner products of the WL feature matrices:}
-
-        \vspace{0.1cm}
-        \textbf{Training Kernel Matrix:}\\
-        {\small $K_{\text{train}} = \Phi_{\text{train}} \Phi_{\text{train}}^T$}
-
-        \vspace{0.05cm}
-        {\scriptsize Pairwise similarity across all training leaf graphs.}
-
-        \vspace{0.15cm}
-        \textbf{Validation Kernel Matrix:}\\
-        {\small $K_{\text{val}} = \Phi_{\text{val}} \Phi_{\text{train}}^T$}
-
-        \vspace{0.05cm}
-        {\scriptsize Similarity between unseen validation graphs and training basis.}
-    \end{columns}
-
-    \vspace{0.15cm}
-    \begin{tikzpicture}
-        \node[rectangle, draw=amritaMaroon, very thick, fill=maroonSoft,
-              rounded corners=3pt, inner sep=5pt, text width=0.92\textwidth, align=center] {
-            \footnotesize\textbf{Direct Input to Classifier:} Precomputed matrices $K_{\text{train}}$ and $K_{\text{val}}$ pass directly into the SVM dual formulation for multi-class leaf classification.
-        };
-    \end{tikzpicture}
-\end{frame}
-% ============================================================
-% FRAME: Kernel Normalization
-% ============================================================
-\begin{frame}{Kernel Normalization}
-    \framesubtitle{Standardizing similarity scales across sample feature lengths \cite{scholkopf2002learning}}
-
-    \begin{columns}[T]
-        \column{0.52\textwidth}
-        \textbf{Cosine-Style Normalization Formula \cite{scholkopf2002learning}}
-        \vspace{0.1cm}
+        \textbf{2. Cosine Normalization \cite{scholkopf2002learning}}
+        \vspace{-0.1cm}
         \begin{equation*}
             K_{\text{norm}}(i,j) = \frac{K(i,j)}{\sqrt{K(i,i) \cdot K(j,j)}}
         \end{equation*}
-
-        \vspace{0.1cm}
-        \begin{itemize}\scriptsize
-            \item $K(i,j)$: Pairwise similarity between samples $i$ and $j$.
-            \item $K(i,i)$, $K(j,j)$: Self-similarity (inner-product norms).
-            \item Converts raw counts into bounded metric space; eliminates bias from feature vector scale differences.
-        \end{itemize}
-
-        \column{0.44\textwidth}
-        \textbf{Train vs. Validation Behavior}
-        \vspace{0.15cm}
-
+        \vspace{-0.2cm}
         \begin{itemize}\footnotesize
-            \item \textbf{Training Matrix ($K_{\text{train}}$):} \\
-            Square ($N_{\text{train}} \times N_{\text{train}}$). Diagonal entries scale to:
-            \begin{center}
-                \small\bfseries $K_{\text{norm}}(i,i) \approx 1.0$
-            \end{center}
-            \item \textbf{Validation Matrix ($K_{\text{val}}$):} \\
-            Rectangular ($N_{\text{val}} \times N_{\text{train}}$). Evaluates unseen graphs against training anchors; diagonal is not $1$.
+            \item Similarity between 0 and 1; a leaf compared with itself gives 1.
+            \item Removes the effect of how many labels a graph has, so only the \emph{pattern} counts.
         \end{itemize}
     \end{columns}
 
@@ -977,10 +878,10 @@
     \begin{center}
         \begin{tikzpicture}[node distance=0.4cm, auto, >=Latex]
             \tikzset{flowstep/.style={draw=amritaMaroon, thick, fill=maroonSoft, rounded corners=2pt, font=\tiny, inner sep=3pt, align=center}}
-            \node[flowstep] (f1) {WL Subtree\\Vectors};
-            \node[flowstep, right=0.35cm of f1] (f2) {Raw Kernels\\{\tiny $K_{\text{tr}}, K_{\text{val}}$}};
-            \node[flowstep, right=0.35cm of f2] (f3) {Diagonal-Based\\Normalization};
-            \node[flowstep, fill=amritaMaroon, text=white, right=0.35cm of f3] (f4) {Normalized\\Kernel Matrices};
+            \node[flowstep] (f1) {WL Subtree\\Vectors $\Phi$};
+            \node[flowstep, right=0.35cm of f1] (f2) {Raw Kernels\\{\tiny $K_{\text{train}}, K_{\text{test}}$}};
+            \node[flowstep, right=0.35cm of f2] (f3) {Cosine\\Normalization};
+            \node[flowstep, fill=amritaMaroon, text=white, right=0.35cm of f3] (f4) {SVM with a\\precomputed kernel};
 
             \draw[->, thick, draw=amritaMaroon] (f1) -- (f2);
             \draw[->, thick, draw=amritaMaroon] (f2) -- (f3);
@@ -988,6 +889,10 @@
         \end{tikzpicture}
     \end{center}
 \end{frame}
+% ============================================================
+% FRAME: Kernel Normalization
+% ============================================================
+% (merged into "From Subtree Vectors to a Normalized Kernel")
 
 % % ============================================================
 % % FRAME: Why Use the WL Kernel?
@@ -1055,12 +960,12 @@
             \begin{equation*}
                 K_{\text{train}} = \Phi_{\text{train}}\Phi_{\text{train}}^T \quad (N_{\text{train}} \times N_{\text{train}})
             \end{equation*}
-            \item \textbf{Validation Graphs:} Process validation leaves through identical discretization and WL vocabulary $\rightarrow$ $\Phi_{\text{val}}$.
-            \item \textbf{Validation Kernel Matrix:}
+            \item \textbf{Test-Fold Graphs:} Process test leaves with the bins, graph and WL vocabulary learned on the training fold $\rightarrow$ $\Phi_{\text{test}}$.
+            \item \textbf{Test Kernel Matrix:}
             \begin{equation*}
-                K_{\text{val}} = \Phi_{\text{val}}\Phi_{\text{train}}^T \quad (N_{\text{val}} \times N_{\text{train}})
+                K_{\text{test}} = \Phi_{\text{test}}\Phi_{\text{train}}^T \quad (N_{\text{test}} \times N_{\text{train}})
             \end{equation*}
-            \item \textbf{SVM Solver \cite{cortes1995support, chang2011libsvm}:} Fit dual SVM on $K_{\text{train}}$; evaluate target labels on $K_{\text{val}}$.
+            \item \textbf{SVM Solver \cite{cortes1995support, chang2011libsvm}:} Fit dual SVM on $K_{\text{train}}$; predict the test fold from $K_{\text{test}}$.
         \end{enumerate}
 
         \column{0.48\textwidth}
@@ -1076,7 +981,8 @@
         \begin{tikzpicture}
             \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
                   rounded corners=2pt, inner sep=6pt, text width=0.92\columnwidth] {
-                \scriptsize\textbf{Implementation Note:} Configured using \texttt{SVC(kernel='precomputed')} to bypass raw tabular feature spaces entirely.
+                \scriptsize\textbf{Implementation:} \texttt{SVC(kernel='precomputed', C=1, class\_weight='balanced')}. Balanced weights stop the model from simply favouring the 84\% stressed class.\\[3pt]
+                \textbf{No leakage:} bins, graph edges and WL vocabulary are fitted on the training fold only; the same 5 folds are used for every model.
             };
         \end{tikzpicture}
     \end{columns}
@@ -1424,7 +1330,7 @@
     \end{tabular}
 
     \vspace{0.05cm}
-    {\tiny Tuned = settings chosen inside each training fold only (nested CV). Photo altered = 240 photos $\times$ 7 changes (darker, brighter, warm light, blur, strong JPEG, noise, half resolution).
+    {\tiny Baselines: 13 measurement-based models (e.g.\ Extra Trees \cite{geurts2006extremely}) and 2 frozen ImageNet CNNs (EfficientNet-B0 \cite{tan2019efficientnet}). Tuned = settings chosen inside each training fold only (nested CV \cite{varma2006bias}). Photo altered = 240 photos $\times$ 7 changes (darker, brighter, warm light, blur, strong JPEG, noise, half resolution).
     Time includes finding the leaf in the full 3,024 px photo; the CNN looks at a 224 px copy.}
 
     \vspace{0.15cm}
@@ -1691,12 +1597,120 @@
 % ============================================================
 % SLIDE: Feature Application
 % ============================================================
-\begin{frame}{Crop Library}
-    \framesubtitle{}
+\begin{frame}{Application: PlantCare AI}
+    \framesubtitle{Our web app turns the research into a tool a farmer can use (live demo next)}
 
     \centering
-    \includegraphics[width=0.92\textwidth, height=0.75\textheight, keepaspectratio]{last.jpg}\\[4pt]
-    {\tiny\itshape Feature application workflow}
+    \begin{tikzpicture}[>=Latex]
+        \tikzset{appstep/.style={rectangle, draw=amritaMaroon, thick, fill=maroonSoft, rounded corners=3pt,
+                 minimum width=2.15cm, minimum height=1.15cm, font=\scriptsize, align=center}}
+        \node[appstep] (a1) {\textbf{Leaf photo}\\{\tiny upload}};
+        \node[appstep, right=0.35cm of a1] (a2) {\textbf{Leaf found}\\{\tiny ExG + 38 measures}};
+        \node[appstep, right=0.35cm of a2] (a3) {\textbf{CNN decides}\\{\tiny crop + healthy/stressed}};
+        \node[appstep, right=0.35cm of a3] (a4) {\textbf{WL checks}\\{\tiny second opinion + why}};
+        \node[appstep, fill=amritaMaroon, text=white, right=0.35cm of a4] (a5) {\textbf{Verdict}\\{\tiny \textcolor{green!35}{green} / \textcolor{orange!50}{amber} flag}};
+        \draw[->, thick, draw=amritaMaroon] (a1) -- (a2);
+        \draw[->, thick, draw=amritaMaroon] (a2) -- (a3);
+        \draw[->, thick, draw=amritaMaroon] (a3) -- (a4);
+        \draw[->, thick, draw=amritaMaroon] (a4) -- (a5);
+    \end{tikzpicture}
+
+    \vspace{0.35cm}
+    \begin{columns}[T, onlytextwidth]
+        \column{0.32\textwidth}
+        \begin{tikzpicture}
+            \node[notebox, inner sep=5pt, text width=0.88\columnwidth] {
+                {\tiny\bfseries\textcolor{amritaMaroon}{STEP-BY-STEP WALKTHROUGH}}\\
+                {\scriptsize Shows the mask, the 38 measurements, the leaf graph, the WL patterns and the SVM decision for \emph{this} photo.}
+            };
+        \end{tikzpicture}
+        \column{0.32\textwidth}
+        \begin{tikzpicture}
+            \node[notebox, inner sep=5pt, text width=0.88\columnwidth] {
+                {\tiny\bfseries\textcolor{amritaMaroon}{HONEST ANSWERS}}\\
+                {\scriptsize ``Unsure'' when a photo is unlike the training photos; a spot check warns about small dark spots.}
+            };
+        \end{tikzpicture}
+        \column{0.32\textwidth}
+        \begin{tikzpicture}
+            \node[notebox, inner sep=5pt, text width=0.88\columnwidth] {
+                {\tiny\bfseries\textcolor{amritaMaroon}{LIKELY CONDITION}}\\
+                {\scriptsize A top-3 shortlist of conditions (right in 83--98\% of cases per crop) for an expert to confirm.}
+            };
+        \end{tikzpicture}
+    \end{columns}
+\end{frame}
+
+% ============================================================
+% SLIDE: Crop Library (app screenshot)
+% ============================================================
+\begin{frame}{Application: Crop Library}
+    \framesubtitle{Per-crop models used in the app: each crop has its own best graph and WL depth}
+
+    \centering
+    \includegraphics[width=0.92\textwidth, height=0.72\textheight, keepaspectratio]{last.jpg}\\[4pt]
+    {\tiny\itshape Numbers here are for the app's per-crop models, so they differ slightly from the single-model results on the Crop Subgroup slide.}
+\end{frame}
+
+% ============================================================
+% SLIDE: Limitations & Future Work
+% ============================================================
+\begin{frame}{Limitations \& Future Work}
+    \begin{columns}[T, onlytextwidth]
+        \column{0.485\textwidth}
+        \begin{tikzpicture}
+            \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
+                  rounded corners=4pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
+                {\small\bfseries\textcolor{amritaMaroon}{Limitations}}\\[3pt]
+                \begin{itemize}\scriptsize
+                    \setlength{\itemsep}{2pt}
+                    \item \textbf{Exact condition (57 classes) not solved:} best model 0.57 macro-F1, WL 0.42. The 38 measurements are leaf \emph{averages}, so small local marks are washed out.
+                    \item \textbf{Healthy leaves are hard to find} for crops with few healthy photos (bottle, ridge, ash gourd).
+                    \item \textbf{Lab photos only:} one leaf on a dark background; field photos not tested.
+                    \item \textbf{No severity labels} in OLID-I, so no severity grading.
+                    \item \textbf{Speed:} segmenting the full 3,024\,px photo takes $\approx$1\,s.
+                \end{itemize}
+            };
+        \end{tikzpicture}
+
+        \column{0.485\textwidth}
+        \begin{tikzpicture}
+            \node[rectangle, draw=amritaMaroon, very thick, fill=amritaMaroon, text=white,
+                  rounded corners=4pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
+                {\small\bfseries Future Work}\\[3pt]
+                \begin{itemize}\scriptsize
+                    \setlength{\itemsep}{2pt}
+                    \item \textbf{Local spot features} as extra graph nodes, to approach the 57-class task.
+                    \item \textbf{Fine-tune the CNN} (currently frozen) for the strongest decision model.
+                    \item \textbf{Field photos} and other datasets to test real-world use.
+                    \item \textbf{Faster segmentation} on a smaller copy of the photo.
+                    \item \textbf{Learned graph edges} instead of hand-chosen rules.
+                \end{itemize}
+            };
+        \end{tikzpicture}
+    \end{columns}
+\end{frame}
+
+% ============================================================
+% SLIDE: Conclusion
+% ============================================================
+\begin{frame}{Conclusion}
+    \begin{itemize}
+        \setlength{\itemsep}{0.25cm}
+        \item \textbf{Graph construction matters.} Linking related measurements (Hybrid / Feature-Family) beats correlation or spatial links by \textbf{7.5 points} macro-F1, and WL depth $h{=}3$ adds \textbf{9.6 points} over no graph.
+        \item \textbf{WL is competitive, not the most accurate.} Macro-F1 0.706 vs 0.739 for a frozen CNN and 0.729 for tuned Extra Trees, all far above the ``always stressed'' 0.456.
+        \item \textbf{WL is the most stable measurement-based model} when photos are darker, blurred, compressed or noisy.
+        \item \textbf{Where WL stands out: a trustworthy second opinion.} When WL and the CNN agree (83\% of leaves) the answer is right 91\% of the time; their disagreements contain half of the CNN's mistakes, and WL explains its call in leaf terms.
+    \end{itemize}
+
+    \vspace{0.2cm}
+    \centering
+    \begin{tikzpicture}
+        \node[rectangle, draw=amritaMaroon, very thick, fill=amritaMaroon, text=white,
+              rounded corners=4pt, inner sep=7pt, text width=0.9\textwidth, align=center] {
+            \small Best use: the CNN decides quickly, WL checks and explains, and the farmer sees when to double-check.
+        };
+    \end{tikzpicture}
 \end{frame}
 
 \section{References}
