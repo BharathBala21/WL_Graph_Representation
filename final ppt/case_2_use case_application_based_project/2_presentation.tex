@@ -5,6 +5,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{xcolor}
 \usepackage{booktabs}
+\usepackage{colortbl}
 \usepackage{array}
 \usepackage{graphicx}
 \usepackage{tikz}
@@ -1134,15 +1135,27 @@
 
     \vspace{0.15cm}
     % --- Section 2: Calculating Metrics ---
-    {\normalsize\bfseries 2. Calculating Metrics}\\[3pt]
-    {\footnotesize For each test fold, we calculate standard performance metrics, which are then averaged to determine the final model performance:}
-    \begin{itemize}\footnotesize
-        \setlength{\itemsep}{1pt}
-        \item \textbf{Accuracy:} % Optional: add formula/description here
-        \item \textbf{Precision:}
-        \item \textbf{Recall:}
-        \item \textbf{F1-Score:}
-    \end{itemize}
+    {\normalsize\bfseries 2. Calculating Metrics}\\[2pt]
+    {\scriptsize Computed on each test fold, then averaged. $TP$ = stressed leaf called stressed; $TN$ = healthy leaf called healthy.}
+    \vspace{0.05cm}
+    \begin{columns}[T, onlytextwidth]
+        \column{0.49\textwidth}
+        \begin{itemize}\scriptsize
+            \setlength{\itemsep}{1pt}
+            \item \textbf{Accuracy} $= \frac{TP+TN}{\text{all leaves}}$
+            \item \textbf{Precision} $= \frac{TP}{TP+FP}$
+            \item \textbf{Recall} (stressed found) $= \frac{TP}{TP+FN}$
+            \item \textbf{F1} $= \frac{2\,P\,R}{P+R}$
+        \end{itemize}
+        \column{0.49\textwidth}
+        \begin{itemize}\scriptsize
+            \setlength{\itemsep}{1pt}
+            \item \textbf{\textcolor{amritaMaroon}{Macro-F1}} (main) $= \frac{F1_{\text{healthy}} + F1_{\text{stressed}}}{2}$
+            \item \textbf{Balanced acc.} $= \frac{\text{stressed found} + \text{healthy found}}{2}$
+            \item \textbf{Healthy found} (specificity) $= \frac{TN}{TN+FP}$
+        \end{itemize}
+        {\tiny Why: 84\% of leaves are stressed, so always answering ``stressed'' gets 83.8\% accuracy but only 0.456 macro-F1.}
+    \end{columns}
 \end{frame}
 
 % % ============================================================
@@ -1322,61 +1335,238 @@
 
 
 % ============================================================
+% RESULTS 1: Graph topology matters (research question)
+% ============================================================
+\begin{frame}{Results 1: Graph Construction Changes WL Performance}
+    \framesubtitle{Healthy vs stressed, all 4,387 leaves, same 5 folds: best macro-F1 per graph type}
+
+    \begin{columns}[T, onlytextwidth]
+        \column{0.58\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                xbar, width=0.62\linewidth, height=5.0cm,
+                xmin=0.40, xmax=0.73,
+                ytick={0,1,2,3,4,5,6}, bar shift=0pt, ymin=-0.6, ymax=6.6,
+                yticklabels={Always stressed, WL $h{=}0$ (no graph), Spatial ($h{=}2$), Correlation ($h{=}3$), kNN ($h{=}3$), Feature-Family ($h{=}3$), Hybrid ($h{=}3$)},
+                y tick label style={font=\scriptsize},
+                x tick label style={font=\tiny, /pgf/number format/fixed},
+                xlabel={\scriptsize Macro-F1}, bar width=7pt, 
+                nodes near coords, nodes near coords style={font=\tiny, /pgf/number format/fixed, /pgf/number format/precision=3},
+                axis x line*=bottom, axis y line*=left,
+            ]
+                \addplot[fill=amritaMaroon, draw=amritaMaroon] coordinates {
+                    (0.6969,6) (0.6914,5) (0.6737,4)
+                    (0.6216,3) (0.6216,2)
+                };
+                \addplot[fill=inkGray!35, draw=inkGray!60] coordinates {
+                    (0.6007,1) (0.4558,0)
+                };
+            \end{axis}
+        \end{tikzpicture}
+
+        \column{0.39\textwidth}
+        {\scriptsize\bfseries\textcolor{amritaMaroon}{Deeper WL helps (Hybrid graph)}}\\[2pt]
+        \centering
+        \scriptsize
+        \renewcommand{\arraystretch}{1.15}
+        \begin{tabular}{@{}c c c@{}}
+            \toprule
+            \textbf{$h$} & \textbf{Macro-F1} & \textbf{Accuracy} \\
+            \midrule
+            0 & 0.601 & 0.675 \\
+            1 & 0.659 & 0.758 \\
+            2 & 0.687 & 0.797 \\
+            \textbf{3} & \textbf{\textcolor{amritaMaroon}{0.697}} & \textbf{0.816} \\
+            \bottomrule
+        \end{tabular}
+
+        \vspace{0.2cm}
+        \raggedright
+        {\scriptsize At $h{=}0$ every graph scores the same (0.601): the gain comes only from the edges WL follows.}
+    \end{columns}
+
+    \vspace{0.12cm}
+    \centering
+    \begin{tikzpicture}
+        \node[notebox, inner sep=5pt, text width=0.93\textwidth, align=center] {
+            \scriptsize \textbf{\textcolor{amritaMaroon}{Answer to our research question:}} the graph matters. Linking related measurements
+            (Hybrid / Feature-Family) beats correlation or spatial links by \textbf{+7.5 points}, and $h{=}3$ adds \textbf{+9.6 points} over no graph.
+        };
+    \end{tikzpicture}
+\end{frame}
+
+% ============================================================
+% RESULTS 2: Fair benchmark incl. CNN (accuracy, robustness, speed)
+% ============================================================
+\begin{frame}{Results 2: Fair Benchmark Against Baselines and a CNN}
+    \framesubtitle{Full pipeline (find the crop, then that crop's stress model), same 5 folds for every model}
+
+    \centering
+    \scriptsize
+    \setlength{\tabcolsep}{3.5pt}
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{@{}l c c c c c@{}}
+        \toprule
+        \textbf{Model} & \textbf{Macro-F1} & \textbf{Bal.\ acc.} & \textbf{Healthy found} & \textbf{F1 change, altered photo} & \textbf{Time / photo} \\
+        \midrule
+        CNN EfficientNet-B0 (frozen) & \textbf{0.739} & 0.756 & 62\% & $\pm$0.00 & \textbf{0.14 s} \\
+        Extra Trees (tuned) & 0.729 & 0.730 & 55\% & $-$0.10 & 1.07 s \\
+        Gradient Boosting (tuned) & 0.721 & 0.725 & 55\% & $-$0.08 & 1.08 s \\
+        \rowcolor{maroonSoft}
+        \textbf{\textcolor{amritaMaroon}{WL + SVM (ours, best)}} & \textbf{0.706} & 0.723 & 57\% & \textbf{$-$0.05} & 1.08 s \\
+        \rowcolor{maroonSoft}
+        WL + SVM (ours, tuned) & 0.683 & 0.702 & 54\% & -- & 1.08 s \\
+        Random Forest (default) & 0.682 & 0.645 & 31\% & $-$0.18 & 1.07 s \\
+        \midrule
+        Always answers ``stressed'' & 0.456 & 0.500 & 0\% & -- & -- \\
+        \bottomrule
+    \end{tabular}
+
+    \vspace{0.05cm}
+    {\tiny Tuned = settings chosen inside each training fold only (nested CV). Photo altered = 240 photos $\times$ 7 changes (darker, brighter, warm light, blur, strong JPEG, noise, half resolution).
+    Time includes finding the leaf in the full 3,024 px photo; the CNN looks at a 224 px copy.}
+
+    \vspace{0.15cm}
+    \begin{columns}[T, onlytextwidth]
+        \column{0.32\textwidth}
+        \begin{tikzpicture}
+            \node[notebox, inner sep=5pt, text width=0.88\columnwidth] {
+                {\tiny\bfseries\textcolor{amritaMaroon}{ACCURACY}}\\
+                {\scriptsize CNN is best; WL is \textbf{competitive}, 3.3 points behind.}
+            };
+        \end{tikzpicture}
+        \column{0.32\textwidth}
+        \begin{tikzpicture}
+            \node[notebox, inner sep=5pt, text width=0.88\columnwidth] {
+                {\tiny\bfseries\textcolor{amritaMaroon}{ROBUSTNESS}}\\
+                {\scriptsize WL loses the least of all \textbf{measurement-based} models.}
+            };
+        \end{tikzpicture}
+        \column{0.32\textwidth}
+        \begin{tikzpicture}
+            \node[notebox, inner sep=5pt, text width=0.88\columnwidth] {
+                {\tiny\bfseries\textcolor{amritaMaroon}{SPEED}}\\
+                {\scriptsize CNN is $\approx$\textbf{8$\times$ faster}; only WL explains its decision.}
+            };
+        \end{tikzpicture}
+    \end{columns}
+\end{frame}
+
+% ============================================================
+% RESULTS 3: Where WL stands out (second opinion)
+% ============================================================
+\begin{frame}{Results 3: Where WL Stands Out, a Second Opinion Farmers Can Trust}
+    \framesubtitle{CNN decides, WL checks and explains (all 4,387 leaves, held-out folds)}
+
+    \begin{columns}[T, onlytextwidth]
+        \column{0.53\textwidth}
+        \small
+        \renewcommand{\arraystretch}{1.2}
+        \begin{tabular}{@{}l c c@{}}
+            \toprule
+            & \textbf{Leaves} & \textbf{CNN correct} \\
+            \midrule
+            \textcolor{green!50!black}{\textbf{$\bullet$ CNN and WL agree}} & 83\% & \textbf{91\%} \\
+            \textcolor{orange!90!black}{\textbf{$\bullet$ CNN and WL disagree}} & 17\% & 56\% \\
+            \midrule
+            CNN alone (all leaves) & 100\% & 85\% \\
+            \bottomrule
+        \end{tabular}
+
+        \vspace{0.3cm}
+        \begin{tikzpicture}
+            \node[rectangle, draw=amritaMaroon, very thick, fill=amritaMaroon, text=white,
+                  rounded corners=4pt, inner sep=6pt, text width=0.92\columnwidth, align=left] {
+                {\scriptsize Disagreement flags only \textbf{17\%} of leaves but holds \textbf{51\%} of all CNN mistakes.
+                The CNN's own confidence catches \textbf{44\%} when flagging the same number of leaves.}
+            };
+        \end{tikzpicture}
+
+        \column{0.43\textwidth}
+        \begin{tikzpicture}
+            \node[notebox, inner sep=5pt, text width=0.9\columnwidth] {
+                {\tiny\bfseries\textcolor{amritaMaroon}{FOR THE FARMER}}\\
+                {\scriptsize \textcolor{green!50!black}{\textbf{Green}}: both agree $\rightarrow$ act on it.\\
+                \textcolor{orange!90!black}{\textbf{Amber}}: they disagree $\rightarrow$ check the leaf or ask an expert.}
+            };
+        \end{tikzpicture}
+
+        \vspace{0.12cm}
+        \begin{tikzpicture}
+            \node[notebox, inner sep=5pt, text width=0.9\columnwidth] {
+                {\tiny\bfseries\textcolor{amritaMaroon}{EXPLAINS WHY}}\\
+                {\scriptsize Names the leaf measurements behind the call (e.g.\ greenness lower, edge yellowness higher than healthy leaves).}
+            };
+        \end{tikzpicture}
+
+        \vspace{0.12cm}
+        \begin{tikzpicture}
+            \node[notebox, inner sep=5pt, text width=0.9\columnwidth] {
+                {\tiny\bfseries\textcolor{amritaMaroon}{STAYS STABLE IN THE FIELD}}\\
+                {\scriptsize Smallest loss of all measurement-based models when light, blur or camera change.}
+            };
+        \end{tikzpicture}
+    \end{columns}
+
+    \vspace{0.1cm}
+    \centering
+    {\tiny Tree models give a similar warning (53--59\%), but none explains itself in leaf terms or is as stable.}
+\end{frame}
+
+% ============================================================
 % SLIDE 24: Crop Subgroup Performance (Table 3)
 % ============================================================
 \begin{frame}{Crop Subgroup Performance}
-    \framesubtitle{Per-crop classification metrics under the globally best WL configuration: Hybrid ($h = 3$)}
+    \framesubtitle{The single Hybrid ($h = 3$) WL model, split by crop (5-fold CV, all 4,387 leaves)}
 
     \begin{columns}[T, onlytextwidth]
-        % --- Left Column: Clean 4-Decimal Subgroup Table ---
-        \column{0.56\textwidth}
-        \begin{table}
-            \centering
-            \scriptsize
-            \setlength{\tabcolsep}{4pt}
-            \renewcommand{\arraystretch}{1.28}
-            \begin{tabular}{@{}lrrrrr@{}}
-                \toprule
-                \textbf{Crop Species} & \textbf{Samples} & \textbf{Prec.} & \textbf{Rec.} & \textbf{F1} & \textbf{Acc.} \\
-                \midrule
-                \textbf{\textcolor{amritaMaroon}{Bottle Gourd}} & 332 & 0.9255 & 0.9900 & \textbf{\textcolor{amritaMaroon}{0.9567}} & 0.9187 \\
-                \textbf{Snake Gourd}  & 452 & 0.9167 & 0.9772 & \textbf{0.9459} & 0.9027 \\
-                \textbf{Ash Gourd}    & 996 & 0.9469 & 0.9179 & \textbf{0.9321} & 0.8775 \\
-                Cucumber     & 240 & 0.9462 & 0.8544 & 0.8980 & 0.8333 \\
-                Eggplant     & 662 & 0.9173 & 0.8739 & 0.8951 & 0.8233 \\
-                Ridge Gourd  & 383 & 0.8750 & 0.8210 & 0.8471 & 0.7493 \\
-                Bitter Gourd & 742 & 0.8698 & 0.7399 & 0.7996 & 0.7156 \\
-                Tomato       & 580 & 0.8868 & 0.7121 & 0.7899 & 0.7414 \\
-                \bottomrule
-            \end{tabular}
-        \end{table}
+        \column{0.60\textwidth}
+        \centering
+        \scriptsize
+        \setlength{\tabcolsep}{3.2pt}
+        \renewcommand{\arraystretch}{1.22}
+        \begin{tabular}{@{}l r r c c c@{}}
+            \toprule
+            \textbf{Crop} & \textbf{Leaves} & \textbf{Healthy} & \textbf{Macro-F1} & \textbf{Bal.\ acc.} & \textbf{Healthy found} \\
+            \midrule
+            \textbf{\textcolor{amritaMaroon}{Snake gourd}} & 452 & 58 & \textbf{\textcolor{amritaMaroon}{0.729}} & 0.687 & 40\% \\
+            \textbf{Tomato} & 580 & 184 & \textbf{0.727} & 0.758 & \textbf{80\%} \\
+            \textbf{Cucumber} & 240 & 34 & \textbf{0.722} & \textbf{0.780} & 71\% \\
+            Eggplant & 662 & 91 & 0.668 & 0.690 & 51\% \\
+            Bitter gourd & 742 & 173 & 0.655 & 0.688 & 64\% \\
+            Ash gourd & 996 & 83 & 0.652 & 0.676 & 43\% \\
+            Bottle gourd & 332 & 31 & 0.649 & 0.608 & 23\% \\
+            Ridge gourd & 383 & 59 & 0.576 & 0.588 & 36\% \\
+            \midrule
+            \textbf{All crops} & 4,387 & 713 & \textbf{0.697} & 0.722 & 58\% \\
+            {\tiny Always ``stressed''} & & & {\tiny 0.41--0.48} & {\tiny 0.500} & {\tiny 0\%} \\
+            \bottomrule
+        \end{tabular}
 
-        % --- Right Column: Tiered Summary Cards ---
-        \column{0.41\textwidth}
+        \column{0.37\textwidth}
         \begin{tikzpicture}
             \node[rectangle, draw=amritaMaroon, very thick, fill=amritaMaroon, text=white,
-                  rounded corners=4pt, inner sep=7pt, text width=0.93\columnwidth, align=left] {
-                {\tiny\bfseries\textcolor{maroonSoft}{TOP PERFORMING SPECIES}}\\[2pt]
-                {\small\bfseries Bottle Gourd (F1 = 0.9567)}\\[3pt]
-                {\scriptsize Achieves \textbf{99.00\% Recall} and \textbf{91.87\% Accuracy} across 332 samples.}
+                  rounded corners=4pt, inner sep=6pt, text width=0.92\columnwidth, align=left] {
+                {\tiny\bfseries\textcolor{maroonSoft}{MOST BALANCED}}\\[2pt]
+                {\small\bfseries Tomato \& Cucumber}\\[2pt]
+                {\scriptsize Find \textbf{71--80\%} of healthy leaves.}
             };
         \end{tikzpicture}
 
-        \vspace{0.15cm}
+        \vspace{0.12cm}
         \begin{tikzpicture}
-            \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
-                  rounded corners=3pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
-                {\tiny\bfseries\textcolor{amritaMaroon}{HIGH-CONSISTENCY TIER ($\text{F1} > 0.89$)}}\\[2pt]
-                {\scriptsize \textbf{5 of 8 crops} (Bottle, Snake, Ash Gourd, Cucumber, Eggplant) exceed \textbf{0.895 F1} with $>91\%$ precision.}
+            \node[notebox, inner sep=5pt, text width=0.92\columnwidth] {
+                {\tiny\bfseries\textcolor{amritaMaroon}{HIGH ACCURACY CAN MISLEAD}}\\[1pt]
+                {\scriptsize Bottle gourd: 92\% accuracy, but finds only \textbf{23\%} of its healthy leaves.}
             };
         \end{tikzpicture}
 
-        \vspace{0.15cm}
+        \vspace{0.12cm}
         \begin{tikzpicture}
-            \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
-                  rounded corners=3pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
-                {\tiny\bfseries\textcolor{amritaMaroon}{CHALLENGING CANOPY MORPHOLOGY}}\\[2pt]
-                {\scriptsize \textbf{Tomato (0.7899)} and \textbf{Bitter Gourd (0.7996)} show lower recall due to serrated/compound leaf edges.}
+            \node[notebox, inner sep=5pt, text width=0.92\columnwidth] {
+                {\tiny\bfseries\textcolor{amritaMaroon}{WHY SOME CROPS ARE HARDER}}\\[1pt]
+                {\scriptsize Few healthy photos (ridge, bottle, ash gourd), so ``healthy'' is learned poorly.}
             };
         \end{tikzpicture}
     \end{columns}
