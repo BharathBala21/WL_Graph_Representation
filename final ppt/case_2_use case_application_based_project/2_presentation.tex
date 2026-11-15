@@ -391,6 +391,7 @@
     \end{tikzpicture}
     \end{center}
 \end{frame}
+
 % ============================================================
 % SLIDE 6: Dataset & Leaf Segmentation
 % ============================================================
@@ -423,13 +424,11 @@
             };
         \end{tikzpicture}
 
-        % --- Right Column: Sample & Segmentation Pipeline Visuals ---
+        % --- Right Column: Combined Data Processing Visual ---
         \column{0.47\textwidth}
         \centering
-        \includegraphics[width=0.72\linewidth, height=0.29\textheight, keepaspectratio]{leaf_sample.JPG}\\[2pt]
-        {\tiny\itshape Sample raw leaf image (OLID)}\\[8pt]
-        \includegraphics[width=0.95\linewidth, height=0.31\textheight, keepaspectratio]{segmentation_example.png}\\[2pt]
-        {\tiny\itshape Raw leaf image $\rightarrow$ ExG segmentation $\rightarrow$ Binary leaf mask}
+        \includegraphics[width=0.95\linewidth, height=0.65\textheight, keepaspectratio]{dataprocess.jpg}\\[4pt]
+        {\tiny\itshape Data processing and ExG leaf segmentation pipeline}
     \end{columns}
 \end{frame}
 
@@ -697,6 +696,20 @@
             };
         \end{tikzpicture}
     \end{columns}
+\end{frame}
+
+
+
+
+% ============================================================
+% SLIDE: Feature Application
+% ============================================================
+\begin{frame}{Feature Application}
+    \framesubtitle{Overview of feature extraction and application pipeline}
+
+    \centering
+    \includegraphics[width=0.92\textwidth, height=0.75\textheight, keepaspectratio]{feature_application.jpeg}\\[4pt]
+    {\tiny\itshape Feature application workflow}
 \end{frame}
 
 
@@ -1157,91 +1170,91 @@
 % ============================================================
 
 
-% ============================================================
-% SLIDE 23: All 20 Configurations (Table 1)
-% ============================================================
-\begin{frame}{Configuration Performance}
-    \framesubtitle{All 20 configurations ranked by Macro-F1 (Primary Metric) across WL heights $h \in \{0,1,2,3\}$}
+% % ============================================================
+% % SLIDE 23: All 20 Configurations (Table 1)
+% % ============================================================
+% \begin{frame}{Configuration Performance}
+%     \framesubtitle{All 20 configurations ranked by Macro-F1 (Primary Metric) across WL heights $h \in \{0,1,2,3\}$}
 
-    \begin{columns}[T, onlytextwidth]
-        % --- Left Column: Top 10 Ranked Configurations ---
-        \column{0.485\textwidth}
-        \centering
-        {\scriptsize\bfseries\textcolor{amritaMaroon}{Top 10 Configurations (Ranks \#1 -- \#10)}}\\[3pt]
-        \begin{table}
-            \centering
-            \tiny
-            \setlength{\tabcolsep}{3.5pt}
-            \renewcommand{\arraystretch}{1.28}
-            \begin{tabular}{@{}clrrrr@{}}
-                \toprule
-                \textbf{\#} & \textbf{Graph Type} & \textbf{$h$} & \textbf{Acc.} & \textbf{M-F1} & \textbf{W-F1} \\
-                \midrule
-                \textbf{\textcolor{amritaMaroon}{1}} & \textbf{\textcolor{amritaMaroon}{Hybrid}} & \textbf{3} & \textbf{0.8160} & \textbf{\textcolor{amritaMaroon}{0.6969}} & \textbf{0.8251} \\
-                \textbf{2} & \textbf{Feature-Family} & 3 & 0.8092 & \textbf{0.6914} & 0.8201 \\
-                \textbf{3} & \textbf{Hybrid} & 2 & 0.7971 & \textbf{0.6874} & 0.8124 \\
-                4 & Feature-Family & 2 & 0.7891 & 0.6817 & 0.8065 \\
-                5 & Feature-Similarity kNN & 3 & 0.7787 & 0.6737 & 0.7985 \\
-                6 & Feature-Similarity kNN & 2 & 0.7620 & 0.6647 & 0.7865 \\
-                7 & Hybrid & 1 & 0.7575 & 0.6591 & 0.7826 \\
-                8 & Feature-Family & 1 & 0.7534 & 0.6557 & 0.7794 \\
-                9 & Feature-Similarity kNN & 1 & 0.7237 & 0.6374 & 0.7567 \\
-                10 & Correlation & 3 & 0.7094 & 0.6216 & 0.7445 \\
-                \bottomrule
-            \end{tabular}
-        \end{table}
+%     \begin{columns}[T, onlytextwidth]
+%         % --- Left Column: Top 10 Ranked Configurations ---
+%         \column{0.485\textwidth}
+%         \centering
+%         {\scriptsize\bfseries\textcolor{amritaMaroon}{Top 10 Configurations (Ranks \#1 -- \#10)}}\\[3pt]
+%         \begin{table}
+%             \centering
+%             \tiny
+%             \setlength{\tabcolsep}{3.5pt}
+%             \renewcommand{\arraystretch}{1.28}
+%             \begin{tabular}{@{}clrrrr@{}}
+%                 \toprule
+%                 \textbf{\#} & \textbf{Graph Type} & \textbf{$h$} & \textbf{Acc.} & \textbf{M-F1} & \textbf{W-F1} \\
+%                 \midrule
+%                 \textbf{\textcolor{amritaMaroon}{1}} & \textbf{\textcolor{amritaMaroon}{Hybrid}} & \textbf{3} & \textbf{0.8160} & \textbf{\textcolor{amritaMaroon}{0.6969}} & \textbf{0.8251} \\
+%                 \textbf{2} & \textbf{Feature-Family} & 3 & 0.8092 & \textbf{0.6914} & 0.8201 \\
+%                 \textbf{3} & \textbf{Hybrid} & 2 & 0.7971 & \textbf{0.6874} & 0.8124 \\
+%                 4 & Feature-Family & 2 & 0.7891 & 0.6817 & 0.8065 \\
+%                 5 & Feature-Similarity kNN & 3 & 0.7787 & 0.6737 & 0.7985 \\
+%                 6 & Feature-Similarity kNN & 2 & 0.7620 & 0.6647 & 0.7865 \\
+%                 7 & Hybrid & 1 & 0.7575 & 0.6591 & 0.7826 \\
+%                 8 & Feature-Family & 1 & 0.7534 & 0.6557 & 0.7794 \\
+%                 9 & Feature-Similarity kNN & 1 & 0.7237 & 0.6374 & 0.7567 \\
+%                 10 & Correlation & 3 & 0.7094 & 0.6216 & 0.7445 \\
+%                 \bottomrule
+%             \end{tabular}
+%         \end{table}
 
-        % --- Right Column: Remaining 10 Configurations + Callout ---
-        \column{0.485\textwidth}
-        \centering
-        {\scriptsize\bfseries\textcolor{inkGray}{Remaining Configurations (Ranks \#11 -- \#20)}}\\[3pt]
-        \begin{table}
-            \centering
-            \tiny
-            \setlength{\tabcolsep}{3.5pt}
-            \renewcommand{\arraystretch}{1.28}
-            \begin{tabular}{@{}clrrrr@{}}
-                \toprule
-                \textbf{\#} & \textbf{Graph Type} & \textbf{$h$} & \textbf{Acc.} & \textbf{M-F1} & \textbf{W-F1} \\
-                \midrule
-                11 & Spatial/Regional & 2 & 0.7064 & 0.6216 & 0.7424 \\
-                12 & Spatial/Regional & 3 & 0.7082 & 0.6212 & 0.7437 \\
-                13 & Spatial/Regional & 1 & 0.6987 & 0.6175 & 0.7363 \\
-                14 & Correlation & 2 & 0.6996 & 0.6170 & 0.7369 \\
-                15 & Correlation & 1 & 0.6914 & 0.6117 & 0.7303 \\
-                16 & Feature-Similarity kNN & 0 & 0.6747 & 0.6007 & 0.7167 \\
-                17 & Feature-Family & 0 & 0.6747 & 0.6007 & 0.7167 \\
-                18 & Hybrid & 0 & 0.6747 & 0.6007 & 0.7167 \\
-                19 & Correlation & 0 & 0.6747 & 0.6007 & 0.7167 \\
-                20 & Spatial/Regional & 0 & 0.6747 & 0.6007 & 0.7167 \\
-                \bottomrule
-            \end{tabular}
-        \end{table}
-    \end{columns}
+%         % --- Right Column: Remaining 10 Configurations + Callout ---
+%         \column{0.485\textwidth}
+%         \centering
+%         {\scriptsize\bfseries\textcolor{inkGray}{Remaining Configurations (Ranks \#11 -- \#20)}}\\[3pt]
+%         \begin{table}
+%             \centering
+%             \tiny
+%             \setlength{\tabcolsep}{3.5pt}
+%             \renewcommand{\arraystretch}{1.28}
+%             \begin{tabular}{@{}clrrrr@{}}
+%                 \toprule
+%                 \textbf{\#} & \textbf{Graph Type} & \textbf{$h$} & \textbf{Acc.} & \textbf{M-F1} & \textbf{W-F1} \\
+%                 \midrule
+%                 11 & Spatial/Regional & 2 & 0.7064 & 0.6216 & 0.7424 \\
+%                 12 & Spatial/Regional & 3 & 0.7082 & 0.6212 & 0.7437 \\
+%                 13 & Spatial/Regional & 1 & 0.6987 & 0.6175 & 0.7363 \\
+%                 14 & Correlation & 2 & 0.6996 & 0.6170 & 0.7369 \\
+%                 15 & Correlation & 1 & 0.6914 & 0.6117 & 0.7303 \\
+%                 16 & Feature-Similarity kNN & 0 & 0.6747 & 0.6007 & 0.7167 \\
+%                 17 & Feature-Family & 0 & 0.6747 & 0.6007 & 0.7167 \\
+%                 18 & Hybrid & 0 & 0.6747 & 0.6007 & 0.7167 \\
+%                 19 & Correlation & 0 & 0.6747 & 0.6007 & 0.7167 \\
+%                 20 & Spatial/Regional & 0 & 0.6747 & 0.6007 & 0.7167 \\
+%                 \bottomrule
+%             \end{tabular}
+%         \end{table}
+%     \end{columns}
 
-    \vspace{0.18cm}
-    \begin{center}
-        \begin{tikzpicture}
-            \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
-                  rounded corners=3pt, inner sep=5.5pt, text width=0.95\textwidth, align=center] {
-                {\scriptsize \textbf{\textcolor{amritaMaroon}{Key Pattern:}} All $h=0$ baselines tie at \textbf{0.6007 Macro-F1} (isolated node counts only); multi-hop structural aggregation ($h=3$) on the \textbf{Hybrid} graph yields a \textbf{+9.62\% Macro-F1} and \textbf{+14.13\% Accuracy} gain.}
-            };
-        \end{tikzpicture}
-    \end{center}
-\end{frame}
+%     \vspace{0.18cm}
+%     \begin{center}
+%         \begin{tikzpicture}
+%             \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
+%                   rounded corners=3pt, inner sep=5.5pt, text width=0.95\textwidth, align=center] {
+%                 {\scriptsize \textbf{\textcolor{amritaMaroon}{Key Pattern:}} All $h=0$ baselines tie at \textbf{0.6007 Macro-F1} (isolated node counts only); multi-hop structural aggregation ($h=3$) on the \textbf{Hybrid} graph yields a \textbf{+9.62\% Macro-F1} and \textbf{+14.13\% Accuracy} gain.}
+%             };
+%         \end{tikzpicture}
+%     \end{center}
+% \end{frame}
 
-% ============================================================
-% FRAME: All 22 Configurations (Table 1)
-% ============================================================
-% ============================================================
-% FRAME: All 22 Configurations (Table 1)
-% ============================================================
-% ============================================================
-% FRAME: All 20 Configurations (Table 1)
-% ============================================================
-% ============================================================
-% FRAME: All 20 Configurations (Table 1)
-% ============================================================
+% % ============================================================
+% % FRAME: All 22 Configurations (Table 1)
+% % ============================================================
+% % ============================================================
+% % FRAME: All 22 Configurations (Table 1)
+% % ============================================================
+% % ============================================================
+% % FRAME: All 20 Configurations (Table 1)
+% % ============================================================
+% % ============================================================
+% % FRAME: All 20 Configurations (Table 1)
+% % ============================================================
 
 
 % ============================================================
@@ -1311,26 +1324,26 @@
 % ============================================================
 % FRAME: All Metrics Graph
 % ============================================================
-\begin{frame}{Performance Across All Metrics}
-    \framesubtitle{Comparing Accuracy, F1-Scores, and Balanced Metrics}
-    \begin{center}
-        \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{results_all_metrics.png}
-    \end{center}
-\end{frame}
-% ============================================================
-% FRAME: Side-by-Side Images (one.png & two.png)
-% ============================================================
-\begin{frame}{Additional Results}
-    \begin{columns}[onlytextwidth, c]
-        \column{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{one.png}
+% \begin{frame}{Performance Across All Metrics}
+%     \framesubtitle{Comparing Accuracy, F1-Scores, and Balanced Metrics}
+%     \begin{center}
+%         \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{results_all_metrics.png}
+%     \end{center}
+% \end{frame}
+% % ============================================================
+% % FRAME: Side-by-Side Images (one.png & two.png)
+% % ============================================================
+% \begin{frame}{Additional Results}
+%     \begin{columns}[onlytextwidth, c]
+%         \column{0.49\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{one.png}
         
-        \column{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{two.png}
-    \end{columns}
-\end{frame}
+%         \column{0.49\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{two.png}
+%     \end{columns}
+% \end{frame}
 % ============================================================
 % FRAME: Key Findings
 % ============================================================
@@ -1420,11 +1433,23 @@
 % ============================================================
 % FRAME: References
 % ============================================================
+
+% ============================================================
+% SLIDE: Feature Application
+% ============================================================
+\begin{frame}{Crop Library}
+    \framesubtitle{}
+
+    \centering
+    \includegraphics[width=0.92\textwidth, height=0.75\textheight, keepaspectratio]{last.jpg}\\[4pt]
+    {\tiny\itshape Feature application workflow}
+\end{frame}
+
 \section{References}
 \begin{frame}[allowframebreaks]{References}
     \tiny
     \bibliographystyle{IEEEtran}
-    \bibliography{ref}
+    \bibliography{../ref}
 \end{frame}
 
 % ============================================================
