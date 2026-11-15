@@ -150,7 +150,7 @@ function Results() {
           onChange={setTab}
           tabs={[
             { value: 'tomato', label: 'Tomato binary' },
-            // { value: 'multiclass', label: '57-class task' },
+            { value: 'multiclass', label: '57-class (limitation)' },
             // { value: 'farm', label: 'Farm evaluation' },
           ]}
         />
@@ -193,8 +193,12 @@ function Results() {
 
       {tab === 'multiclass' && (
         <Reveal>
-          <EmptyState icon={Database} title="57-class results pending verification">
-            Verified result files for the full 57-class plant-stress experiment have not yet been confirmed. Results will be displayed here once cross-validated and audited. Do not use unverified numbers in the presentation.
+          <EmptyState icon={Database} title="Exact condition (57 classes): a stated limitation">
+            Naming the exact crop + condition in one step is not the project's main task. The 38 measurements average over the
+            whole leaf, so conditions that differ only in small local marks look alike; even the best model on these
+            measurements stays below 60%. The project therefore studies healthy-vs-stressed detection (Levels 1–3) and
+            reports the exact condition as a top-3 shortlist, which contains the right condition for 83–98% of leaves
+            depending on the crop.
           </EmptyState>
         </Reveal>
       )}

@@ -145,7 +145,7 @@
         \node[head, below=0.55cm of q.south, anchor=north] (h2) {METHOD};
         \node[body, below=0pt of h2] (b2) {5 graph types\\$\downarrow$\\WL kernel + SVM};
         \node[head, below=0.55cm of q.south, xshift=4.75cm, anchor=north] (h3) {OUTPUT};
-        \node[body, below=0pt of h3] (b3) {Healthy or stressed\\$\downarrow$\\which stress};
+        \node[body, below=0pt of h3] (b3) {Healthy or stressed\\$\downarrow$\\top-3 likely stresses};
         \draw[arr, line width=1.2pt] (b1.east) -- (b2.west);
         \draw[arr, line width=1.2pt] (b2.east) -- (b3.west);
 
@@ -408,29 +408,113 @@
 \section{Verification \& Demonstration}
 
 \begin{frame}{5. Preliminary Verification \& Quantitative Results}
-    \framesubtitle{Macro-F1 in \% (average of 5 folds)}
+    \framesubtitle{Healthy vs stressed, all crops: macro-F1 in \% (average of 5 folds)}
     \centering
     \small
     \renewcommand{\arraystretch}{1.1}
-    \begin{tabular}{@{}l c c@{}}
+    \begin{tabular}{@{}l c@{}}
         \toprule
-        \textbf{Model} & \textbf{All 57 classes} & \textbf{Healthy vs stressed} \\
+        \textbf{Model} & \textbf{Healthy vs stressed} \\
         \midrule
-        Random Forest \cite{breiman2001random} & \textbf{55.0} & 65.2 \\
-        RBF SVM & 43.1 & 66.4 \\
+        Always answers ``stressed'' (reference) & 45.6 \\
+        Random Forest \cite{breiman2001random} (default) & 65.2 \\
+        RBF SVM (default) & 66.4 \\
         \midrule
-        WL, no graph ($h=0$) & 35.0 & 60.1 \\
-        WL + Spatial & 39.3 & 62.2 \\
-        WL + Correlation & 39.8 & 62.2 \\
-        WL + $k$NN & 42.3 & 67.4 \\
-        WL + Feature-Family & 42.4 & 69.1 \\
-        \textbf{WL + Hybrid} & \textbf{42.8} & \textbf{69.7} \\
+        WL, no graph ($h=0$) & 60.1 \\
+        WL + Spatial & 62.2 \\
+        WL + Correlation & 62.2 \\
+        WL + $k$NN & 67.4 \\
+        WL + Feature-Family & 69.1 \\
+        \textbf{WL + Hybrid} & \textbf{69.7} \\
         \bottomrule
     \end{tabular}
     \vspace{0.3cm}
 
     \begin{tikzpicture}
-        \node[keybox, text width=0.88\textwidth] {\footnotesize Every graph beats ``no graph''. Hybrid is the best graph. Random Forest wins on 57 classes; WL Hybrid wins on healthy vs stressed.};
+        \node[keybox, text width=0.88\textwidth] {\footnotesize Every graph beats ``no graph''. Hybrid is the best graph. WL beats the default Random Forest and RBF SVM, but not the strongest models (next slide).};
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{5. Fair Benchmark: Where WL Stands}
+    \framesubtitle{Full pipeline (find the crop, then that crop's stress model): macro-F1 in \%}
+    \begin{columns}[T]
+        \column{0.50\textwidth}
+        \small
+        \renewcommand{\arraystretch}{1.08}
+        \begin{tabular}{@{}l c@{}}
+            \toprule
+            \textbf{Model} & \textbf{Macro-F1} \\
+            \midrule
+            CNN EfficientNet-B0 (frozen) & 73.9 \\
+            Extra Trees (tuned) & 72.9 \\
+            Gradient Boosting (tuned) & 72.1 \\
+            \textbf{WL + SVM} (best setting) & \textbf{70.6} \\
+            WL + SVM (tuned the same way) & 68.3 \\
+            Random Forest (default) & 68.2 \\
+            Always answers ``stressed'' & 45.6 \\
+            \bottomrule
+        \end{tabular}
+
+        {\scriptsize All models: same 5 folds; tuned = settings chosen inside each training fold only.}
+
+        \column{0.46\textwidth}
+        \begin{block}{Robustness (photo changed 7 ways)}
+            \scriptsize Drop in F1: CNN $\approx 0$; \textbf{WL $-5.3$}, the smallest of all feature-based models; boosting $-7.5$ to $-12.6$; Random Forest $-17.6$.
+        \end{block}
+        \begin{block}{Why not accuracy?}
+            \scriptsize 84\% of leaves are stressed: always answering ``stressed'' already gives 83.8\% accuracy, so we report macro-F1.
+        \end{block}
+        \begin{block}{Explainability}
+            \scriptsize Only WL explains a decision with named leaf measurements and how they are linked.
+        \end{block}
+    \end{columns}
+    \vspace{0.15cm}
+    \centering
+    \begin{tikzpicture}
+        \node[keybox, text width=0.88\textwidth] {\footnotesize WL is competitive and the most robust feature-based model, but not the most accurate.};
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{5. Limitation: The Exact Condition (57 Classes)}
+    \begin{columns}[T]
+        \column{0.50\textwidth}
+        \small
+        \begin{itemize}
+            \setlength{\itemsep}{0.2cm}
+            \item OLID-I has \textbf{57} crop $\times$ condition classes.
+            \item Our 38 measurements are \textbf{averages over the whole leaf}.
+            \item Many conditions differ only in \textbf{small local marks} (mite dots, miner trails, spots); averages wash them out.
+            \item Best model on these measurements: \textbf{57.0\%} macro-F1; WL: 42.3\%.
+        \end{itemize}
+        \vspace{0.1cm}
+        {\scriptsize So naming the exact condition in one step is a stated limitation, not our main task.}
+
+        \column{0.46\textwidth}
+        \centering
+        {\small \textbf{Instead: a top-3 shortlist per crop}}\\[0.1cm]
+        \scriptsize
+        \renewcommand{\arraystretch}{1.05}
+        \begin{tabular}{@{}l c c@{}}
+            \toprule
+            \textbf{Crop} & \textbf{1st} & \textbf{In top 3} \\
+            \midrule
+            Cucumber & 57\% & \textbf{98\%} \\
+            Tomato & 69\% & \textbf{96\%} \\
+            Snake gourd & 64\% & \textbf{94\%} \\
+            Ridge gourd & 55\% & \textbf{91\%} \\
+            Ash gourd & 59\% & \textbf{90\%} \\
+            Bottle gourd & 53\% & 86\% \\
+            Eggplant & 49\% & 84\% \\
+            Bitter gourd & 48\% & 83\% \\
+            \bottomrule
+        \end{tabular}
+
+        {\scriptsize WL condition model, 5-fold CV}
+    \end{columns}
+    \vspace{0.15cm}
+    \centering
+    \begin{tikzpicture}
+        \node[keybox, text width=0.88\textwidth] {\footnotesize We answer ``healthy or stressed'', and give the exact condition as a shortlist for an expert to confirm.};
     \end{tikzpicture}
 \end{frame}
 
@@ -471,7 +555,7 @@
             \small Bad leaf photos are removed; unseen labels are skipped.
         \end{block}
         \begin{block}{Next Steps}
-            \small Fairer tests with tuned models; live predictions on the website.
+            \small Local spot measurements for the exact condition; a fine-tuned CNN as a stronger reference.
         \end{block}
     \end{columns}
 \end{frame}
@@ -483,8 +567,10 @@
         \item \textbf{Graphs help:} every graph beats ``no graph''.
         \item \textbf{Hybrid} is the best graph overall.
         \item \textbf{No single winner:} the best graph depends on the crop.
+        \item \textbf{Fair benchmark:} WL is competitive and the most robust feature-based model; tuned trees and a CNN score higher.
+        \item \textbf{Limitation:} the exact condition (57 classes) needs local measurements; we give a top-3 shortlist instead.
     \end{enumerate}
-    \vspace{0.4cm}
+    \vspace{0.3cm}
     \begin{center}
     \begin{tikzpicture}
         \node[keybox, text width=0.75\textwidth] {\small How we link leaf measurements decides what WL can learn.};

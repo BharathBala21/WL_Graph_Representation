@@ -366,7 +366,7 @@ export const HOW_TO = {
     '/': [
       'Use the section bar (or Ctrl + K) to jump to any of the 12 sections.',
       'Click a stage in the Methodology diagram to see details about each pipeline step.',
-      'Results are grouped by experiment: tomato binary task, 57-class task (if verified), and planned farm evaluation.',
+      'Results are grouped by experiment: tomato binary task, the exact-condition (57-class) limitation, and planned farm evaluation.',
     ],
   },
 }

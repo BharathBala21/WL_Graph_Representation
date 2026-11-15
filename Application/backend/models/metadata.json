@@ -149,7 +149,10 @@
           48.311445,
           0.443376
         ]
-      }
+      },
+      "stress_balanced_accuracy": 0.6445,
+      "stress_healthy_found": 0.4007,
+      "always_stressed_accuracy": 0.9167
     },
     "bitter_gourd": {
       "name": "Bitter gourd",
@@ -256,7 +259,10 @@
           52.813524,
           0.447194
         ]
-      }
+      },
+      "stress_balanced_accuracy": 0.6979,
+      "stress_healthy_found": 0.6297,
+      "always_stressed_accuracy": 0.7668
     },
     "bottle_gourd": {
       "name": "Bottle gourd",
@@ -363,7 +369,10 @@
           43.129411,
           0.450664
         ]
-      }
+      },
+      "stress_balanced_accuracy": 0.6185,
+      "stress_healthy_found": 0.2571,
+      "always_stressed_accuracy": 0.9066
     },
     "cucumber": {
       "name": "Cucumber",
@@ -465,7 +474,10 @@
           51.647055,
           0.483582
         ]
-      }
+      },
+      "stress_balanced_accuracy": 0.8754,
+      "stress_healthy_found": 0.8286,
+      "always_stressed_accuracy": 0.8583
     },
     "eggplant": {
       "name": "Eggplant",
@@ -572,7 +584,10 @@
           41.548036,
           0.423301
         ]
-      }
+      },
+      "stress_balanced_accuracy": 0.7221,
+      "stress_healthy_found": 0.5386,
+      "always_stressed_accuracy": 0.8625
     },
     "ridge_gourd": {
       "name": "Ridge gourd",
@@ -677,7 +692,10 @@
           48.369012,
           0.425419
         ]
-      }
+      },
+      "stress_balanced_accuracy": 0.5267,
+      "stress_healthy_found": 0.2697,
+      "always_stressed_accuracy": 0.846
     },
     "snake_gourd": {
       "name": "Snake gourd",
@@ -780,7 +798,10 @@
           46.007778,
           0.452924
         ]
-      }
+      },
+      "stress_balanced_accuracy": 0.72,
+      "stress_healthy_found": 0.4833,
+      "always_stressed_accuracy": 0.8717
     },
     "tomato": {
       "name": "Tomato",
@@ -885,7 +906,10 @@
           44.842796,
           0.424358
         ]
-      }
+      },
+      "stress_balanced_accuracy": 0.7692,
+      "stress_healthy_found": 0.7125,
+      "always_stressed_accuracy": 0.6828
     }
   },
   "conditions": {

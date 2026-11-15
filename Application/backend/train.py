@@ -26,7 +26,7 @@ import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.svm import SVC
 
@@ -55,7 +55,7 @@ def topk_accuracy(proba, classes, y, k=3):
 def cv_crop_models(X, y_stress, y_cond, graph, h):
     """5-fold CV of both per-crop models, sharing the WL features within each fold."""
     skf = StratifiedKFold(5, shuffle=True, random_state=SEED)
-    s_acc, s_f1, c_top1, c_top3 = [], [], [], []
+    s_acc, s_f1, s_bal, s_spec, c_top1, c_top3 = [], [], [], [], [], []
     for tr, te in skf.split(X, y_cond):
         feat = WLFeaturizer(graph, h).fit(X[tr])
         Ptr, Pte = feat.transform(X[tr]), feat.transform(X[te])
@@ -64,12 +64,15 @@ def cv_crop_models(X, y_stress, y_cond, graph, h):
         ps = s.predict(Kte)
         s_acc.append(accuracy_score(y_stress[te], ps))
         s_f1.append(f1_score(y_stress[te], ps, average='macro'))
+        s_bal.append(balanced_accuracy_score(y_stress[te], ps))
+        s_spec.append(float((ps[y_stress[te] == 0] == 0).mean()))  # share of healthy leaves found
         c = SVC(kernel='precomputed', class_weight='balanced', probability=True, random_state=SEED).fit(Ktr, y_cond[tr])
         pr = c.predict_proba(Kte)
         c_top1.append(accuracy_score(y_cond[te], c.classes_[pr.argmax(1)]))
         c_top3.append(topk_accuracy(pr, c.classes_, y_cond[te], 3))
     m = lambda v: round(float(np.mean(v)), 4)
-    return {'stress_accuracy': m(s_acc), 'stress_macro_f1': m(s_f1),
+    return {'stress_accuracy': m(s_acc), 'stress_macro_f1': m(s_f1), 'stress_balanced_accuracy': m(s_bal),
+            'stress_healthy_found': m(s_spec), 'always_stressed_accuracy': round(float(np.mean(y_stress)), 4),
             'condition_top1_accuracy': m(c_top1), 'condition_top3_accuracy': m(c_top3)}
 
 
@@ -96,7 +99,7 @@ def calibrate_familiarity(X, y_cond, graph, h):
 
 
 def calibrate_only():
-    """Add the familiarity limits to an existing models/metadata.json without retraining."""
+    """Add the familiarity limits and refreshed reliability numbers to models/metadata.json, without retraining."""
     df = pd.read_csv(DATA)
     df = df[df.quality_flag == 'ACCEPT'].reset_index(drop=True)
     path = os.path.join(OUT, 'metadata.json')
@@ -104,7 +107,11 @@ def calibrate_only():
         meta = json.load(f)
     for crop, (graph, h) in BEST_GRAPH.items():
         d = df[df.crop == crop].reset_index(drop=True)
-        meta['crops'][crop]['familiarity'] = calibrate_familiarity(d[FEATURES].values.astype(float), d.condition.values, graph, h)
+        Xc = d[FEATURES].values.astype(float)
+        meta['crops'][crop]['familiarity'] = calibrate_familiarity(Xc, d.condition.values, graph, h)
+        # refresh the reliability numbers (same CV as training; the saved models are not changed)
+        meta['crops'][crop].update(cv_crop_models(Xc, (d.condition != 'healthy').astype(int).values,
+                                                  d.condition.values, graph, h))
         fam = meta['crops'][crop]['familiarity']
         print(f'  {crop:13s} best sim p1 {fam["best_similarity_p1"]:.3f}  '
               f'out-of-range p99 {fam["out_of_range_p99"]:.0f}')

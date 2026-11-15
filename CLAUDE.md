@@ -58,5 +58,16 @@ kernel → SVM). Main study = **Levels 1–3 (healthy vs stressed)**. The 57-cla
 * CNN fine-tuning (option B, ~6–8 h overnight) if the guide wants the strongest CNN.
 * Update the research paper/README claims (e.g. root README says deep learning "requires extensive labelled
   data"; the frozen CNN was the most data-efficient model here).
-* App: show balanced accuracy instead of accuracy as "reliability" (not done yet).
+* **Done in the app (57-class decision):** 57-class shown only as a stated limitation (ML Pipeline card,
+  portal tab "57-class (limitation)", Diagnostics/Stress Library labels); condition shown as a top-3 shortlist
+  with tested hit rate (83–98% per crop); reliability = balanced accuracy + healthy found (`metadata.json`
+  `stress_balanced_accuracy`, `stress_healthy_found`, `always_stressed_accuracy`); "weak for <crop>" chip when
+  balanced accuracy < 0.6 (ridge gourd 0.53).
+* Stress type (healthy / nutrient / pest / disease) with WL was tested: mean macro-F1 0.66, below the
+  majority guess for ash gourd. Not added to the app; mention as a tested option.
+* **Done in the PPT** (`ppt/new_presentation/presentation.tex`, compile on Overleaf; no LaTeX locally):
+  results slide = Level 1 only + "always stressed" row, honest key box; new slides "Fair Benchmark: Where
+  WL Stands" and "Limitation: The Exact Condition (57 Classes)" (top-3 shortlist table); updated next
+  steps and conclusion. `backup_application_template_deck` not changed.
+* **Next:** the same framing for the research paper (`Research_Paper/main.tex`) and the root README.
 * Segmentation bug B7b (black-background JPGs) in `Application/IMPROVEMENTS.txt`: not fixed (would change research features).
