@@ -5,7 +5,7 @@ __pycache__/
 *.log
 *.blg
 .DS_Store
-results/
+/results/
 full_pipeline/results/
 full_pipeline/decomposition/results/
 full_pipeline/feature_analysis/results/

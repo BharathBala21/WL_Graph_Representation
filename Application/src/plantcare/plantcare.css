@@ -89,3 +89,13 @@
 @media (prefers-reduced-motion: reduce) {
   .plantcare .animate-in { animation: none; }
 }
+
+/* Pipeline walkthrough: progress bar of the step that is playing (duration set inline). */
+.plantcare .pc-progress { width: 0; animation: pc-progress linear forwards; }
+@keyframes pc-progress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plantcare .pc-progress { animation: none; width: 100%; }
+}

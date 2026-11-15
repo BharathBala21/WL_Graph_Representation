@@ -1,5 +1,43 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { api } from './api'
+import { api, tokenStore } from './api'
+
+// ── signed-in user ───────────────────────────────────────────────────────────
+export const AuthContext = createContext({ user: null, status: 'loading', login: async () => {}, register: async () => {}, logout: () => {} })
+export const useAuth = () => useContext(AuthContext)
+
+export function useAuthState() {
+  const [user, setUser] = useState(null)
+  const [status, setStatus] = useState(() => (tokenStore.get() ? 'loading' : 'signed-out'))
+
+  useEffect(() => {
+    if (!tokenStore.get()) return
+    const ctl = new AbortController()
+    api
+      .me(ctl.signal)
+      .then((u) => (setUser(u), setStatus('signed-in')))
+      .catch((e) => {
+        if (e.name === 'AbortError') return
+        if (e.status === 401) tokenStore.set(null) // expired or invalid token
+        setStatus('signed-out')
+      })
+    return () => ctl.abort()
+  }, [])
+
+  const accept = useCallback(({ token, user: u }) => {
+    tokenStore.set(token)
+    setUser(u)
+    setStatus('signed-in')
+    return u
+  }, [])
+  const login = useCallback(async (email, password) => accept(await api.login(email, password)), [accept])
+  const register = useCallback(async (name, email, password) => accept(await api.register(name, email, password)), [accept])
+  const logout = useCallback(() => {
+    tokenStore.set(null)
+    setUser(null)
+    setStatus('signed-out')
+  }, [])
+  return { user, status, login, register, logout }
+}
 
 // ── theme ────────────────────────────────────────────────────────────────────
 export function useThemeState() {

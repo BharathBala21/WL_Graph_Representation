@@ -5,12 +5,14 @@ import { Toaster } from 'sonner'
 import { BackToTop, CommandPalette, HelpDrawer, ScrollProgress, UiContext } from './components/extras'
 import { Footer, Sidebar, TopBar, useSidebarState } from './components/Layout'
 import Splash from './components/Splash'
-import { BackendContext, ThemeContext, useHealthState, useThemeState } from './lib/hooks'
+import { AuthContext, BackendContext, ThemeContext, useAuthState, useHealthState, useThemeState } from './lib/hooks'
 import Home from './pages/Home'
 import PlantCareApp, { PLANTCARE_PAGES } from './plantcare/PlantCareApp'
+import { AuthPage } from './plantcare/components/AuthPage'
 
 const TITLES = {
   '/': 'Portal · WL-LeafKernel',
+  '/login': 'Sign in · PlantCare AI',
   ...Object.fromEntries(PLANTCARE_PAGES.map((p) => [`/plantcare/${p.route}`, `${p.label} · PlantCare AI · WL-LeafKernel`])),
 }
 
@@ -29,6 +31,7 @@ function NotFound() {
 export default function App() {
   const [theme, toggleTheme] = useThemeState()
   const backend = useHealthState()
+  const authState = useAuthState()
   const loc = useLocation()
   const [helpOpen, setHelpOpen] = useState(false)
   const [paletteOpen, setPaletteOpen] = useState(false)
@@ -60,6 +63,7 @@ export default function App() {
 
   return (
     <ThemeContext.Provider value={theme}>
+      <AuthContext.Provider value={authState}>
       <BackendContext.Provider value={backend}>
         <UiContext.Provider value={ui}>
           <MotionConfig reducedMotion="user">
@@ -74,6 +78,7 @@ export default function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/plantcare" element={<Navigate to="/plantcare/dashboard" replace />} />
                   <Route path="/plantcare/:page" element={<PlantCareApp />} />
+                  <Route path="/login" element={<AuthPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
@@ -86,6 +91,7 @@ export default function App() {
           </MotionConfig>
         </UiContext.Provider>
       </BackendContext.Provider>
+      </AuthContext.Provider>
     </ThemeContext.Provider>
   )
 }

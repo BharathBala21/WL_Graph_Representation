@@ -1,0 +1,21 @@
+Baseline,WL better on crops,Mean ΔF1 (WL − baseline),Wilcoxon p (40 paired folds),"Significant (Holm, α=0.05)"
+k-NN (k=5),7/8,0.0867,0.0,yes
+Naive Bayes (Gaussian),8/8,0.1551,0.0,yes
+MLP (128-64),8/8,0.1816,0.0,yes
+Linear SVM,6/8,0.0637,0.0001,yes
+Logistic Regression,6/8,0.0626,0.0002,yes
+Random Forest,7/8,0.0541,0.0002,yes
+Decision Tree,7/8,0.0509,0.0003,yes
+AdaBoost,8/8,0.038,0.0039,no
+Logistic Regression (tuned),6/8,0.0492,0.0064,no
+RBF SVM,5/8,0.0377,0.012,no
+Extra Trees (tuned),2/8,-0.0256,0.0241,no
+Extra Trees,5/8,0.0331,0.0718,no
+"Gradient Boosting (HistGB, tuned)",3/8,-0.011,0.1896,no
+CNN MobileNetV3-Large (frozen) + LR,4/8,-0.0173,0.2642,no
+Random Forest (tuned),5/8,0.0094,0.3754,no
+CNN EfficientNet-B0 (frozen) + LR,5/8,-0.0125,0.5099,no
+LightGBM,4/8,0.0027,0.5485,no
+XGBoost,4/8,-0.0047,0.6451,no
+RBF SVM (tuned),3/8,-0.0011,0.6671,no
+Gradient Boosting (HistGB),4/8,-0.0002,0.9826,no

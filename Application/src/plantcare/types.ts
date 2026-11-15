@@ -1,6 +1,7 @@
 export type PageView =
   | 'dashboard'
   | 'analyze-plant'
+  | 'my-diagnoses'
   | 'results-diagnostics'
   | 'plant-stress-library'
   | 'crops'

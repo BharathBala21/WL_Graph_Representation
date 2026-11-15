@@ -1,0 +1,14 @@
+# PlantCare AI backend
+fastapi>=0.110
+uvicorn>=0.29
+pyjwt>=2.8
+numpy>=1.22
+scipy>=1.8
+pandas>=1.4
+scikit-learn>=1.3
+scikit-image>=0.19
+opencv-python>=4.6
+joblib>=1.2
+# tests
+pytest>=7
+httpx>=0.25

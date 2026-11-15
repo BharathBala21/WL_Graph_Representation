@@ -5,6 +5,7 @@ import { DEFAULT_SAMPLE, SAMPLE_BY_ID } from './lib';
 import { Header } from './components/Header';
 import { DashboardView } from './components/DashboardView';
 import { AnalyzePlantView } from './components/AnalyzePlantView';
+import { MyDiagnosesView } from './components/MyDiagnosesView';
 import { DiagnosticsView } from './components/DiagnosticsView';
 import { StressLibraryView } from './components/StressLibraryView';
 import { CropsView } from './components/CropsView';
@@ -17,6 +18,7 @@ import './plantcare.css';
 export const PLANTCARE_PAGES: { id: PageView; route: string; label: string; badge?: string }[] = [
   { id: 'dashboard', route: 'dashboard', label: 'Dashboard' },
   { id: 'analyze-plant', route: 'analyze', label: 'Analyze Leaf', badge: 'WL' },
+  { id: 'my-diagnoses', route: 'my-diagnoses', label: 'My Diagnoses' },
   { id: 'results-diagnostics', route: 'diagnostics', label: 'Diagnostics' },
   { id: 'plant-stress-library', route: 'stress-library', label: 'Stress Library' },
   { id: 'crops', route: 'crops', label: 'Crops' },
@@ -47,6 +49,7 @@ export default function PlantCareApp() {
       <div key={currentPage} className="page-enter mx-auto max-w-[1600px] p-4 md:p-6 lg:p-8">
         {currentPage === 'dashboard' && <DashboardView onNavigate={onNavigate} onOpenSample={onOpenSample} />}
         {currentPage === 'analyze-plant' && <AnalyzePlantView onOpenSample={onOpenSample} />}
+        {currentPage === 'my-diagnoses' && <MyDiagnosesView />}
         {currentPage === 'results-diagnostics' && (
           <DiagnosticsView key={sample.id} sample={sample} onNavigate={onNavigate} onOpenSample={onOpenSample} />
         )}

@@ -1,0 +1,23 @@
+Model,Average rank (1 = best)
+Extra Trees (tuned),5.75
+"Gradient Boosting (HistGB, tuned)",7.38
+WL + SVM,7.62
+CNN MobileNetV3-Large (frozen) + LR,7.75
+XGBoost,7.88
+RBF SVM (tuned),8.0
+CNN EfficientNet-B0 (frozen) + LR,8.25
+LightGBM,8.75
+Random Forest (tuned),8.88
+Gradient Boosting (HistGB),9.0
+RBF SVM,10.88
+Extra Trees,11.44
+Logistic Regression (tuned),12.12
+AdaBoost,12.38
+WL + SVM (tuned),12.38
+Random Forest,13.69
+Logistic Regression,14.0
+Linear SVM,14.88
+Decision Tree,14.88
+k-NN (k=5),16.5
+Naive Bayes (Gaussian),19.88
+MLP (128-64),20.75

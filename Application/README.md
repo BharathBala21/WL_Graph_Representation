@@ -6,12 +6,24 @@ built in. React + Vite + Tailwind.
 
 ## Run locally
 
+Two terminals. The backend diagnoses uploaded photos and stores accounts and history; see
+[backend/README.md](backend/README.md).
+
 ```bash
+# 1. backend (first time: pip install -r requirements.txt && python train.py)
+cd Application/backend
+uvicorn app.main:app --port 8000
+
+# 2. frontend
 cd Application
 npm install
-npm run dev        # http://localhost:5173
+npm run dev        # http://localhost:5173  (proxies /api and /files to :8000)
 npm run build      # production build in dist/
 ```
+
+Open http://localhost:5173, create an account, then go to **Analyze Leaf → Upload image**.
+Diagnoses are saved under **My Diagnoses**. The research pages (dashboard, diagnostics, history)
+work without the backend.
 
 ## Deploy (Vercel)
 

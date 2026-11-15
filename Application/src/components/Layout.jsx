@@ -4,7 +4,10 @@ import {
   BookOpen,
   BrainCircuit,
   ChevronDown,
+  ClipboardList,
   GitBranch,
+  LogIn,
+  LogOut,
   Github,
   HelpCircle,
   History,
@@ -23,8 +26,10 @@ import {
   X,
 } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { PLANTCARE_PAGES } from '../plantcare/PlantCareApp'
+import { useAuth } from '../lib/hooks'
 import { DISCLAIMER, HOME_SECTIONS, LINKS, PROJECT, isTodo } from '../lib/content'
 import { cx } from '../lib/utils'
 import { useGoToSection, useUi } from './extras'
@@ -32,6 +37,7 @@ import { useGoToSection, useUi } from './extras'
 const PLANTCARE_ICONS = {
   dashboard: LayoutDashboard,
   'analyze-plant': ScanLine,
+  'my-diagnoses': ClipboardList,
   'results-diagnostics': Microscope,
   'plant-stress-library': BookOpen,
   crops: Sprout,
@@ -263,6 +269,51 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }) {
   )
 }
 
+/** Sign-in link, or the signed-in user's name with a sign-out button. */
+function AccountButton() {
+  const { user, status, logout } = useAuth()
+  const navigate = useNavigate()
+  const loc = useLocation()
+  if (status === 'loading') return null
+  if (!user) {
+    return (
+      <Link
+        to={`/login?next=${encodeURIComponent(loc.pathname === '/login' ? '/plantcare/analyze' : loc.pathname)}`}
+        className="flex h-10 items-center gap-1.5 rounded-xl px-3 text-sm font-medium text-ink ring-1 ring-line/15 transition hover:bg-ink/5"
+      >
+        <LogIn size={16} /> <span className="hidden sm:inline">Sign in</span>
+      </Link>
+    )
+  }
+  return (
+    <div className="flex items-center gap-1">
+      <Link
+        to="/plantcare/my-diagnoses"
+        title="My Diagnoses"
+        className="hidden h-10 max-w-[10rem] items-center gap-2 rounded-xl px-3 text-sm font-medium text-ink ring-1 ring-line/15 transition hover:bg-ink/5 md:flex"
+      >
+        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-primary/20 text-xs font-bold text-primary">
+          {user.name.trim().charAt(0).toUpperCase()}
+        </span>
+        <span className="truncate">{user.name}</span>
+      </Link>
+      <button
+        type="button"
+        onClick={() => {
+          logout()
+          toast.success('Signed out')
+          navigate('/plantcare/dashboard')
+        }}
+        className="grid h-10 w-10 place-items-center rounded-xl text-muted ring-1 ring-line/15 transition hover:text-ink"
+        aria-label="Sign out"
+        title="Sign out"
+      >
+        <LogOut size={17} />
+      </button>
+    </div>
+  )
+}
+
 /** Slim top bar to the right of the sidebar: menu button, current page, search, help and theme. */
 export function TopBar({ theme, toggleTheme, onOpenMenu }) {
   const [scrolled, setScrolled] = useState(false)
@@ -323,6 +374,7 @@ export function TopBar({ theme, toggleTheme, onOpenMenu }) {
           >
             <HelpCircle size={16} /> <span className="hidden sm:inline">How to use</span>
           </button>
+          <AccountButton />
           <button
             type="button"
             onClick={toggleTheme}

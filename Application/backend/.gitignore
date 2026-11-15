@@ -1,0 +1,6 @@
+# local database, uploaded photos and signing key
+data/
+# trained models are rebuilt with: python train.py
+models/*.joblib
+__pycache__/
+.pytest_cache/

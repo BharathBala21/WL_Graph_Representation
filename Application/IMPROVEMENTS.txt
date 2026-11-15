@@ -1,0 +1,305 @@
+==========================================================================
+ APPLICATION REVIEW: CURRENT STATE, PERFORMANCE FIXES, FEATURE IDEAS
+==========================================================================
+Review date: 14 Nov 2026. Covers everything inside the Application folder.
+No code was changed. This file only lists suggestions.
+
+Effort: S = under an hour, M = a few hours, L = a day or more.
+
+
+--------------------------------------------------------------------------
+ PART 1. WHAT THE APPLICATION DOES TODAY
+--------------------------------------------------------------------------
+
+1) Research portal (page "/")
+   - Built with React 18, Vite 5, Tailwind, framer-motion, recharts.
+   - Shows the project overview, result charts, team and timeline.
+   - Text comes from src/lib/content.js.
+
+2) PlantCare AI (pages "/plantcare/...")
+   - React + TypeScript pages in src/plantcare/.
+   - 9 pages: Dashboard, Analyze Leaf, My Diagnoses, Diagnostics,
+     Stress Library, Crops, History & Logs, ML Pipeline, Protocol.
+   - Research numbers come from src/plantcare/data/research.ts (124 KB)
+     and public/plantcare/oof_level3.json.
+
+3) Accounts (page "/login")
+   - Register / sign in (AuthPage.tsx). The login token is saved in the
+     browser (localStorage) and is valid for 7 days.
+
+4) Backend (backend folder) - FastAPI + SQLite + OpenCV + scikit-learn
+   What happens when a user uploads a leaf photo:
+     a. The leaf is cut out from the background (ExG + Otsu).
+     b. 38 measurements are taken (shape, colour, texture, core/edge).
+     c. A Random Forest decides which of the 8 crops it is.
+     d. That crop's WL graph-kernel SVM decides healthy or stressed.
+     e. A second WL SVM ranks the top 3 likely conditions.
+     f. The 5 measurements most different from healthy leaves are shown
+        as the explanation.
+     g. The photo, the leaf outline and the result are saved for the user
+        (data/uploads and data/plantcare.db).
+
+Size of the website after "npm run build":
+   charts (recharts) ......... 373 KB  (103 KB compressed)
+   index (all pages + data) .. 333 KB  ( 94 KB compressed)
+   react ..................... 164 KB  ( 54 KB compressed)
+   motion (framer-motion) .... 128 KB  ( 43 KB compressed)
+   CSS .......................  80 KB  ( 20 KB compressed)
+
+Every visitor downloads ALL of this (about 1 MB, ~290 KB compressed) on
+the first page, no matter which page they open.
+
+
+--------------------------------------------------------------------------
+ PART 2. PERFORMANCE IMPROVEMENTS
+--------------------------------------------------------------------------
+
+=== 2.1 BACKEND ===
+
+B1. The server freezes while a photo is being diagnosed   [Effort: S]
+    File: backend/app/main.py, function predict
+    Problem: predict is "async" but does the heavy image and model work
+      directly, so no other request (login, health check, history) is
+      answered until the photo is finished.
+    Fix: run the work in a thread:
+      from starlette.concurrency import run_in_threadpool
+      result, overlay, original = await run_in_threadpool(
+          predictor().predict, body, crop)
+      Do the same for the two cv2.imwrite calls.
+
+B2. History sends every record with all 38 measurements   [Effort: M]
+    File: backend/app/db.py, function list_predictions
+    Problem: no limit; the response gets bigger with every upload.
+    Fix: add paging (?limit=20&offset=0). Return only a short summary in
+      the list (id, date, crop, status, top condition, small picture).
+      Load the full record only when the user opens it
+      (GET /api/predictions/{id} already exists).
+
+B3. Secret key is read from disk on every request          [Effort: S]
+    File: backend/app/auth.py, function _secret
+    Fix: add @functools.lru_cache(maxsize=1) above the function.
+
+B4. SQLite is in its slowest default mode                  [Effort: S]
+    File: backend/app/db.py
+    Fix: run "PRAGMA journal_mode=WAL" once in init(), and
+      "PRAGMA synchronous=NORMAL" in connect().
+
+B5. Too many database queries                              [Effort: S]
+    File: backend/app/db.py
+    Problem: stats() runs 3 queries; delete reads the whole record first.
+    Fix: one query - SELECT crop, stress_status, COUNT(*) ... GROUP BY
+      crop, stress_status. For delete, only select the two file names.
+
+B6. Photos are downloaded again every time                 [Effort: S]
+    File: backend/app/main.py, the /files mount
+    Fix: send "Cache-Control: public, max-age=31536000, immutable" (file
+      names are random and never change). Also save a small thumbnail
+      (~240 px) at upload time for the history grid.
+
+B7. Big phone photos are processed at full size            [Effort: M]
+    File: backend/app/ml.py, function predict
+    Fix: shrink the photo before processing.
+    CAUTION: shape measurements (area, perimeter) depend on image size.
+      First check the resolution of the OLID-I training photos and only
+      shrink to that size. Then re-run tests/test_api.py.
+
+B7b. Black-background JPG photos can fail segmentation           [Effort: S]
+    File: backend/app/features.py, function segment_leaf
+    Problem: on a pure black background, JPG noise makes pixels such as
+      (R,G,B) = (0,4,0). ExG = 2g - r - b scores these as maximally green
+      (2.0), so the min-max scaling and Otsu threshold break and the leaf
+      is lost (seen with a "remove background" photo saved as JPG).
+    Fix: before ExG, treat near-black pixels (all channels < ~20) as
+      background (ExG = minimum). This changes segmentation slightly, so
+      update NB08 too and re-check OLID-I results, as features.py says.
+
+B8. Crop model file is 9.6 MB (crop_router.joblib)          [Effort: S]
+    File: backend/train.py
+    Fix: try fewer trees or limit tree depth. Keep the change only if
+      accuracy stays close to 0.914.
+
+B9. Settings are hard-coded                                 [Effort: S]
+    File: backend/app/main.py
+    Problem: only localhost is allowed (CORS); only one worker.
+    Fix: read allowed websites from an environment variable
+      (e.g. PLANTCARE_ORIGINS). In production run with --workers 2
+      (each worker loads the models, so watch memory).
+
+B10. No limit on login / predict attempts                  [Effort: S]
+    File: backend/app/main.py
+    Fix: add the "slowapi" package, e.g. 10 per minute for login and
+      30 per minute for predict.
+
+
+=== 2.2 FRONTEND (WEBSITE) ===
+
+F1. Every page's code is loaded on the first visit        [Effort: M]
+    Files: src/App.jsx, src/plantcare/PlantCareApp.tsx
+    Fix: use React.lazy(() => import(...)) with <Suspense> for Home,
+      PlantCareApp, AuthPage and each PlantCare page. Then the chart
+      library and research.ts load only on pages that need them.
+      THIS IS THE BIGGEST SPEED GAIN.
+
+F2. Icon font is very large and delays the page          [Effort: S-M]
+    File: index.html
+    Problem: the full "Material Symbols" font is loaded from Google.
+    Fix: load only the icons you use (add &icon_names=lock,login,...)
+      or switch to lucide-react icons (already installed).
+
+F3. Splash screen shows on every page load                 [Effort: S]
+    Files: src/components/Splash.jsx, src/App.jsx
+    Fix: show it only on the first visit (sessionStorage flag) or
+      remove it.
+
+F4. Health check every 15 seconds, even in hidden tabs     [Effort: S]
+    File: src/lib/hooks.js, function useHealthState
+    Fix: skip when the tab is hidden (document.hidden), check again when
+      the tab becomes visible, and wait longer (60 s) while the server is
+      offline.
+
+F5. Animation library is 128 KB                            [Effort: M]
+    Fix: use LazyMotion + domAnimation with the "m" component, or plain
+      CSS transitions for simple animations.
+
+F6. Sample images are 2.7 MB of JPG                        [Effort: S]
+    Folder: public/plantcare/samples/
+    Fix: convert to WebP at the size shown (~320 px). Add width/height
+      and loading="lazy" to images missing it:
+        - DiagnosticsView.tsx line 212
+        - AnalyzePlantView.tsx line 239
+        - DiagnosisResult.tsx line 46
+
+F7. Full-size photo is uploaded                            [Effort: M]
+    File: src/lib/api.js, function predict
+    Fix: shrink the photo in the browser before upload (canvas -> JPEG).
+      Much faster on mobile data. Do this together with B7 so both use
+      the same size.
+
+F8. My Diagnoses loads everything at once                  [Effort: M]
+    File: src/plantcare/components/MyDiagnosesView.tsx
+    Fix: after B2, add a "Load more" button. After delete / note edit,
+      update the list on screen instead of reloading it.
+
+F9. Unused and duplicated code                             [Effort: S]
+    - src/components/demo.jsx: 751 lines of an old chest X-ray demo,
+      not used anywhere.
+    - "Radiology report" PDF function in src/lib/utils.js: old code.
+    - formatRelativeTime and formatFileSize exist in both lib/api.js and
+      lib/hooks.js. Keep one copy.
+    - useModels() in lib/hooks.js is broken (expects r.models, but the
+      server sends crops).
+    - public/team/23CSE610.png is a duplicate of 23CSE610.jpg.
+    - Remove jspdf / jszip from package.json if nothing else uses them.
+
+F10. src/lib/utils.js contains a hidden NUL character      [Effort: S]
+    Problem: it is inside a regex near byte 2648. Because of it, Git
+      treats the file as binary and "git diff" shows no changes for it.
+    Fix: write the escape \x00 instead of the raw character (or delete
+      that function, see F9).
+
+
+=== 2.3 QUICK WINS (about one afternoon, no risk to the model) ===
+
+   B1, B3, B4, B6, F2, F3, F4, F6, F9, F10
+
+
+--------------------------------------------------------------------------
+ PART 3. FEATURE SUGGESTIONS
+--------------------------------------------------------------------------
+(*) = shows off the WL graph-kernel research, good for the demo / viva.
+
+=== 3.1 FOR THE USER (farmer / grower) ===
+
+1. Camera capture on mobile
+   Take the photo directly in the app:
+   <input type="file" accept="image/*" capture="environment">
+   plus a guide: "one leaf, plain dark background".
+
+2. Photo-quality check before upload
+   Check blur, brightness and how much of the picture is leaf. Tell the
+   user to retake the photo before sending it.
+
+3. "Not sure" answer
+   If the model is not confident, show "uncertain - please retake the
+   photo" instead of a possibly wrong diagnosis.
+
+4. What to do next for each condition
+   Short advice per condition (e.g. N/K/Mg deficiency -> fertiliser;
+   mildew -> fungicide and spacing; pests -> pest control). Add it to
+   backend/app/conditions.py and mark it as general guidance.
+
+5. PDF report for each diagnosis
+   jspdf is already installed. Include photo, leaf outline, crop,
+   status, top 3 conditions, explanation and model reliability.
+
+6. Track one plant over time
+   Add an optional plant name to each diagnosis and show a chart of its
+   stress level over time.
+
+7. Upload many photos at once (batch upload), with a progress bar.
+
+8. Local languages (Telugu, Hindi, ...) using react-i18next.
+
+9. Works offline / can be installed on the phone (PWA)
+   Use vite-plugin-pwa; queue uploads until the network is back.
+
+10. Download history as a CSV file.
+
+
+=== 3.2 FOR RESEARCH / EXPLAINING THE MODEL ===
+
+1. (*) Interactive feature-graph view
+   Draw the 38-node graph for the leaf. Colour each node Low / Medium /
+   High (WLFeaturizer.node_levels already computes this). Highlight the
+   5 unusual measurements. A slider steps through WL iterations 0..h.
+
+2. (*) Compare graph types live
+   Run the same leaf through the Correlation, kNN, Family, Spatial and
+   Hybrid models and show how the answers differ.
+
+3. (*) Most similar training leaves
+   Show the 3 training leaves most similar to the uploaded one (by WL
+   kernel), with their true labels. Easy for examiners to understand.
+
+4. Model information page
+   Training data, accuracy per crop (already in metadata.json), known
+   limits (dark background only, 8 crops), date trained.
+
+5. "Was this right?" button
+   Save user corrections. Use them later to measure real-world accuracy
+   or to retrain.
+
+6. Save the model version with each diagnosis
+   So old results still make sense after the model is retrained.
+
+
+=== 3.3 PLATFORM / DEPLOYMENT ===
+
+1. Deploy the backend (Render / Railway / small server) and set
+   VITE_API_URL. Right now only the website is on Vercel, so photo
+   diagnosis does NOT work on the live site.
+2. Docker + docker-compose: start everything with one command.
+3. Store photos in cloud storage (S3 / Cloudinary / Supabase). Local
+   files are lost on most free hosts when you redeploy.
+4. Password reset and a way to log out of all devices.
+5. Private photo links: /files/... is currently public to anyone who
+   knows the file name.
+6. Admin page: number of users, diagnoses per day, errors, average time.
+7. GitHub Actions: run the backend tests and "npm run build" on every
+   push.
+8. Log how long each step takes (cut-out, measurements, crop model,
+   SVM) to see where time goes.
+
+
+--------------------------------------------------------------------------
+ PART 4. SUGGESTED ORDER
+--------------------------------------------------------------------------
+
+Step 1. Quick wins from section 2.3 (one afternoon).
+Step 2. F1 (load pages only when needed) + B2/F8 (paging in history).
+Step 3. Camera capture, photo-quality check, "Not sure" answer, advice
+        per condition.
+Step 4. (*) Feature-graph view and most similar training leaves.
+Step 5. Deploy the backend + Docker + GitHub Actions.
+Step 6. B7/F7 photo resizing (after checking the training photo size),
+        offline app, local languages, plant tracking.
