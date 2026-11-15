@@ -27,7 +27,17 @@ export interface PipelineTrace {
     top_support: { label: 'healthy' | 'stressed'; similarity: number; weight: number; contribution: number }[];
     conditions: { code: string; name: string; probability: number }[];
   };
-  timings_ms: { measure: number; crop_routing: number; wl_graph: number; svm: number };
+  timings_ms: { measure: number; crop_routing: number; wl_graph: number; svm: number; cnn?: number };
+  /** Hybrid decision (present when the CNN made the call). */
+  cnn?: {
+    backbone: string;
+    crop_scores: { code: string; name: string; probability: number }[];
+    crop_reliability: number;
+    forest_crop: string;
+    p_stressed: number; wl_p_stressed: number; agree: boolean;
+    reliability: { balanced_accuracy?: number | null; macro_f1: number; healthy_found?: number | null };
+    wl_reliability: { balanced_accuracy?: number | null; macro_f1: number };
+  } | null;
   images: { exg?: string; mask?: string; regions?: string; spots?: string };
 }
 
@@ -38,6 +48,7 @@ export const PIPELINE_STEPS = [
   { id: 'crop', icon: 'alt_route', title: 'Stage 1 · crop routing', text: 'Random Forest identifies which of the 8 crops the leaf belongs to.' },
   { id: 'graph', icon: 'hub', title: 'Feature graph + WL relabelling', text: "38 feature nodes labelled Low/Medium/High, linked by the crop's selected topology, refined for h WL iterations." },
   { id: 'svm', icon: 'model_training', title: 'Stage 2 · WL kernel SVM', text: 'The crop-specific WL subtree kernel SVM decides stressed vs. non-stressed and ranks likely conditions.' },
+  { id: 'hybrid', icon: 'join', title: 'Hybrid decision (CNN)', text: 'A pretrained CNN makes the healthy/stressed call; WL explains it and gives its own opinion.' },
   { id: 'check', icon: 'verified_user', title: 'Reliability check', text: 'Is this photo like the training photos? Can the model see everything that matters?' },
 ] as const;
 type StepId = (typeof PIPELINE_STEPS)[number]['id'];
@@ -62,6 +73,11 @@ export function stepSummary(record: DiagnosisRecord, i: number): string | null {
   const id: StepId = PIPELINE_STEPS[i].id;
   const r = record.result;
   if (id === 'spots') return r.spots ? (r.spots.flagged ? `${r.spots.count} spots found · ${pct(r.spots.area_ratio, 1)} of leaf` : `${r.spots.count === 0 ? 'No' : r.spots.count} clear spots`) : null;
+  if (id === 'hybrid') {
+    const c = t.cnn;
+    if (!c) return 'Not used: WL made the call';
+    return `CNN ${c.p_stressed >= 0.5 ? 'stressed' : 'healthy'} · WL ${c.wl_p_stressed >= 0.5 ? 'stressed' : 'healthy'} · ${c.agree ? 'agree' : 'disagree'}`;
+  }
   if (id === 'check') {
     const c = r.reliability_check;
     if (!c) return null;
@@ -243,7 +259,10 @@ const CropStep: React.FC<{ record: DiagnosisRecord; t: PipelineTrace }> = ({ rec
           value={chosen.name}
           sub={chosen.source === 'user' ? 'You chose this crop, so it was used directly.' : `Won ${r.scores[0].votes} of ${r.trees} votes.`}
         />
-        <Explain>The crop decides which crop-specific graph and SVM are used in the next two steps.</Explain>
+        <Explain>
+          The crop decides which crop-specific graph and SVM are used in the next two steps.
+          {t.cnn && ' (In the hybrid, the CNN identifies the crop instead; see the "Hybrid decision" step.)'}
+        </Explain>
       </div>
     </div>
   );
@@ -628,6 +647,82 @@ const CheckStep: React.FC<{ record: DiagnosisRecord }> = ({ record }) => {
   );
 };
 
+// ───────────────────────────────────────────── hybrid decision
+const HybridStep: React.FC<{ record: DiagnosisRecord; t: PipelineTrace }> = ({ record, t }) => {
+  const c = t.cnn;
+  if (!c) {
+    return (
+      <p className="font-body-sm text-[13px] text-pc-muted">
+        The CNN was not available for this diagnosis (or it was made before the hybrid was added), so the WL model made the call.
+      </p>
+    );
+  }
+  const call = (p: number) => (p >= 0.5 ? 'Stressed' : 'Healthy');
+  const Opinion: React.FC<{ who: string; p: number; rel: { balanced_accuracy?: number | null; macro_f1: number }; main?: boolean }> = ({
+    who, p, rel, main,
+  }) => (
+    <div className={`p-3 rounded-xl border ${main ? 'border-pc-green bg-pc-low' : 'border-pc-line/60'}`}>
+      <p className="font-label-sm text-[10px] uppercase tracking-wider text-pc-muted">{who}</p>
+      <p className={`font-title-md ${p >= 0.5 ? 'text-pc-err' : 'text-pc-green'}`}>
+        {call(p)} <span className="font-body-sm text-[12px] text-pc-muted">· {pct(p, 0)} stressed</span>
+      </p>
+      <GrowBar value={p} className={p >= 0.5 ? 'bg-pc-err' : 'bg-pc-green-bg'} />
+      <p className="font-body-sm text-[11px] text-pc-muted mt-1.5">
+        Tested on {record.result.crop.name.toLowerCase()} leaves: balanced accuracy{' '}
+        {rel.balanced_accuracy != null ? pct(rel.balanced_accuracy, 0) : '—'}, Macro-F1 {rel.macro_f1.toFixed(2)}
+      </p>
+    </div>
+  );
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Opinion who={`Decision · CNN ${c.backbone}`} p={c.p_stressed} rel={c.reliability} main />
+          <Opinion who="Opinion · WL + SVM (ours)" p={c.wl_p_stressed} rel={c.wl_reliability} />
+        </div>
+        <p
+          className={`flex gap-2 items-start rounded-lg px-3 py-2 font-body-sm text-[13px] ${
+            c.agree ? 'bg-pc-mint text-pc-mint-ink' : 'bg-pc-amber-bg text-pc-amber'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[18px]">{c.agree ? 'join' : 'call_split'}</span>
+          {c.agree
+            ? 'Both models give the same answer, which makes the result more trustworthy.'
+            : 'The models disagree. The CNN is more accurate on average, but a disagreement means this leaf is a hard case: check it.'}
+        </p>
+      </div>
+      <div className="flex flex-col gap-3">
+        <div>
+          <p className="font-title-sm text-[13px] text-pc-ink mb-2">
+            Crop according to the CNN <span className="text-pc-muted font-normal">(right {pct(c.crop_reliability, 0)} of the time in testing)</span>
+          </p>
+          <ul className="flex flex-col gap-1.5">
+            {c.crop_scores.slice(0, 4).map((s, i) => (
+              <li key={s.code} className="grid grid-cols-[110px_1fr_44px] items-center gap-2">
+                <span className={`font-body-sm text-[12px] ${s.code === record.result.crop.code ? 'text-pc-green font-semibold' : 'text-pc-ink2'}`}>
+                  {s.name}
+                </span>
+                <GrowBar value={s.probability} delay={i * 80} className={s.code === record.result.crop.code ? 'bg-pc-green-bg' : 'bg-pc-outline'} />
+                <span className="font-body-sm text-[12px] text-pc-ink2 tabular-nums text-right">{pct(s.probability, 0)}</span>
+              </li>
+            ))}
+          </ul>
+          {c.forest_crop !== record.result.crop.code && (
+            <p className="font-body-sm text-[11px] text-pc-muted mt-1.5">
+              The Random Forest on the 38 measurements suggested a different crop; the CNN's crop was used.
+            </p>
+          )}
+        </div>
+        <Explain>
+          Why a hybrid? In the benchmark, the frozen CNN made the most accurate healthy/stressed calls (macro-F1 0.739 vs 0.706 for WL)
+          and was unaffected by light, blur or resolution changes. But it cannot say <i>why</i>. The WL model shows the reason in terms of
+          named leaf measurements (the graph and pulls in the previous steps), and its agreement acts as a second opinion.
+        </Explain>
+      </div>
+    </div>
+  );
+};
+
 // ───────────────────────────────────────────── walkthrough
 interface Props {
   record: DiagnosisRecord;
@@ -667,6 +762,7 @@ export const PipelineWalkthrough: React.FC<Props> = ({ record, step, onStep, aut
     crop: `${tm.crop_routing} ms`,
     graph: `${tm.wl_graph} ms`,
     svm: `${tm.svm} ms`,
+    hybrid: tm.cnn != null ? `${tm.cnn} ms` : 'not used',
     check: 'under 1 ms',
   };
 
@@ -705,7 +801,7 @@ export const PipelineWalkthrough: React.FC<Props> = ({ record, step, onStep, aut
       </div>
 
       {/* step pills with progress */}
-      <div className="grid grid-cols-7 gap-1.5">
+      <div className="grid grid-cols-8 gap-1.5">
         {PIPELINE_STEPS.map((p, i) => (
           <button key={p.title} type="button" onClick={() => (setPlaying(false), onStep(i))} className="flex flex-col gap-1 text-left group" aria-label={`Step ${i + 1}: ${p.title}`}>
             <span className="h-1.5 rounded-full bg-pc-cont overflow-hidden">
@@ -730,6 +826,7 @@ export const PipelineWalkthrough: React.FC<Props> = ({ record, step, onStep, aut
         {s.id === 'crop' && <CropStep record={record} t={t} />}
         {s.id === 'graph' && <GraphStep record={record} t={t} iter={iter} setIter={(k) => (setPlaying(false), setIter(k))} />}
         {s.id === 'svm' && <SvmStep record={record} t={t} />}
+        {s.id === 'hybrid' && <HybridStep record={record} t={t} />}
         {s.id === 'check' && <CheckStep record={record} />}
       </div>
     </Card>

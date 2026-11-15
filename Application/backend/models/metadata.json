@@ -993,5 +993,60 @@
       "name": "Leaf spot",
       "type": "Disease"
     }
+  },
+  "cnn": {
+    "backbone": "EfficientNet-B0",
+    "trained_at": "2026-11-15T09:59:04+00:00",
+    "crop_router_cv_accuracy": 0.9916,
+    "crops": {
+      "ash_gourd": {
+        "stress_accuracy": 0.8705,
+        "stress_macro_f1": 0.6805,
+        "stress_balanced_accuracy": 0.7504,
+        "stress_healthy_found": 0.6059
+      },
+      "bitter_gourd": {
+        "stress_accuracy": 0.8235,
+        "stress_macro_f1": 0.7659,
+        "stress_balanced_accuracy": 0.7821,
+        "stress_healthy_found": 0.7047
+      },
+      "bottle_gourd": {
+        "stress_accuracy": 0.8823,
+        "stress_macro_f1": 0.6969,
+        "stress_balanced_accuracy": 0.722,
+        "stress_healthy_found": 0.5238
+      },
+      "cucumber": {
+        "stress_accuracy": 0.9083,
+        "stress_macro_f1": 0.8088,
+        "stress_balanced_accuracy": 0.809,
+        "stress_healthy_found": 0.6714
+      },
+      "eggplant": {
+        "stress_accuracy": 0.8701,
+        "stress_macro_f1": 0.7444,
+        "stress_balanced_accuracy": 0.7624,
+        "stress_healthy_found": 0.614
+      },
+      "ridge_gourd": {
+        "stress_accuracy": 0.8092,
+        "stress_macro_f1": 0.6697,
+        "stress_balanced_accuracy": 0.6873,
+        "stress_healthy_found": 0.5106
+      },
+      "snake_gourd": {
+        "stress_accuracy": 0.8672,
+        "stress_macro_f1": 0.7105,
+        "stress_balanced_accuracy": 0.7113,
+        "stress_healthy_found": 0.5015
+      },
+      "tomato": {
+        "stress_accuracy": 0.7776,
+        "stress_macro_f1": 0.7459,
+        "stress_balanced_accuracy": 0.7502,
+        "stress_healthy_found": 0.6746
+      }
+    }
   }
 }

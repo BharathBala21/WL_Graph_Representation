@@ -40,6 +40,14 @@ class Predictor:
             self.meta = json.load(f)
         self.router = joblib.load(os.path.join(models_dir, 'crop_router.joblib'))
         self.crop_models = {c: joblib.load(os.path.join(models_dir, f'{c}.joblib')) for c in self.meta['crops']}
+        # hybrid: the CNN decides crop + healthy/stressed when available; WL explains (and gives its own opinion)
+        self.cnn, self.cnn_error = None, None
+        if os.environ.get('PLANTCARE_DISABLE_CNN') != '1' and 'cnn' in self.meta:
+            try:
+                from .cnn import CNNDecider
+                self.cnn = CNNDecider(models_dir)
+            except Exception as e:  # torch missing, weights not downloadable, heads not trained: WL only
+                self.cnn_error = str(e)
 
     # ------------------------------------------------------------------ helpers
     @staticmethod
@@ -271,11 +279,15 @@ class Predictor:
         order = np.argsort(-proba)
         crop_alts = [{'code': self.router.classes_[i], 'name': CROPS[self.router.classes_[i]],
                       'probability': round(float(proba[i]), 4)} for i in order[:3]]
+        if crop_hint and crop_hint not in self.crop_models:
+            raise ImageError(f'Unknown crop "{crop_hint}".')
+        cnn = self.cnn.decide(img, crop_hint) if self.cnn else None
+        if cnn:  # the CNN identifies the crop (99% in testing vs 92% for the forest)
+            crop_alts = [{'code': s['code'], 'name': CROPS[s['code']], 'probability': s['probability']}
+                         for s in cnn['crop_scores'][:3]]
         if crop_hint:
-            if crop_hint not in self.crop_models:
-                raise ImageError(f'Unknown crop "{crop_hint}".')
             crop, crop_source = crop_hint, 'user'
-            crop_conf = float(proba[list(self.router.classes_).index(crop_hint)])
+            crop_conf = cnn['crop_confidence'] if cnn else float(proba[list(self.router.classes_).index(crop_hint)])
         else:
             crop, crop_source = crop_alts[0]['code'], 'model'
             crop_conf = crop_alts[0]['probability']
@@ -288,12 +300,13 @@ class Predictor:
         t3 = time.perf_counter()
 
         # 3. healthy vs stressed, 4. ranked conditions
-        p_stress = float(cm['stress'].predict_proba(X)[0][list(cm['stress'].classes_).index(1)])
+        wl_p_stress = float(cm['stress'].predict_proba(X)[0][list(cm['stress'].classes_).index(1)])
+        p_stress = cnn['p_stressed'] if cnn else wl_p_stress  # the decision; WL's own opinion is kept below
         cond_p = cm['condition'].predict_proba(X)[0]
         cond_order = np.argsort(-cond_p)
         conditions = [{'code': cm['condition'].classes_[i], **CONDITIONS[cm['condition'].classes_[i]],
                        'probability': round(float(cond_p[i]), 4)} for i in cond_order[:3]]
-        svm = self.svm_trace(cm['stress'], P, p_stress)
+        svm = self.svm_trace(cm['stress'], P, wl_p_stress)
         svm['conditions'] = [{'code': cm['condition'].classes_[i], 'name': CONDITIONS[cm['condition'].classes_[i]]['name'],
                               'probability': round(float(cond_p[i]), 4)} for i in cond_order]
         t4 = time.perf_counter()
@@ -312,6 +325,36 @@ class Predictor:
         if spot_msg:
             warnings.insert(0, spot_msg)
 
+        # hybrid bookkeeping: who decided, and does WL agree?
+        status = lambda p: 'stressed' if p >= 0.5 else 'healthy'
+        agree = status(p_stress) == status(wl_p_stress)
+        if cnn:
+            cinfo = self.meta['cnn']['crops'][crop]
+            stress_rel = {'accuracy': cinfo['stress_accuracy'], 'macro_f1': cinfo['stress_macro_f1'],
+                          'balanced_accuracy': cinfo['stress_balanced_accuracy'],
+                          'healthy_found': cinfo['stress_healthy_found'],
+                          'always_stressed_accuracy': info.get('always_stressed_accuracy')}
+            crop_rel = self.meta['cnn']['crop_router_cv_accuracy']
+            if not agree:
+                warnings.insert(0, f'The two models disagree: the CNN says {status(p_stress)}, WL says '
+                                   f'{status(wl_p_stress)}. Treat this result as uncertain and check the leaf.')
+        else:
+            stress_rel = {'accuracy': info['stress_accuracy'], 'macro_f1': info['stress_macro_f1'],
+                          'balanced_accuracy': info.get('stress_balanced_accuracy'),
+                          'healthy_found': info.get('stress_healthy_found'),
+                          'always_stressed_accuracy': info.get('always_stressed_accuracy')}
+            crop_rel = self.meta['crop_router']['cv_accuracy']
+        decision = {
+            'model': f'CNN {self.meta["cnn"]["backbone"]} (frozen) + logistic regression' if cnn else 'WL + SVM',
+            'hybrid': bool(cnn),
+            'cnn_status': status(p_stress) if cnn else None,
+            'cnn_probability_stressed': round(p_stress, 4) if cnn else None,
+            'wl_status': status(wl_p_stress), 'wl_probability_stressed': round(wl_p_stress, 4),
+            'agree': agree,
+            'wl_reliability': {'balanced_accuracy': info.get('stress_balanced_accuracy'),
+                               'macro_f1': info['stress_macro_f1']},
+        }
+
         images, otsu = self.step_images(img, measured['mask'])
         images['overlay'] = self.overlay(img, measured['mask'])
         images['spots'] = self.resize(spots_img, STEP_IMAGE_SIDE)
@@ -327,23 +370,31 @@ class Predictor:
             'crop_router': router,
             'graph': graph,
             'svm': svm,
-            'timings_ms': {'measure': ms(t0, t1), 'crop_routing': ms(t1, t2), 'wl_graph': ms(t2, t3), 'svm': ms(t3, t4)},
+            'timings_ms': {'measure': ms(t0, t1), 'crop_routing': ms(t1, t2), 'wl_graph': ms(t2, t3), 'svm': ms(t3, t4),
+                           **({'cnn': cnn['timings_ms']['cnn'] + cnn['timings_ms']['heads']} if cnn else {})},
+            'cnn': None if not cnn else {
+                'backbone': self.meta['cnn']['backbone'],
+                'crop_scores': [{'code': s['code'], 'name': CROPS[s['code']], 'probability': s['probability']}
+                                for s in cnn['crop_scores']],
+                'crop_reliability': self.meta['cnn']['crop_router_cv_accuracy'],
+                'forest_crop': router['scores'][0]['code'],
+                'p_stressed': round(p_stress, 4), 'wl_p_stressed': round(wl_p_stress, 4), 'agree': agree,
+                'reliability': stress_rel, 'wl_reliability': decision['wl_reliability'],
+            },
             'images': {},  # filled in by the API once the pictures are saved
         }
 
         result = {
             'quality': {'flag': measured['quality_flag'], 'mask_ratio': round(measured['mask_ratio'], 4)},
             'crop': {'code': crop, 'name': CROPS[crop], 'confidence': round(crop_conf, 4), 'source': crop_source,
-                     'alternatives': crop_alts, 'reliability': self.meta['crop_router']['cv_accuracy']},
-            'stress': {'status': 'stressed' if p_stress >= 0.5 else 'healthy',
+                     'alternatives': crop_alts, 'reliability': crop_rel},
+            'stress': {'status': status(p_stress),
                        'probability_stressed': round(p_stress, 4),
                        'confidence': round(max(p_stress, 1 - p_stress), 4),
                        # balanced accuracy is the headline: 84% of leaves are stressed, so plain accuracy
                        # looks good even for a model that always answers "stressed"
-                       'reliability': {'accuracy': info['stress_accuracy'], 'macro_f1': info['stress_macro_f1'],
-                                       'balanced_accuracy': info.get('stress_balanced_accuracy'),
-                                       'healthy_found': info.get('stress_healthy_found'),
-                                       'always_stressed_accuracy': info.get('always_stressed_accuracy')}},
+                       'reliability': stress_rel},
+            'decision': decision,
             'conditions': conditions,
             'conditions_reliability': {'top1': info['condition_top1_accuracy'], 'top3': info['condition_top3_accuracy']},
             'model': {'graph': info['graph'], 'graph_name': info['graph_name'], 'wl_depth': info['wl_depth']},

@@ -12,3 +12,7 @@ joblib>=1.2
 # tests
 pytest>=7
 httpx>=0.25
+# optional: hybrid decision (frozen EfficientNet-B0). Without these the app runs WL only.
+# CPU build:  pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+# torch>=2.0
+# torchvision>=0.15

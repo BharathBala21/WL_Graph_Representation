@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { RESEARCH } from '../data/research';
+import { BENCHMARK } from '../data/benchmark';
 import { Bar, Card, Chip, SectionTitle, featureLabel, num, pct } from '../lib';
 
 const STAGES = [
@@ -177,6 +178,82 @@ export const MLPipelineView: React.FC = () => {
               ))}
             </tbody>
           </table>
+        </Card>
+      </div>
+
+      {/* Fair benchmark incl. CNN */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <Card className="xl:col-span-2">
+          <SectionTitle
+            icon="balance"
+            title="Fair benchmark: where WL stands"
+            sub="Full pipeline (identify the crop, then that crop's healthy/stressed model) · same 5 folds for every model"
+          />
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px] font-body-sm text-[12px]">
+              <thead className="text-pc-muted">
+                <tr className="text-left">
+                  <th className="font-normal py-1.5">Model</th>
+                  <th className="font-normal py-1.5 text-right">Macro-F1</th>
+                  <th className="font-normal py-1.5 text-right">Bal. acc.</th>
+                  <th className="font-normal py-1.5 text-right">Healthy found</th>
+                  <th className="font-normal py-1.5 text-right">Crop right</th>
+                  <th className="font-normal py-1.5 text-right">Time / photo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {BENCHMARK.level3.map((b) => (
+                  <tr
+                    key={b.model}
+                    className={`border-t border-pc-line/50 ${
+                      b.kind === 'ours' ? 'text-pc-green font-semibold' : b.kind === 'reference' ? 'text-pc-muted italic' : 'text-pc-ink'
+                    }`}
+                  >
+                    <td className="py-1.5">
+                      {b.model}
+                      {b.kind === 'cnn' && <Chip className="ml-1.5 bg-pc-amber-bg text-pc-amber">CNN</Chip>}
+                    </td>
+                    <td className="py-1.5 text-right font-code-sm">{pct(b.macroF1)}</td>
+                    <td className="py-1.5 text-right font-code-sm">{pct(b.balancedAccuracy)}</td>
+                    <td className="py-1.5 text-right font-code-sm">{pct(b.healthyFound, 0)}</td>
+                    <td className="py-1.5 text-right font-code-sm">{b.cropIdentified != null ? pct(b.cropIdentified, 0) : '—'}</td>
+                    <td className="py-1.5 text-right font-code-sm">{b.msPerPhoto != null ? `${(b.msPerPhoto / 1000).toFixed(2)} s` : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="font-body-sm text-[12px] text-pc-muted mt-3">
+            The frozen CNN (ImageNet weights, not trained on leaves) is the most accurate, identifies the crop for 99% of leaves and is about
+            8× faster per photo, because the 38-measurement pipeline segments the full 3,024-pixel photo. WL is competitive but not the most
+            accurate. Accuracy is not shown on its own: always answering "stressed" already scores 83.8%. This is why the app now uses a{' '}
+            <b>hybrid</b>: the CNN decides, and WL explains and gives a second opinion.
+          </p>
+        </Card>
+
+        <Card>
+          <SectionTitle icon="shield" title="Robustness" sub="Macro-F1 change when 240 photos are taken differently (7 changes)" />
+          <div className="flex flex-col gap-2.5">
+            {BENCHMARK.robustness.map((b) => (
+              <div key={b.model}>
+                <div className="flex justify-between gap-2 font-body-sm text-[12px]">
+                  <span className={b.kind === 'ours' ? 'text-pc-green font-semibold' : 'text-pc-ink'}>{b.model}</span>
+                  <span className="font-code-sm text-pc-muted">
+                    {b.change >= 0 ? '+' : '−'}
+                    {Math.abs(b.change * 100).toFixed(1)}
+                  </span>
+                </div>
+                <Bar
+                  value={Math.min(Math.abs(b.change), 0.2)}
+                  max={0.2}
+                  className={b.kind === 'ours' ? 'bg-pc-green-bg' : b.kind === 'cnn' ? 'bg-[#f59e0b]' : 'bg-pc-outline'}
+                />
+              </div>
+            ))}
+          </div>
+          <p className="font-body-sm text-[12px] text-pc-muted mt-3">
+            Shorter bar = more stable. WL loses the least of all measurement-based models; the CNN is barely affected.
+          </p>
         </Card>
       </div>
 

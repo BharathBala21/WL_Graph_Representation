@@ -35,12 +35,24 @@ crop forest, the feature graph with its WL labels and how common each label is i
 SVM's pull from each support vector. Three step pictures (`<id>_exg.jpg`, `<id>_mask.png`,
 `<id>_regions.jpg`) are saved next to the photo. The **Analyze Leaf** page replays these steps.
 
+## Hybrid decision (CNN decides, WL explains)
+
+When PyTorch/torchvision are installed and `models/cnn_heads.joblib` exists, a frozen ImageNet
+**EfficientNet-B0** (not trained on OLID-I) identifies the crop and makes the healthy/stressed call, using small
+logistic-regression classifiers trained by `python train_cnn.py` (~2 min with the benchmark's cached
+embeddings). In the benchmark this was the best full pipeline (macro-F1 0.739 vs 0.706 for WL), identified the
+crop for 99% of leaves and was unaffected by photo changes. The WL model still runs: it explains the decision
+(graph, rare patterns, pulls) and gives its own opinion; when the two disagree, the result is flagged.
+Without PyTorch, or with `PLANTCARE_DISABLE_CNN=1`, the app runs WL only. On Windows PyTorch must be imported
+before scikit-learn; `app/__init__.py` does this.
+
 ## Setup
 
 ```bash
 cd Application/backend
 pip install -r requirements.txt
 python train.py                         # ~20 s, writes models/ from full_pipeline/olid_full_features.csv
+python train_cnn.py                     # optional hybrid: CNN classifiers (needs torch + torchvision)
 uvicorn app.main:app --port 8000        # API on http://localhost:8000, docs on /docs
 ```
 

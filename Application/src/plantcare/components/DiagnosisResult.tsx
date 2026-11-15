@@ -25,6 +25,13 @@ export interface DiagnosisRecord {
     quality: { flag: string; mask_ratio: number };
     /** What every pipeline step produced (diagnoses made before this was added have none). */
     trace?: PipelineTrace;
+    /** Who made the healthy/stressed call (hybrid: CNN decides, WL explains), and WL's own opinion. */
+    decision?: {
+      model: string; hybrid: boolean;
+      cnn_status: 'healthy' | 'stressed' | null; cnn_probability_stressed: number | null;
+      wl_status: 'healthy' | 'stressed'; wl_probability_stressed: number; agree: boolean;
+      wl_reliability: { balanced_accuracy?: number | null; macro_f1: number };
+    };
     /** Rule-based spot check that runs next to the models. */
     spots?: { count: number; area_ratio: number; flagged: boolean; message: string | null };
     /** Is the photo like the training photos? */
@@ -49,6 +56,8 @@ export const DiagnosisResult: React.FC<Props> = ({ record, onDelete, onSaveNote,
   const stressed = r.stress.status === 'stressed';
   const check = r.reliability_check;
   const rel = r.stress.reliability;
+  const hybrid = !!r.decision?.hybrid;
+  const disagree = hybrid && r.decision!.agree === false;
   // below 0.6 balanced accuracy the healthy/stressed call for this crop is close to guessing
   const weakCrop = rel.balanced_accuracy != null && rel.balanced_accuracy < 0.6;
   // what the headline shows: the model's answer, or a hedge when the checks say it may be wrong
@@ -92,6 +101,16 @@ export const DiagnosisResult: React.FC<Props> = ({ record, onDelete, onSaveNote,
                     ? `${pct(r.stress.confidence, 0)} confident`
                     : `Model's best guess: ${stressed ? 'Stressed' : 'Healthy'} (${pct(r.stress.confidence, 0)})`}
                 </span>
+                {disagree && (
+                  <Chip className="bg-pc-amber-bg text-pc-amber">
+                    <span className="material-symbols-outlined text-[12px]">call_split</span> CNN and WL disagree
+                  </Chip>
+                )}
+                {hybrid && !disagree && (
+                  <Chip className="bg-pc-mint text-pc-mint-ink">
+                    <span className="material-symbols-outlined text-[12px]">join</span> CNN and WL agree
+                  </Chip>
+                )}
                 {weakCrop && (
                   <Chip className="bg-pc-amber-bg text-pc-amber">
                     <span className="material-symbols-outlined text-[12px]">info</span> weak for {r.crop.name.toLowerCase()}
@@ -227,12 +246,20 @@ export const DiagnosisResult: React.FC<Props> = ({ record, onDelete, onSaveNote,
             <SectionTitle icon="hub" title="How this was decided" />
             <ul className="font-body-sm text-[13px] text-pc-ink2 flex flex-col gap-1.5">
               <li>• Leaf separated from the background and measured (38 measurements).</li>
-              <li>• Crop identified by a Random Forest (correct {pct(r.crop.reliability, 0)} of the time in testing).</li>
+              {hybrid ? (
+                <li>
+                  • <b>Hybrid:</b> a pretrained CNN ({r.decision!.model}) identified the crop (correct {pct(r.crop.reliability, 0)} of the time in
+                  testing) and made the healthy/stressed call. The WL model explains it and gives its own opinion:{' '}
+                  <b>{r.decision!.wl_status}</b> ({r.decision!.agree ? 'agrees' : 'disagrees'}).
+                </li>
+              ) : (
+                <li>• Crop identified by a Random Forest (correct {pct(r.crop.reliability, 0)} of the time in testing).</li>
+              )}
               <li>
                 • Measurements turned into a <b>{r.model.graph_name}</b> graph and compared with the <b>WL graph kernel</b> (depth {r.model.wl_depth}).
               </li>
               <li>
-                • SVM decided healthy vs stressed.{' '}
+                • {hybrid ? 'The CNN decided' : 'SVM decided'} healthy vs stressed.{' '}
                 {rel.balanced_accuracy != null ? (
                   <>
                     For {r.crop.name.toLowerCase()} leaves in testing: balanced accuracy {pct(rel.balanced_accuracy, 0)} (healthy and stressed

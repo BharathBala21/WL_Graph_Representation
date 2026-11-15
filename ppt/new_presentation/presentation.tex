@@ -464,6 +464,9 @@
         \begin{block}{Why not accuracy?}
             \scriptsize 84\% of leaves are stressed: always answering ``stressed'' already gives 83.8\% accuracy, so we report macro-F1.
         \end{block}
+        \begin{block}{Speed (photo $\rightarrow$ answer)}
+            \scriptsize CNN $\approx$ 0.14\,s; every 38-measurement model $\approx$ 1.1\,s (full-size segmentation), so the CNN is $\approx 8\times$ faster.
+        \end{block}
         \begin{block}{Explainability}
             \scriptsize Only WL explains a decision with named leaf measurements and how they are linked.
         \end{block}
@@ -471,7 +474,7 @@
     \vspace{0.15cm}
     \centering
     \begin{tikzpicture}
-        \node[keybox, text width=0.88\textwidth] {\footnotesize WL is competitive and the most robust feature-based model, but not the most accurate.};
+        \node[keybox, text width=0.88\textwidth] {\footnotesize WL is competitive and the most robust feature-based model, but not the most accurate. The app therefore uses a \textbf{hybrid}: the CNN decides, WL explains.};
     \end{tikzpicture}
 \end{frame}
 
@@ -532,7 +535,7 @@
     \end{columns}
     \vspace{0.2cm}
     \centering
-    {\footnotesize \textbf{Live demo:} PlantCare AI -- pick a leaf and see its prediction.}
+    {\footnotesize \textbf{Live demo:} PlantCare AI -- a CNN makes the call, WL explains it step by step and gives a second opinion.}
 \end{frame}
 
 % =========================================================================
