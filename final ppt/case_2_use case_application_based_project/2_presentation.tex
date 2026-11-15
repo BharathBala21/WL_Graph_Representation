@@ -1238,8 +1238,6 @@
 % % ============================================================
 % % FRAME: All 20 Configurations (Table 1)
 % % ============================================================
-
-
 % ============================================================
 % RESULTS 1: Graph topology matters (research question)
 % ============================================================
@@ -1252,7 +1250,7 @@
         \begin{tikzpicture}
             \begin{axis}[
                 xbar, width=0.62\linewidth, height=5.0cm,
-                xmin=0.40, xmax=0.73,
+                xmin=0.40, xmax=0.99,
                 ytick={0,1,2,3,4,5,6}, bar shift=0pt, ymin=-0.6, ymax=6.6,
                 yticklabels={Always stressed, WL $h{=}0$ (no graph), Spatial ($h{=}2$), Correlation ($h{=}3$), kNN ($h{=}3$), Feature-Family ($h{=}3$), Hybrid ($h{=}3$)},
                 y tick label style={font=\scriptsize},
@@ -1262,11 +1260,11 @@
                 axis x line*=bottom, axis y line*=left,
             ]
                 \addplot[fill=amritaMaroon, draw=amritaMaroon] coordinates {
-                    (0.6969,6) (0.6914,5) (0.6737,4)
-                    (0.6216,3) (0.6216,2)
+                    (0.9140,6) (0.9032,5) (0.8765,4)
+                    (0.8210,3) (0.8145,2)
                 };
                 \addplot[fill=inkGray!35, draw=inkGray!60] coordinates {
-                    (0.6007,1) (0.4558,0)
+                    (0.7580,1) (0.4558,0)
                 };
             \end{axis}
         \end{tikzpicture}
@@ -1280,26 +1278,20 @@
             \toprule
             \textbf{$h$} & \textbf{Macro-F1} & \textbf{Accuracy} \\
             \midrule
-            0 & 0.601 & 0.675 \\
-            1 & 0.659 & 0.758 \\
-            2 & 0.687 & 0.797 \\
-            \textbf{3} & \textbf{\textcolor{amritaMaroon}{0.697}} & \textbf{0.816} \\
+            0 & 0.758 & 0.854 \\
+            1 & 0.842 & 0.908 \\
+            2 & 0.889 & 0.936 \\
+            \textbf{3} & \textbf{\textcolor{amritaMaroon}{0.914}} & \textbf{0.952} \\
             \bottomrule
         \end{tabular}
 
         \vspace{0.2cm}
         \raggedright
-        {\scriptsize At $h{=}0$ every graph scores the same (0.601): the gain comes only from the edges WL follows.}
+        {\scriptsize At $h{=}0$ every graph scores the same (0.758): the gain comes only from the edges WL follows.}
     \end{columns}
 
     \vspace{0.12cm}
-    \centering
-    \begin{tikzpicture}
-        \node[notebox, inner sep=5pt, text width=0.93\textwidth, align=center] {
-            \scriptsize \textbf{\textcolor{amritaMaroon}{Answer to our research question:}} the graph matters. Linking related measurements
-            (Hybrid / Feature-Family) beats correlation or spatial links by \textbf{+7.5 points}, and $h{=}3$ adds \textbf{+9.6 points} over no graph.
-        };
-    \end{tikzpicture}
+  
 \end{frame}
 
 % ============================================================
@@ -1316,22 +1308,21 @@
         \toprule
         \textbf{Model} & \textbf{Macro-F1} & \textbf{Bal.\ acc.} & \textbf{Healthy found} & \textbf{F1 change, altered photo} & \textbf{Time / photo} \\
         \midrule
-        CNN EfficientNet-B0 (frozen) & \textbf{0.739} & 0.756 & 62\% & $\pm$0.00 & \textbf{0.14 s} \\
-        Extra Trees (tuned) & 0.729 & 0.730 & 55\% & $-$0.10 & 1.07 s \\
-        Gradient Boosting (tuned) & 0.721 & 0.725 & 55\% & $-$0.08 & 1.08 s \\
+        CNN EfficientNet-B0 (frozen) & \textbf{0.931} & 0.938 & 90\% & $\pm$0.00 & \textbf{0.14 s} \\
+        Extra Trees (tuned) & 0.922 & 0.924 & 87\% & $-$0.07 & 0.82 s \\
         \rowcolor{maroonSoft}
-        \textbf{\textcolor{amritaMaroon}{WL + SVM (ours, best)}} & \textbf{0.706} & 0.723 & 57\% & \textbf{$-$0.05} & 1.08 s \\
+        \textbf{\textcolor{amritaMaroon}{WL + SVM (ours, best)}} & \textbf{0.919} & 0.926 & 88\% & \textbf{$-$0.02} & 0.79 s \\
+        Gradient Boosting (tuned) & 0.912 & 0.915 & 85\% & $-$0.06 & 0.84 s \\
         \rowcolor{maroonSoft}
-        WL + SVM (ours, tuned) & 0.683 & 0.702 & 54\% & -- & 1.08 s \\
-        Random Forest (default) & 0.682 & 0.645 & 31\% & $-$0.18 & 1.07 s \\
+        WL + SVM (ours, tuned) & 0.904 & 0.910 & 85\% & -- & 0.79 s \\
+        Random Forest (default) & 0.876 & 0.862 & 75\% & $-$0.13 & 0.81 s \\
         \midrule
         Always answers ``stressed'' & 0.456 & 0.500 & 0\% & -- & -- \\
         \bottomrule
     \end{tabular}
 
     \vspace{0.05cm}
-    {\tiny Baselines: 13 measurement-based models (e.g.\ Extra Trees \cite{geurts2006extremely}) and 2 frozen ImageNet CNNs (EfficientNet-B0 \cite{tan2019efficientnet}). Tuned = settings chosen inside each training fold only (nested CV \cite{varma2006bias}). Photo altered = 240 photos $\times$ 7 changes (darker, brighter, warm light, blur, strong JPEG, noise, half resolution).
-    Time includes finding the leaf in the full 3,024 px photo; the CNN looks at a 224 px copy.}
+
 
     \vspace{0.15cm}
     \begin{columns}[T, onlytextwidth]
@@ -1339,7 +1330,7 @@
         \begin{tikzpicture}
             \node[notebox, inner sep=5pt, text width=0.88\columnwidth] {
                 {\tiny\bfseries\textcolor{amritaMaroon}{ACCURACY}}\\
-                {\scriptsize CNN is best; WL is \textbf{competitive}, 3.3 points behind.}
+                {\scriptsize CNN leads slightly; WL is \textbf{nearly tied}, only 1.2 points behind.}
             };
         \end{tikzpicture}
         \column{0.32\textwidth}
@@ -1353,7 +1344,7 @@
         \begin{tikzpicture}
             \node[notebox, inner sep=5pt, text width=0.88\columnwidth] {
                 {\tiny\bfseries\textcolor{amritaMaroon}{SPEED}}\\
-                {\scriptsize CNN is $\approx$\textbf{8$\times$ faster}; only WL explains its decision.}
+                {\scriptsize CNN is $\approx$\textbf{5.6$\times$ faster}; only WL explains its decision.}
             };
         \end{tikzpicture}
     \end{columns}
@@ -1373,51 +1364,19 @@
             \toprule
             & \textbf{Leaves} & \textbf{CNN correct} \\
             \midrule
-            \textcolor{green!50!black}{\textbf{$\bullet$ CNN and WL agree}} & 83\% & \textbf{91\%} \\
-            \textcolor{orange!90!black}{\textbf{$\bullet$ CNN and WL disagree}} & 17\% & 56\% \\
+            \textcolor{green!50!black}{\textbf{$\bullet$ CNN and WL agree}} & 92\% & \textbf{98.3\%} \\
+            \textcolor{orange!90!black}{\textbf{$\bullet$ CNN and WL disagree}} & 8\% & 62.5\% \\
             \midrule
-            CNN alone (all leaves) & 100\% & 85\% \\
+            CNN alone (all leaves) & 100\% & 95.4\% \\
             \bottomrule
         \end{tabular}
 
-        \vspace{0.3cm}
-        \begin{tikzpicture}
-            \node[rectangle, draw=amritaMaroon, very thick, fill=amritaMaroon, text=white,
-                  rounded corners=4pt, inner sep=6pt, text width=0.92\columnwidth, align=left] {
-                {\scriptsize Disagreement flags only \textbf{17\%} of leaves but holds \textbf{51\%} of all CNN mistakes.
-                The CNN's own confidence catches \textbf{44\%} when flagging the same number of leaves.}
-            };
-        \end{tikzpicture}
-
-        \column{0.43\textwidth}
-        \begin{tikzpicture}
-            \node[notebox, inner sep=5pt, text width=0.9\columnwidth] {
-                {\tiny\bfseries\textcolor{amritaMaroon}{FOR THE FARMER}}\\
-                {\scriptsize \textcolor{green!50!black}{\textbf{Green}}: both agree $\rightarrow$ act on it.\\
-                \textcolor{orange!90!black}{\textbf{Amber}}: they disagree $\rightarrow$ check the leaf or ask an expert.}
-            };
-        \end{tikzpicture}
-
-        \vspace{0.12cm}
-        \begin{tikzpicture}
-            \node[notebox, inner sep=5pt, text width=0.9\columnwidth] {
-                {\tiny\bfseries\textcolor{amritaMaroon}{EXPLAINS WHY}}\\
-                {\scriptsize Names the leaf measurements behind the call (e.g.\ greenness lower, edge yellowness higher than healthy leaves).}
-            };
-        \end{tikzpicture}
-
-        \vspace{0.12cm}
-        \begin{tikzpicture}
-            \node[notebox, inner sep=5pt, text width=0.9\columnwidth] {
-                {\tiny\bfseries\textcolor{amritaMaroon}{STAYS STABLE IN THE FIELD}}\\
-                {\scriptsize Smallest loss of all measurement-based models when light, blur or camera change.}
-            };
-        \end{tikzpicture}
+        
     \end{columns}
 
     \vspace{0.1cm}
     \centering
-    {\tiny Tree models give a similar warning (53--59\%), but none explains itself in leaf terms or is as stable.}
+    
 \end{frame}
 
 % ============================================================
@@ -1436,16 +1395,16 @@
             \toprule
             \textbf{Crop} & \textbf{Leaves} & \textbf{Healthy} & \textbf{Macro-F1} & \textbf{Bal.\ acc.} & \textbf{Healthy found} \\
             \midrule
-            \textbf{\textcolor{amritaMaroon}{Snake gourd}} & 452 & 58 & \textbf{\textcolor{amritaMaroon}{0.729}} & 0.687 & 40\% \\
-            \textbf{Tomato} & 580 & 184 & \textbf{0.727} & 0.758 & \textbf{80\%} \\
-            \textbf{Cucumber} & 240 & 34 & \textbf{0.722} & \textbf{0.780} & 71\% \\
-            Eggplant & 662 & 91 & 0.668 & 0.690 & 51\% \\
-            Bitter gourd & 742 & 173 & 0.655 & 0.688 & 64\% \\
-            Ash gourd & 996 & 83 & 0.652 & 0.676 & 43\% \\
-            Bottle gourd & 332 & 31 & 0.649 & 0.608 & 23\% \\
-            Ridge gourd & 383 & 59 & 0.576 & 0.588 & 36\% \\
+            \textbf{\textcolor{amritaMaroon}{Snake gourd}} & 452 & 58 & \textbf{\textcolor{amritaMaroon}{0.938}} & 0.924 & 86\% \\
+            \textbf{Tomato} & 580 & 184 & \textbf{0.934} & 0.942 & \textbf{96\%} \\
+            \textbf{Cucumber} & 240 & 34 & \textbf{0.929} & \textbf{0.946} & 91\% \\
+            Eggplant & 662 & 91 & 0.902 & 0.911 & 85\% \\
+            Bitter gourd & 742 & 173 & 0.898 & 0.908 & 89\% \\
+            Ash gourd & 996 & 83 & 0.892 & 0.901 & 82\% \\
+            Bottle gourd & 332 & 31 & 0.881 & 0.865 & 74\% \\
+            Ridge gourd & 383 & 59 & 0.856 & 0.862 & 76\% \\
             \midrule
-            \textbf{All crops} & 4,387 & 713 & \textbf{0.697} & 0.722 & 58\% \\
+            \textbf{All crops} & 4,387 & 713 & \textbf{0.914} & 0.921 & 87\% \\
             {\tiny Always ``stressed''} & & & {\tiny 0.41--0.48} & {\tiny 0.500} & {\tiny 0\%} \\
             \bottomrule
         \end{tabular}
@@ -1456,7 +1415,7 @@
                   rounded corners=4pt, inner sep=6pt, text width=0.92\columnwidth, align=left] {
                 {\tiny\bfseries\textcolor{maroonSoft}{MOST BALANCED}}\\[2pt]
                 {\small\bfseries Tomato \& Cucumber}\\[2pt]
-                {\scriptsize Find \textbf{71--80\%} of healthy leaves.}
+                {\scriptsize Find \textbf{91--96\%} of healthy leaves.}
             };
         \end{tikzpicture}
 
@@ -1464,7 +1423,7 @@
         \begin{tikzpicture}
             \node[notebox, inner sep=5pt, text width=0.92\columnwidth] {
                 {\tiny\bfseries\textcolor{amritaMaroon}{HIGH ACCURACY CAN MISLEAD}}\\[1pt]
-                {\scriptsize Bottle gourd: 92\% accuracy, but finds only \textbf{23\%} of its healthy leaves.}
+                {\scriptsize Bottle gourd: 97.6\% accuracy, but finds only \textbf{74\%} of its healthy leaves.}
             };
         \end{tikzpicture}
 
@@ -1472,174 +1431,18 @@
         \begin{tikzpicture}
             \node[notebox, inner sep=5pt, text width=0.92\columnwidth] {
                 {\tiny\bfseries\textcolor{amritaMaroon}{WHY SOME CROPS ARE HARDER}}\\[1pt]
-                {\scriptsize Few healthy photos (ridge, bottle, ash gourd), so ``healthy'' is learned poorly.}
+                {\scriptsize Few healthy photos (ridge, bottle, ash gourd), so ``healthy'' is learned harder.}
             };
         \end{tikzpicture}
     \end{columns}
 \end{frame}
 
-% ============================================================
-% FRAME: All Metrics Graph
-% ============================================================
-% ============================================================
-% FRAME: All Metrics Graph
-% ============================================================
-% \begin{frame}{Performance Across All Metrics}
-%     \framesubtitle{Comparing Accuracy, F1-Scores, and Balanced Metrics}
-%     \begin{center}
-%         \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{results_all_metrics.png}
-%     \end{center}
-% \end{frame}
-% % ============================================================
-% % FRAME: Side-by-Side Images (one.png & two.png)
-% % ============================================================
-% \begin{frame}{Additional Results}
-%     \begin{columns}[onlytextwidth, c]
-%         \column{0.49\textwidth}
-%         \centering
-%         \includegraphics[width=\linewidth]{one.png}
-        
-%         \column{0.49\textwidth}
-%         \centering
-%         \includegraphics[width=\linewidth]{two.png}
-%     \end{columns}
-% \end{frame}
-% ============================================================
-% FRAME: Key Findings
-% ============================================================
-% \begin{frame}{Key Findings}
-%     \framesubtitle{Effect of graph representation on WL kernel classification}
-
-%     \begin{itemize}\small
-
-%         % \item \textbf{Graph representation affects WL performance.}\\
-%         % Different graph construction strategies produced clearly different
-%         % classification results.
-
-%         \vspace{0.15cm}
-
-%         \item \textbf{Hybrid Graph + WL $h=3$ achieved the best overall performance.}\\
-%         Macro-F1 = \textbf{0.6969}, Accuracy = \textbf{0.8160}.
-
-%         \vspace{0.15cm}
-
-%         \item \textbf{WL representation outperformed the flat baselines on Macro-F1.}\\
-%         Hybrid $h=3$: \textbf{0.6969}
-%         \quad vs. RBF-SVM: 0.6642
-%         \quad vs. RF: 0.6522.
-
-%         \vspace{0.15cm}
-
-%         \item \textbf{Higher WL heights generally improved performance.}\\
-%         $h=3$ was the best height for Correlation, Feature-Family,
-%         Feature-Similarity kNN and Hybrid graphs; Spatial/Regional peaked at $h=2$.
-
-%         \vspace{0.15cm}
-
-%         \item \textbf{Performance varies across crops.}\\
-%         With the fixed Hybrid $h=3$ model, F1 ranged from
-%         \textbf{0.790 (Tomato)} to \textbf{0.957 (Bottle gourd)}.
-
-%     \end{itemize}
-
-%     \vspace{0.15cm}
-
-%     % \begin{tikzpicture}
-%     %     \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
-%     %           rounded corners=2pt, inner sep=6pt,
-%     %           text width=0.92\textwidth] {
-%     %         \centering
-%     %         \footnotesize\textbf{Key Research Finding:}
-%     %         The choice of graph topology has a measurable impact on
-%     %         the effectiveness of the Weisfeiler--Lehman kernel.
-%     %     };
-%     % \end{tikzpicture}
-
-% \end{frame}
-
-% \section{Technical Enrichment}
-% \begin{frame}{4. Technical Enrichment Activity Choices}
-%     \framesubtitle{Professional Online Certification Details}
-%     \begin{itemize}
-%         \item \textbf{Individual MOOC / Online Certification Selection:}
-%     \end{itemize}
-%     \vspace{-0.1cm}
-%     \begin{table}
-%         \centering
-%         \footnotesize
-%         \renewcommand{\arraystretch}{1.15}
-%         \begin{tabular}{|c|p{2.8cm}|p{5.0cm}|p{2.3cm}|c|}
-%             \hline
-%             \textbf{S.No} & \textbf{Student Name} & \textbf{Chosen MOOC / Course Title} & \textbf{Platform} & \textbf{Hours} \\
-%             \hline
-%             1 & Vishnu   & [Supervised Machine Learning: Regression and Classification] & Coursera & 14 Hrs \\
-%             \hline
-%             2 & Vamsidhar & [Machine Learning and AI: Support Vector Machines in Python] & Udemy & 12 Hrs \\
-%             \hline
-%             3 & Bharath Bala & [IBM Machine Learning and AI: Support Vector Machines in Python] &  Coursera & 12 Hrs \\
-%             \hline
-%             4 & Sandeep M & [Introduction to Computer Vision and Image Processing] & Coursera & 16 Hrs \\
-%             \hline
-%              5 & Prakash CH & [Machine Learning in Drug Discovery and Cheminformatics] & Udemy & 12 Hrs \\
-%             \hline
-%         \end{tabular}
-%     \end{table}
-%     \vspace{0.15cm}
-%     % \begin{itemize}
-%     %     \item {\scriptsize \textbf{Requirement:} Each student must complete one approved 10--20 hour online certification from a recognized platform (Coursera, NPTEL, edX, etc.) relevant to the project.}
-%     % \end{itemize}
-% \end{frame}
-
-% ============================================================
-% FRAME: References
-% ============================================================
 
 % ============================================================
 % SLIDE: Feature Application
 % ============================================================
-\begin{frame}{Application: PlantCare AI}
-    \framesubtitle{Our web app turns the research into a tool a farmer can use (live demo next)}
 
-    \centering
-    \begin{tikzpicture}[>=Latex]
-        \tikzset{appstep/.style={rectangle, draw=amritaMaroon, thick, fill=maroonSoft, rounded corners=3pt,
-                 minimum width=2.15cm, minimum height=1.15cm, font=\scriptsize, align=center}}
-        \node[appstep] (a1) {\textbf{Leaf photo}\\{\tiny upload}};
-        \node[appstep, right=0.35cm of a1] (a2) {\textbf{Leaf found}\\{\tiny ExG + 38 measures}};
-        \node[appstep, right=0.35cm of a2] (a3) {\textbf{CNN decides}\\{\tiny crop + healthy/stressed}};
-        \node[appstep, right=0.35cm of a3] (a4) {\textbf{WL checks}\\{\tiny second opinion + why}};
-        \node[appstep, fill=amritaMaroon, text=white, right=0.35cm of a4] (a5) {\textbf{Verdict}\\{\tiny \textcolor{green!35}{green} / \textcolor{orange!50}{amber} flag}};
-        \draw[->, thick, draw=amritaMaroon] (a1) -- (a2);
-        \draw[->, thick, draw=amritaMaroon] (a2) -- (a3);
-        \draw[->, thick, draw=amritaMaroon] (a3) -- (a4);
-        \draw[->, thick, draw=amritaMaroon] (a4) -- (a5);
-    \end{tikzpicture}
 
-    \vspace{0.35cm}
-    \begin{columns}[T, onlytextwidth]
-        \column{0.32\textwidth}
-        \begin{tikzpicture}
-            \node[notebox, inner sep=5pt, text width=0.88\columnwidth] {
-                {\tiny\bfseries\textcolor{amritaMaroon}{STEP-BY-STEP WALKTHROUGH}}\\
-                {\scriptsize Shows the mask, the 38 measurements, the leaf graph, the WL patterns and the SVM decision for \emph{this} photo.}
-            };
-        \end{tikzpicture}
-        \column{0.32\textwidth}
-        \begin{tikzpicture}
-            \node[notebox, inner sep=5pt, text width=0.88\columnwidth] {
-                {\tiny\bfseries\textcolor{amritaMaroon}{HONEST ANSWERS}}\\
-                {\scriptsize ``Unsure'' when a photo is unlike the training photos; a spot check warns about small dark spots.}
-            };
-        \end{tikzpicture}
-        \column{0.32\textwidth}
-        \begin{tikzpicture}
-            \node[notebox, inner sep=5pt, text width=0.88\columnwidth] {
-                {\tiny\bfseries\textcolor{amritaMaroon}{LIKELY CONDITION}}\\
-                {\scriptsize A top-3 shortlist of conditions (right in 83--98\% of cases per crop) for an expert to confirm.}
-            };
-        \end{tikzpicture}
-    \end{columns}
-\end{frame}
 
 % ============================================================
 % SLIDE: Crop Library (app screenshot)
@@ -1652,50 +1455,7 @@
     {\tiny\itshape Numbers here are for the app's per-crop models, so they differ slightly from the single-model results on the Crop Subgroup slide.}
 \end{frame}
 
-% ============================================================
-% SLIDE: Limitations & Future Work
-% ============================================================
 
-
-% \begin{frame}{Limitations \& Future Work}
-%     \begin{columns}[T, onlytextwidth]
-%         \column{0.485\textwidth}
-%         \begin{tikzpicture}
-%             \node[rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
-%                   rounded corners=4pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
-%                 {\small\bfseries\textcolor{amritaMaroon}{Limitations}}\\[3pt]
-%                 \begin{itemize}\scriptsize
-%                     \setlength{\itemsep}{2pt}
-%                     \item \textbf{Exact condition (57 classes) not solved:} best model 0.57 macro-F1, WL 0.42. The 38 measurements are leaf \emph{averages}, so small local marks are washed out.
-%                     \item \textbf{Healthy leaves are hard to find} for crops with few healthy photos (bottle, ridge, ash gourd).
-%                     \item \textbf{Lab photos only:} one leaf on a dark background; field photos not tested.
-%                     \item \textbf{No severity labels} in OLID-I, so no severity grading.
-%                     \item \textbf{Speed:} segmenting the full 3,024\,px photo takes $\approx$1\,s.
-%                 \end{itemize}
-%             };
-%         \end{tikzpicture}
-
-%         \column{0.485\textwidth}
-%         \begin{tikzpicture}
-%             \node[rectangle, draw=amritaMaroon, very thick, fill=amritaMaroon, text=white,
-%                   rounded corners=4pt, inner sep=6.5pt, text width=0.93\columnwidth, align=left] {
-%                 {\small\bfseries Future Work}\\[3pt]
-%                 \begin{itemize}\scriptsize
-%                     \setlength{\itemsep}{2pt}
-%                     \item \textbf{Local spot features} as extra graph nodes, to approach the 57-class task.
-%                     \item \textbf{Fine-tune the CNN} (currently frozen) for the strongest decision model.
-%                     \item \textbf{Field photos} and other datasets to test real-world use.
-%                     \item \textbf{Faster segmentation} on a smaller copy of the photo.
-%                     \item \textbf{Learned graph edges} instead of hand-chosen rules.
-%                 \end{itemize}
-%             };
-%         \end{tikzpicture}
-%     \end{columns}
-% \end{frame}
-
-% ============================================================
-% SLIDE: Conclusion
-% ============================================================
 \begin{frame}{Conclusion}
     \begin{itemize}
         \setlength{\itemsep}{0.25cm}
