@@ -1081,6 +1081,70 @@
     \end{columns}
 \end{frame}
 
+
+% ============================================================
+% SLIDE: Model Evaluation & Performance Metrics
+% ============================================================
+\begin{frame}{Model Evaluation \& Performance Metrics}
+    \framesubtitle{Evaluating the SVM via K-Fold Cross-Validation \cite{kohavi1995study}} % Replace with your BibTeX key
+
+    % --- Section 1: K-Fold Cross-Validation Diagram ---
+    {\normalsize\bfseries 1. K-Fold Cross-Validation \cite{kohavi1995study}} % Replace with your BibTeX key
+
+    \vspace{0.15cm}
+    \begin{center}
+        \begin{tikzpicture}[
+            splitlbl/.style={font=\scriptsize\bfseries, anchor=east},
+            trainbox/.style={rectangle, draw=amritaMaroon, thick, fill=maroonSoft,
+                             minimum width=1.45cm, minimum height=0.42cm,
+                             font=\scriptsize, text=black},
+            testbox/.style={rectangle, draw=amritaMaroon, thick, fill=amritaMaroon,
+                            minimum width=1.45cm, minimum height=0.42cm,
+                            font=\scriptsize\bfseries, text=white}
+        ]
+            % Split 1
+            \node[splitlbl] at (-0.3, 0) {Split 1};
+            \node[testbox]  at (0.75, 0) {Test Fold};
+            \node[trainbox] at (2.30, 0) {Train};
+            \node[trainbox] at (3.85, 0) {Train};
+            \node[trainbox] at (5.40, 0) {Train};
+            \node[trainbox] at (6.95, 0) {Train};
+
+            % Split 2
+            \node[splitlbl] at (-0.3, -0.55) {Split 2};
+            \node[trainbox] at (0.75, -0.55) {Train};
+            \node[testbox]  at (2.30, -0.55) {Test Fold};
+            \node[trainbox] at (3.85, -0.55) {Train};
+            \node[trainbox] at (5.40, -0.55) {Train};
+            \node[trainbox] at (6.95, -0.55) {Train};
+
+            % Vertical Ellipses
+            \node[font=\small\bfseries] at (-0.75, -1.02) {$\vdots$};
+            \node[font=\small\bfseries] at (3.85,  -1.02) {$\vdots$};
+
+            % Split 5
+            \node[splitlbl] at (-0.3, -1.55) {Split 5};
+            \node[trainbox] at (0.75, -1.55) {Train};
+            \node[trainbox] at (2.30, -1.55) {Train};
+            \node[trainbox] at (3.85, -1.55) {Train};
+            \node[trainbox] at (5.40, -1.55) {Train};
+            \node[testbox]  at (6.95, -1.55) {Test Fold};
+        \end{tikzpicture}
+    \end{center}
+
+    \vspace{0.15cm}
+    % --- Section 2: Calculating Metrics ---
+    {\normalsize\bfseries 2. Calculating Metrics}\\[3pt]
+    {\footnotesize For each test fold, we calculate standard performance metrics, which are then averaged to determine the final model performance:}
+    \begin{itemize}\footnotesize
+        \setlength{\itemsep}{1pt}
+        \item \textbf{Accuracy:} % Optional: add formula/description here
+        \item \textbf{Precision:}
+        \item \textbf{Recall:}
+        \item \textbf{F1-Score:}
+    \end{itemize}
+\end{frame}
+
 % % ============================================================
 % % FRAME: Role Separation & Viva Explanation
 % % ============================================================
@@ -1449,7 +1513,7 @@
 \begin{frame}[allowframebreaks]{References}
     \tiny
     \bibliographystyle{IEEEtran}
-    \bibliography{../ref}
+    \bibliography{ref}
 \end{frame}
 
 % ============================================================
