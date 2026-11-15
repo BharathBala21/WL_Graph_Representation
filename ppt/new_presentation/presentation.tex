@@ -478,6 +478,44 @@
     \end{tikzpicture}
 \end{frame}
 
+\begin{frame}{5. Where WL Stands Out: A Second Opinion Farmers Can Trust}
+    \framesubtitle{CNN decides, WL checks and explains (all 4,387 leaves, held-out folds)}
+    \begin{columns}[T]
+        \column{0.52\textwidth}
+        \small
+        \renewcommand{\arraystretch}{1.12}
+        \begin{tabular}{@{}l c c@{}}
+            \toprule
+            & \textbf{Leaves} & \textbf{CNN correct} \\
+            \midrule
+            \textcolor{green!50!black}{\textbf{$\bullet$ CNN and WL agree}} & 83\% & \textbf{91\%} \\
+            \textcolor{orange!90!black}{\textbf{$\bullet$ CNN and WL disagree}} & 17\% & 56\% \\
+            \midrule
+            CNN alone (all leaves) & 100\% & 85\% \\
+            \bottomrule
+        \end{tabular}
+
+        \vspace{0.25cm}
+        {\footnotesize Disagreement flags only \textbf{17\%} of leaves but contains \textbf{51\%} of all CNN mistakes;
+        the CNN's own confidence catches 44\% at the same rate.}
+
+        \column{0.44\textwidth}
+        \begin{block}{For the farmer}
+            \scriptsize \textcolor{green!50!black}{\textbf{Green}}: both agree $\rightarrow$ act on it.\\
+            \textcolor{orange!90!black}{\textbf{Amber}}: they disagree $\rightarrow$ check the leaf or ask an expert.
+        \end{block}
+        \begin{block}{Explains why}
+            \scriptsize e.g.\ ``greenness lower and edge yellowness higher than healthy tomato leaves'', in leaf terms, not pixels.
+        \end{block}
+        \begin{block}{Stays stable in the field}
+            \scriptsize Least quality loss of all measurement-based models when light, blur or camera change.
+        \end{block}
+    \end{columns}
+    \vspace{0.1cm}
+    \centering
+    {\scriptsize Other measurement-based models give a similar warning, but none of them explains itself in leaf terms or is as stable.}
+\end{frame}
+
 \begin{frame}{5. Limitation: The Exact Condition (57 Classes)}
     \begin{columns}[T]
         \column{0.50\textwidth}

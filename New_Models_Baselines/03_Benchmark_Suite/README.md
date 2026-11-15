@@ -141,6 +141,24 @@ WL needs more data than most models; it is still improving at 100%, so more labe
 | Trees / boosting | global feature importance; per-leaf needs an extra tool (e.g. SHAP) |
 | Frozen CNN | 960–1,280 abstract numbers; per-leaf needs saliency maps (e.g. Grad-CAM) that highlight pixels, not named measurements |
 
+### 3.6 WL as a second opinion for the CNN (the hybrid)
+
+Full pipeline, all 4,387 leaves in held-out folds (`results/hybrid_agreement_oof.csv`,
+`results/hybrid_second_opinion_comparison.csv`). The CNN (EfficientNet-B0) decides; a second model checks.
+
+| | Leaves | CNN correct | Macro-F1 |
+|---|---|---|---|
+| CNN and WL **agree** | 82.6% | **91.0%** | 0.799 |
+| CNN and WL **disagree** | 17.4% | 55.8% | 0.541 |
+| CNN alone | 100% | 84.8% | 0.739 |
+
+* Disagreement flags 17.4% of leaves but contains **50.8% of all CNN mistakes**; flagging the CNN's
+  least-confident 17.4% instead catches 44.1%. A measurement-based second opinion is a better warning than the
+  CNN's own confidence.
+* Not unique to WL: Extra Trees / LightGBM / Gradient Boosting as second opinion catch 53–59% at ~15% flagged.
+  WL's distinguishing points are that its second opinion **explains itself in leaf terms** and is the **most
+  stable** measurement-based model under photo changes (§3.2).
+
 ---
 
 ## 4. Honest conclusion: the trade-off
