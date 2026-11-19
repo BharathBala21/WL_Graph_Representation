@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { RESEARCH } from '../data/research';
+import stressRevision from '../data/stress_revision.json';
 import { Bar, Card, Chip, SectionTitle, featureLabel, num, pct } from '../lib';
 
 const STAGES = [
@@ -49,7 +50,25 @@ export const MLPipelineView: React.FC = () => {
         </p>
       </div>
 
-      {/* Stages */}
+      <Card>
+        <SectionTitle icon="hub" title="Revised stress model" sub="Five-fold averages on 4,387 leaves with automatic crop routing" />
+        <p className="mb-4 font-body-sm text-pc-ink2">The stress SVM averages a one-step WL graph kernel and a continuous measurement kernel.
+          The two single-kernel controls use the same SVM settings. Four folds informed the design. The fifth was reserved for confirmation.</p>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[540px] text-left font-body-sm text-pc-ink">
+            <thead><tr>{['Stress classifier', 'Macro-F1', 'Accuracy', 'Healthy recall', 'Stress recall'].map(label =>
+              <th key={label} scope="col" className="px-2 py-2">{label}</th>)}</tr></thead>
+            <tbody>{stressRevision.map(r => (
+              <tr key={r.model} className="border-t border-pc-line">
+                <th scope="row" className="px-2 py-2">{r.model}</th>
+                <td className="px-2">{r.macro_f1.toFixed(3)}</td><td className="px-2">{pct(r.accuracy)}</td>
+                <td className="px-2">{pct(r.healthy_recall)}</td><td className="px-2">{pct(r.stressed_recall)}</td>
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
+      </Card>
+      <h2 className="font-headline-md text-pc-ink">Original WL experiments</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-3">
         {STAGES.map((s) => (
           <div key={s.n} className="p-4 rounded-2xl bg-pc-card border border-pc-line/70">

@@ -11,16 +11,46 @@ import sys
 import numpy as np
 import pandas as pd
 import pytest
+import scipy.sparse as sp
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 sys.path.insert(0, os.path.join(ROOT, 'Application', 'backend'))
 from app.features import FEATURES  # noqa: E402
-from app.wl import WLFeaturizer, cosine_kernel  # noqa: E402
+from app.wl import WLFeaturizer, cosine_kernel, stress_classifier  # noqa: E402
 
 REF_DIR = os.path.join(ROOT, 'Task_Direction_Audit', 'Tomato_Nested_CV')
 REF = os.path.join(REF_DIR, 'run_tomato_nested_cv.py')
 REF_PYC = os.path.join(REF_DIR, '__pycache__', 'run_tomato_nested_cv.cpython-311.pyc')
 DATA = os.path.join(ROOT, 'full_pipeline', 'olid_full_features.csv')
+
+
+def test_vectorized_wl_counts_preserve_columns_and_unseen_patterns():
+    rng = np.random.default_rng(21)
+    train = rng.normal(size=(50, len(FEATURES)))
+    test = rng.normal(size=(7, len(FEATURES)))
+    f = WLFeaturizer('family', 2).fit(train)
+    levels = f.labels(test)
+    assert (levels[-1] == -1).any()
+    blocks = []
+    for labels, sizes in zip(levels, f.sizes_):
+        for node, size in enumerate(sizes):
+            rows = np.flatnonzero(labels[:, node] >= 0)
+            blocks.append(sp.csr_matrix((np.ones(len(rows)), (rows, labels[rows, node])), shape=(len(test), size)))
+    assert (f.transform(test) != sp.hstack(blocks).tocsr()).nnz == 0
+
+
+def test_revised_svm_uses_equal_kernel_components_on_new_leaves():
+    rng = np.random.default_rng(42)
+    X = rng.uniform(0.1, 1, (48, len(FEATURES)))
+    model = stress_classifier(probability=False).fit(X[:40], np.arange(40) % 2)
+    wl = cosine_kernel(model.Ptr_, model.feat_.transform(X[40:]))
+    continuous = model.measurements_.kernel(X[40:])
+    assert np.max(np.abs(wl - continuous)) > 0.01
+    assert np.allclose(model._k(X[40:]), (wl + continuous) / 2)
+    assert np.allclose(model._k(X[40:41]), model._k(X[40:])[:1])
+    gram = model._k(X[:40])
+    assert np.allclose(gram, gram.T) and np.allclose(gram.diagonal(), 1)
+    assert np.linalg.eigvalsh(gram).min() > -1e-9
 
 
 def _load_reference():

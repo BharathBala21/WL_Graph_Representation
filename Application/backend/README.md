@@ -10,7 +10,10 @@ per-user history in SQLite.
    Photos where no leaf is found are rejected with a message.
 2. **Crop identified.** A Random Forest routes the leaf to one of 8 crops (as in NB23 Stage 1). The
    user can also choose the crop.
-3. **Healthy vs stressed.** The crop's WL kernel SVM uses the same class decision as the
+3. **Healthy vs stressed.** Each crop uses a correlation graph over the 38 features and one WL refinement.
+   Its SVM averages two similarities with equal weights. One counts matching WL subtree labels.
+   The other compares the training percentiles of the measurements and 11 derived colour and
+   region contrasts. The model uses the same class decision as the
    cross-validation code (`SVC.predict`). Its calibrated probability of stress is shown separately.
    A probability of 50% can fall on either side of the SVM boundary. Older saved diagnoses
    used a 50% probability threshold and retain their original verdict.
@@ -51,16 +54,18 @@ Vite forwards `/api` and `/files` to port 8000.
 
 ## Reliability of the trained models (5-fold CV, `python train.py`)
 
-| Crop | Graph (WL depth) | Stress Macro-F1 | Condition top-1 | Condition top-3 |
-|---|---|---|---|---|
-| Ash gourd | Feature-Family (2) | 0.607 | 0.594 | 0.895 |
-| Bitter gourd | kNN (3) | 0.670 | 0.476 | 0.834 |
-| Bottle gourd | Hybrid (3) | 0.652 | 0.530 | 0.855 |
-| Cucumber | Feature-Family (2) | 0.834 | 0.571 | 0.979 |
-| Eggplant | Hybrid (3) | 0.711 | 0.494 | 0.843 |
-| Ridge gourd | Hybrid (1) | 0.518 | 0.554 | 0.911 |
-| Snake gourd | Hybrid (3) | 0.744 | 0.637 | 0.943 |
-| Tomato | Correlation (2) | 0.762 | 0.686 | 0.959 |
+These folds are stratified by condition within each known crop. The routed benchmark uses a separate fold manifest.
+
+| Crop | Stress macro-F1 | Condition top-1 | Condition top-3 |
+|---|---:|---:|---:|
+| Ash gourd | 0.620 | 0.594 | 0.895 |
+| Bitter gourd | 0.690 | 0.476 | 0.834 |
+| Bottle gourd | 0.739 | 0.530 | 0.855 |
+| Cucumber | 0.901 | 0.571 | 0.979 |
+| Eggplant | 0.727 | 0.494 | 0.843 |
+| Ridge gourd | 0.540 | 0.554 | 0.911 |
+| Snake gourd | 0.763 | 0.637 | 0.943 |
+| Tomato | 0.769 | 0.686 | 0.959 |
 
 Crop router accuracy: 0.914. These numbers are for OLID-I photos (one leaf on a dark background).
 

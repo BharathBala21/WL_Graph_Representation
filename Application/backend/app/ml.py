@@ -18,7 +18,7 @@ import numpy as np
 from .conditions import CONDITIONS, CROPS, FEATURE_NAMES
 from .features import FEATURE_FAMILIES, FEATURES, measure_leaf
 from .lesions import detect_spots
-from .wl import cosine_kernel
+from .wl import GRAPH_NAMES, cosine_kernel
 
 MODELS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'models')
 LOW_CROP_CONFIDENCE = 0.5
@@ -40,6 +40,13 @@ class Predictor:
             self.meta = json.load(f)
         self.router = joblib.load(os.path.join(models_dir, 'crop_router.joblib'))
         self.crop_models = {c: joblib.load(os.path.join(models_dir, f'{c}.joblib')) for c in self.meta['crops']}
+        for crop, bundle in self.crop_models.items():
+            model = bundle['stress']
+            info = self.meta['crops'][crop]
+            combined = getattr(model, 'measurements_', None) is not None
+            if (combined != (info.get('stress_kernel') == 'wl_plus_measurements') or
+                    (model.graph, model.h) != (info['graph'], info['wl_depth'])):
+                raise ValueError(f'Model files and metadata differ for {crop}. Run python train.py to rebuild them together.')
 
     # ------------------------------------------------------------------ helpers
     @staticmethod
@@ -151,7 +158,7 @@ class Predictor:
                 'rare': int(sum(c < 0.05 for c in common)),
                 'vocabulary': int(sum(feat.sizes_[k])),
             })
-        P = feat.transform(X)
+        P = feat.encode_levels(levels)
         ii, jj = np.where(np.triu(feat.A_, 1))
         return {
             'nodes': [{'feature': f, 'name': FEATURE_NAMES[f], 'family': FAMILY_OF[f], 'value': round(float(x[i]), 4),
@@ -289,7 +296,8 @@ class Predictor:
 
         # 3. healthy vs stressed, 4. ranked conditions
         stress_model = cm['stress']
-        kernel = cosine_kernel(stress_model.Ptr_, P)
+        wl_kernel = cosine_kernel(stress_model.Ptr_, P)
+        kernel = stress_model.combine_kernel(wl_kernel, X)
         # CV scores SVC.predict. Probability calibration can put 50% away from the SVM boundary.
         stressed = bool(stress_model.svc_.predict(kernel)[0])
         p_stress = float(stress_model.svc_.predict_proba(kernel)[0][list(stress_model.classes_).index(1)])
@@ -308,7 +316,7 @@ class Predictor:
             warnings.append('The crop is uncertain. If you know the crop, choose it and analyse again.')
         if crop_source == 'user' and crop_alts[0]['code'] != crop:
             warnings.append(f'You selected {CROPS[crop]}, but the leaf looks most like {crop_alts[0]["name"]}.')
-        check = self.reliability_check(crop, crop_source, crop_conf, x, svm['similarity']['max'], spots)
+        check = self.reliability_check(crop, crop_source, crop_conf, x, float(wl_kernel.max()), spots)
         spot_msg = self.spot_message(spots, crop, info['conditions'])
         if check['status'] != 'ok':
             warnings.insert(0, 'This photo is unlike the photos the model was trained on, so the result may be wrong. '
@@ -350,7 +358,8 @@ class Predictor:
                                        'always_stressed_accuracy': info.get('always_stressed_accuracy')}},
             'conditions': conditions,
             'conditions_reliability': {'top1': info['condition_top1_accuracy'], 'top3': info['condition_top3_accuracy']},
-            'model': {'graph': info['graph'], 'graph_name': info['graph_name'], 'wl_depth': info['wl_depth']},
+            'model': {'graph': stress_model.graph, 'graph_name': GRAPH_NAMES[stress_model.graph], 'wl_depth': stress_model.h,
+                      'kernel': 'wl_plus_measurements' if getattr(stress_model, 'measurements_', None) is not None else 'wl'},
             'explanation': self.explain(crop, x),
             'warnings': warnings,
             'spots': {**{k: spots[k] for k in ('count', 'area_ratio', 'flagged')}, 'message': spot_msg},

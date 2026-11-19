@@ -19,7 +19,7 @@ export interface DiagnosisRecord {
                              healthy_found?: number | null; always_stressed_accuracy?: number | null } };
     conditions: { code: string; name: string; type: string; probability: number }[];
     conditions_reliability: { top1: number; top3: number };
-    model: { graph: string; graph_name: string; wl_depth: number };
+    model: { graph: string; graph_name: string; wl_depth: number; kernel?: 'wl' | 'wl_plus_measurements' };
     explanation: { feature: string; name: string; value: number; healthy_mean: number; z: number; direction: 'higher' | 'lower' }[];
     warnings: string[];
     quality: { flag: string; mask_ratio: number };
@@ -230,6 +230,7 @@ export const DiagnosisResult: React.FC<Props> = ({ record, onDelete, onSaveNote,
                 `• Crop identified by a Random Forest (correct ${pct(r.crop.reliability, 0)} of the time in testing).`}</li>
               <li>
                 • Measurements turned into a <b>{r.model.graph_name}</b> graph and compared with the <b>WL graph kernel</b> (depth {r.model.wl_depth}).
+                {r.model.kernel === 'wl_plus_measurements' && ' The stress SVM gives equal weight to WL pattern similarity and similarity in the continuous measurements.'}
               </li>
               <li>
                 • SVM decided healthy vs stressed.{' '}

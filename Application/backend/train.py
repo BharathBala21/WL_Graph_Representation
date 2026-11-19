@@ -9,8 +9,9 @@ rows only) and writes to backend/models/:
                        statistics used to explain a result
   metadata.json        configuration + 5-fold cross-validated reliability of every model
 
-Each crop uses the graph type and WL depth that scored best for it in the Level 2
-experiments (NB22). Reliability numbers are measured here with stratified 5-fold CV
+The binary stress model combines a one-step WL correlation graph with continuous
+measurement similarity. Condition ranking uses the crop's original NB22 graph.
+Reliability numbers are measured here with stratified 5-fold CV
 and shown to users next to every prediction.
 
 Usage (from Application/backend):  python train.py
@@ -32,7 +33,7 @@ from sklearn.svm import SVC
 
 from app.conditions import CONDITIONS, CROPS
 from app.features import FEATURES
-from app.wl import GRAPH_NAMES, WLFeaturizer, WLKernelSVC, cosine_kernel
+from app.wl import GRAPH_NAMES, WLFeaturizer, WLKernelSVC, cosine_kernel, stress_classifier
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.abspath(os.path.join(HERE, '..', '..', 'full_pipeline', 'olid_full_features.csv'))
@@ -52,16 +53,18 @@ def topk_accuracy(proba, classes, y, k=3):
     return float(np.mean([y[i] in classes[top[i]] for i in range(len(y))]))
 
 
-def cv_crop_models(X, y_stress, y_cond, graph, h):
-    """5-fold CV of both per-crop models, sharing the WL features within each fold."""
+def cv_crop_models(X, y_stress, y_cond, graph, h, revised=True):
+    """Evaluate the stress and condition classifiers with all transforms fitted within each fold."""
     skf = StratifiedKFold(5, shuffle=True, random_state=SEED)
     s_acc, s_f1, s_bal, s_spec, c_top1, c_top3 = [], [], [], [], [], []
     for tr, te in skf.split(X, y_cond):
         feat = WLFeaturizer(graph, h).fit(X[tr])
         Ptr, Pte = feat.transform(X[tr]), feat.transform(X[te])
         Ktr, Kte = cosine_kernel(Ptr), cosine_kernel(Ptr, Pte)
-        s = SVC(kernel='precomputed', class_weight='balanced', random_state=SEED).fit(Ktr, y_stress[tr])
-        ps = s.predict(Kte)
+        if revised:
+            ps = stress_classifier(probability=False).fit(X[tr], y_stress[tr]).predict(X[te])
+        else:
+            ps = SVC(kernel='precomputed', class_weight='balanced').fit(Ktr, y_stress[tr]).predict(Kte)
         s_acc.append(accuracy_score(y_stress[te], ps))
         s_f1.append(f1_score(y_stress[te], ps, average='macro'))
         s_bal.append(balanced_accuracy_score(y_stress[te], ps))
@@ -108,10 +111,12 @@ def calibrate_only():
     for crop, (graph, h) in BEST_GRAPH.items():
         d = df[df.crop == crop].reset_index(drop=True)
         Xc = d[FEATURES].values.astype(float)
-        meta['crops'][crop]['familiarity'] = calibrate_familiarity(Xc, d.condition.values, graph, h)
+        info = meta['crops'][crop]
+        revised = info.get('stress_kernel') == 'wl_plus_measurements'
+        info['familiarity'] = calibrate_familiarity(Xc, d.condition.values, info['graph'], info['wl_depth'])
         # refresh the reliability numbers (same CV as training; the saved models are not changed)
         meta['crops'][crop].update(cv_crop_models(Xc, (d.condition != 'healthy').astype(int).values,
-                                                  d.condition.values, graph, h))
+                                                  d.condition.values, graph, h, revised=revised))
         fam = meta['crops'][crop]['familiarity']
         print(f'  {crop:13s} best sim p1 {fam["best_similarity_p1"]:.3f}  '
               f'out-of-range p99 {fam["out_of_range_p99"]:.0f}')
@@ -152,20 +157,22 @@ def main():
         y_stress = (d.condition != 'healthy').astype(int).values
         y_cond = d.condition.values
         cv = cv_crop_models(Xc, y_stress, y_cond, graph, h)
-        stress = WLKernelSVC(graph, h, probability=True).fit(Xc, y_stress)
+        stress = stress_classifier().fit(Xc, y_stress)
         cond = WLKernelSVC(graph, h, probability=True).fit(Xc, y_cond)
         healthy = Xc[y_stress == 0]
         joblib.dump({
-            'stress': stress, 'condition': cond, 'graph': graph, 'h': h,
+            'stress': stress, 'condition': cond, 'graph': stress.graph, 'h': stress.h,
             'healthy_mean': healthy.mean(0), 'healthy_std': healthy.std(0) + 1e-9,
         }, os.path.join(OUT, f'{crop}.joblib'), compress=3)
         meta['crops'][crop] = {
-            'name': CROPS[crop], 'graph': graph, 'graph_name': GRAPH_NAMES[graph], 'wl_depth': h,
+            'name': CROPS[crop], 'graph': stress.graph, 'graph_name': GRAPH_NAMES[stress.graph], 'wl_depth': stress.h,
+            'stress_kernel': 'wl_plus_measurements', 'svm_c': stress.C,
+            'condition_graph': graph, 'condition_wl_depth': h,
             'leaves': int(len(d)), 'healthy': int((y_stress == 0).sum()),
             'conditions': sorted(set(y_cond)), **cv,
-            'familiarity': calibrate_familiarity(Xc, y_cond, graph, h),
+            'familiarity': calibrate_familiarity(Xc, y_cond, stress.graph, stress.h),
         }
-        print(f'  {crop:13s} {GRAPH_NAMES[graph]:24s} h={h}  stress F1 {cv["stress_macro_f1"]:.3f}  '
+        print(f'  {crop:13s} stress F1 {cv["stress_macro_f1"]:.3f}  '
               f'condition top-1 {cv["condition_top1_accuracy"]:.3f} / top-3 {cv["condition_top3_accuracy"]:.3f}')
 
     meta['conditions'] = CONDITIONS

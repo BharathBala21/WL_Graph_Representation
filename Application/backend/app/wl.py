@@ -14,14 +14,40 @@ from __future__ import annotations
 
 import numpy as np
 import scipy.sparse as sp
+from scipy.spatial.distance import cdist
 from sklearn.neighbors import NearestNeighbors
-from sklearn.preprocessing import KBinsDiscretizer, StandardScaler
+from sklearn.preprocessing import KBinsDiscretizer, QuantileTransformer, StandardScaler
 from sklearn.svm import SVC
 
 from .features import FEATURE_FAMILIES, FEATURES, SPATIAL
 
 N = len(FEATURES)
 IDX = {f: i for i, f in enumerate(FEATURES)}
+
+
+class LeafMeasurementKernel:
+    """Laplacian similarity on training percentiles of measurements and within-leaf contrasts."""
+
+    @staticmethod
+    def measurements(X):
+        X = np.asarray(X, float)
+        def col(name):
+            return X[:, IDX[name]]
+        rgb = X[:, [IDX['mean_R'], IDX['mean_G'], IDX['mean_B']]]
+        chromaticity = rgb / np.maximum(rgb.sum(axis=1, keepdims=True), 1e-9)
+        variation = [col('std_' + channel) / np.maximum(col('mean_' + channel), 1e-9)
+                     for channel in ('R', 'G', 'B', 'S', 'V', 'L')]
+        return np.column_stack([X, chromaticity, *variation, col('core_mean_H') - col('edge_mean_H'),
+                                col('core_yellow_ratio') - col('edge_yellow_ratio')])
+
+    def fit(self, X):
+        self.ranks_ = QuantileTransformer(n_quantiles=min(100, len(X)), random_state=42)
+        self.train_ = self.ranks_.fit_transform(self.measurements(X))
+        return self
+
+    def kernel(self, X=None):
+        ranks = self.train_ if X is None else self.ranks_.transform(self.measurements(X))
+        return np.exp((-4 / ranks.shape[1]) * cdist(ranks, self.train_, 'cityblock'))
 
 
 # ---------------------------------------------------------------- topologies
@@ -101,10 +127,10 @@ class WLFeaturizer:
     def __init__(self, graph='hybrid', h=2, n_bins=3):
         self.graph, self.h, self.n_bins = graph, h, n_bins
 
-    def fit(self, X):
+    def fit(self, X, *, discretizer=None):
         X = np.asarray(X, float)
-        self.disc_ = KBinsDiscretizer(n_bins=self.n_bins, encode='ordinal', strategy='quantile',
-                                      subsample=None).fit(X)
+        self.disc_ = discretizer if discretizer is not None else KBinsDiscretizer(
+            n_bins=self.n_bins, encode='ordinal', strategy='quantile', subsample=None).fit(X)
         self.A_ = GRAPHS[self.graph](X)
         self.nbrs_ = [np.where(self.A_[v])[0] for v in range(N)]
         L = self.disc_.transform(X).astype(np.int64)
@@ -152,14 +178,20 @@ class WLFeaturizer:
         return levels
 
     def transform(self, X):
-        levels = self.labels(X)
-        X = levels[0]
-        blocks = []
+        return self.encode_levels(self.labels(X))
+
+    def encode_levels(self, levels):
+        """Assemble one CSR matrix, keeping the original (iteration, node, label) column order."""
+        columns = []
+        offset = 0
         for Lk, sz in zip(levels, self.sizes_):
-            for v in range(N):
-                rows = np.where(Lk[:, v] >= 0)[0]
-                blocks.append(sp.csr_matrix((np.ones(len(rows)), (rows, Lk[rows, v])), shape=(len(X), sz[v])))
-        return sp.hstack(blocks).tocsr()
+            columns.append(np.where(Lk >= 0, offset + self._offsets(sz) + Lk, -1))
+            offset += sum(sz)
+        ids = np.concatenate(columns, axis=1)
+        valid = ids >= 0
+        indices = ids[valid]
+        indptr = np.r_[0, np.cumsum(valid.sum(axis=1))]
+        return sp.csr_matrix((np.ones(len(indices)), indices, indptr), shape=(len(ids), offset))
 
     def node_levels(self, X):
         """Low / Medium / High level (0, 1, 2) of every measurement."""
@@ -178,24 +210,37 @@ def cosine_kernel(P, Q=None):
 class WLKernelSVC:
     """WL subtree kernel + SVM (C = 1, class-balanced), as in the research notebooks."""
 
-    def __init__(self, graph='hybrid', h=2, C=1.0, probability=True, random_state=42):
+    def __init__(self, graph='hybrid', h=2, C=1.0, probability=True, random_state=42,
+                 add_measurements=False):
         self.graph, self.h, self.C = graph, h, C
         self.probability, self.random_state = probability, random_state
+        self.add_measurements = add_measurements
 
     def fit(self, X, y):
         self.feat_ = WLFeaturizer(self.graph, self.h).fit(X)
         self.Ptr_ = self.feat_.transform(X)
+        self.measurements_ = LeafMeasurementKernel().fit(X) if self.add_measurements else None
         self.svc_ = SVC(kernel='precomputed', C=self.C, class_weight='balanced',
                         probability=self.probability, random_state=self.random_state)
-        self.svc_.fit(cosine_kernel(self.Ptr_), y)
+        self.svc_.fit(self.combine_kernel(cosine_kernel(self.Ptr_)), y)
         self.classes_ = self.svc_.classes_
         return self
 
+    def combine_kernel(self, wl_kernel, X=None):
+        # Models saved before measurement kernels were introduced contain WL state only.
+        measurements = getattr(self, 'measurements_', None)
+        return wl_kernel if measurements is None else (wl_kernel + measurements.kernel(X)) * 0.5
+
     def _k(self, X):
-        return cosine_kernel(self.Ptr_, self.feat_.transform(X))
+        return self.combine_kernel(cosine_kernel(self.Ptr_, self.feat_.transform(X)), X)
 
     def predict(self, X):
         return self.svc_.predict(self._k(X))
 
     def predict_proba(self, X):
         return self.svc_.predict_proba(self._k(X))
+
+
+def stress_classifier(probability=True):
+    """Fixed binary classifier used for every crop in the revised routed pipeline."""
+    return WLKernelSVC('correlation', h=1, C=4, probability=probability, add_measurements=True)

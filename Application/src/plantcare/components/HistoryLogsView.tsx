@@ -136,8 +136,8 @@ export const HistoryLogsView: React.FC<HistoryLogsViewProps> = ({ onOpenSample }
           <Chip className="bg-pc-mint text-pc-mint-ink">Level-3 hierarchical WL · out-of-fold</Chip>
           <h1 className="font-headline-lg text-pc-deep-ink mt-2">History &amp; Logs</h1>
           <p className="font-body-md text-pc-ink2 mt-1 max-w-3xl">
-            The recorded prediction for every accepted OLID-I image. Each image was scored once, by the models trained while its
-            fold was held out.
+            Recorded predictions from the original hierarchical WL experiment. Each image was scored once while its fold was held out.
+            {' '}<a href="/plantcare/ml-pipeline" className="text-pc-green underline">See the revised stress model comparison.</a>
           </p>
         </div>
         <button

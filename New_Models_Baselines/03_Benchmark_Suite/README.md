@@ -1,5 +1,38 @@
 # 03 · Multi-dimensional baseline benchmark (final)
 
+## Draft branch revision to the WL stress model
+
+The local binary classifier uses a correlation graph with 38 measurement nodes, three training-quantile labels and one WL refinement per crop. The SVM (`C=4`, balanced class weights) averages the cosine-normalized WL subtree kernel and a Laplacian measurement kernel. The second kernel compares training percentiles of the 38 values plus 11 quantities derived from the same photo: three RGB proportions, six coefficients of variation and two core-to-edge colour differences. Its similarity is `exp(-4 × mean absolute percentile difference)` with percentiles on [0, 1]. Both kernels have a unit training diagonal. The crop router and the specific-condition ranking model retain their original roles.
+
+| Task, mean fold macro-F1 | Original WL | Revised WL + measurements |
+|---|---:|---:|
+| Pooled binary (Level 1) | 0.6969 | 0.7168 |
+| Known crop, equal weight per crop (Level 2) | 0.7165 | 0.7229 |
+| Automatically routed crop (Level 3) | 0.7064 | 0.7257 |
+
+On the original five routed folds, accuracy rose from 82.81% to 85.14%, stressed recall from 87.86% to 91.24%, and balanced accuracy from 72.34% to 72.49%. Healthy recall fell from 56.82% to 53.74%. Among 4,387 predictions this is 124 additional stressed leaves detected and 22 additional false alarms. In known-crop testing cucumber rose from 0.8521 to 0.9060 macro-F1, while ridge gourd fell from 0.5478 to 0.5167.
+
+**How the design was chosen.** Original fold 4 was excluded from every fit and score in the revision's four-fold development comparison. We compared subtree resolutions, graph depth and topology, supervised node bins, tree proximity, measurement similarities and SVM settings. We chose a shallow model that improved development macro-F1 and retained the original healthy recall there. We then froze the setting and checked fold 4 (877 leaves). Its macro-F1 improved from 0.7170 to 0.7549. The all-fold figures include the four development folds. Fold 4 is internal confirmation on OLID-I, which the project has used in earlier studies. Generalization to independently collected plants is still unmeasured.
+
+**What WL contributes.** With the same router, folds, SVM settings and training examples, the two single-kernel controls scored 0.6712 (shallow WL alone) and 0.7324 (measurements alone). Adding WL to the measurement kernel raised healthy recall from 50.92% to 53.74% and lowered macro-F1 from 0.7324 to 0.7257. The archived tuned Extra Trees and frozen EfficientNet-B0 routed results are 0.7287 and 0.7392. The CNN benchmark uses its own image-embedding crop router.
+
+**Resource use.** The eight serialized stress classifiers together averaged 5.01 MiB per outer fold, down from 10.40 MiB. The benchmark times feature-vector prediction with probability estimation disabled and excludes photo processing, routing, condition ranking and explanation. Both variants still construct a dense per-crop training Gram matrix with quadratic memory cost in that crop's training count.
+
+**Photo changes.** Both routed classifiers were also tested on the cached perturbations of 240 original fold-0 photos. The revision scored higher on six of seven perturbations. Under a warm colour cast its macro-F1 fell to 0.5406 versus 0.5732 for original WL. Its mean paired drop from clean macro-F1 was 0.0862 versus 0.0749. Each perturbation is compared with the clean predictions for the same accepted leaves, with quality-control rejections reported separately.
+
+Run these commands from this directory using the app backend requirements. The checked-in manifest in `Research_Paper/analysis` supplies the image-level folds. The runs used Python 3.12.0, NumPy 2.5.4, SciPy 1.16.2, pandas 2.2.3 and scikit-learn 1.8.0.
+
+```bash
+python run_wl_revision.py --development
+python run_wl_revision.py
+python run_wl_revision.py --unrouted
+python run_wl_revision.py --robustness
+```
+
+The default run also regenerates the local app comparison. [Development scores](results/wl_revision_development.csv) · [Routed folds and resources](results/wl_revision_outer.csv) · [Per-leaf predictions](results/wl_revision_predictions.csv) · [Pooled and known-crop results](results/wl_revision_unrouted.csv) · [Perturbations and rejections](results/wl_revision_robustness.csv).
+
+## Original benchmark
+
 **Question:** Is the WL graph-kernel model better than standard models for plant-stress detection? We
 measure it on several dimensions, not only accuracy: quality, speed, size, memory, data needs and
 robustness to different photo conditions.

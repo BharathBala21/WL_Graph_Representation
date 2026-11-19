@@ -429,7 +429,10 @@ const SvmStep: React.FC<{ record: DiagnosisRecord; t: PipelineTrace }> = ({ reco
         <div>
           <p className="font-title-sm text-[13px] text-pc-ink mb-1">A. Compare with every training leaf</p>
           <p className="font-body-sm text-[12px] text-pc-muted mb-3">
-            WL kernel similarity (0 = nothing in common, 1 = identical patterns) to the {s.training_leaves} training leaves.
+            {record.result.model.kernel === 'wl_plus_measurements'
+              ? 'Each similarity averages the WL graph score and the score from continuous leaf measurements.'
+              : 'A WL similarity of 1 means the normalized pattern counts match.'}
+            {' '}The SVM compares this photo with {s.training_leaves} training leaves.
           </p>
           <div className="flex items-end gap-1 h-28">
             {s.similarity.histogram.map((v, i) => (

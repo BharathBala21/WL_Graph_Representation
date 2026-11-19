@@ -1,0 +1,30 @@
+[
+  {
+    "model": "Original WL",
+    "macro_f1": 0.706432,
+    "accuracy": 0.828129,
+    "healthy_recall": 0.56818,
+    "stressed_recall": 0.878614
+  },
+  {
+    "model": "Revised WL + measurements",
+    "macro_f1": 0.725676,
+    "accuracy": 0.851381,
+    "healthy_recall": 0.53739,
+    "stressed_recall": 0.912361
+  },
+  {
+    "model": "WL only C4",
+    "macro_f1": 0.67121,
+    "accuracy": 0.783681,
+    "healthy_recall": 0.611676,
+    "stressed_recall": 0.817092
+  },
+  {
+    "model": "Measurements only C4",
+    "macro_f1": 0.732423,
+    "accuracy": 0.862319,
+    "healthy_recall": 0.509161,
+    "stressed_recall": 0.930871
+  }
+]
