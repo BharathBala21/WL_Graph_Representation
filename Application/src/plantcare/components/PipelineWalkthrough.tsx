@@ -75,11 +75,12 @@ export function stepSummary(record: DiagnosisRecord, i: number): string | null {
   }
   if (id === 'crop') {
     const c = t.crop_router.scores[0];
+    if (r.crop.source === 'user') return `${r.crop.name} selected by you · forest suggested ${c.name}`;
     return `${c.name} · ${c.votes} of ${t.crop_router.trees} trees`;
   }
   if (id === 'graph') return `${t.graph.edges.length} edges · ${t.graph.iterations.length - 1} WL iterations · ${t.graph.vector_nonzero} patterns`;
   const s = t.svm;
-  return `${s.decision < 0 ? 'Healthy' : 'Stressed'} side · decision ${signed(s.decision)} · ${pct(s.probability_stressed, 0)} stressed`;
+  return `${r.stress.status === 'stressed' ? 'Stressed' : 'Healthy'} prediction · decision ${signed(s.decision)} · ${pct(s.probability_stressed, 0)} estimated stress probability`;
 }
 
 /** Bar that grows from zero when it first appears. */
@@ -473,8 +474,11 @@ const SvmStep: React.FC<{ record: DiagnosisRecord; t: PipelineTrace }> = ({ reco
             </div>
           </div>
           <p className="font-body-sm text-[12px] text-pc-muted mt-2">
-            Below 0 → healthy, above 0 → stressed. Converted to a probability: <b className="text-pc-ink">{pct(s.probability_stressed, 0)} stressed</b> →{' '}
-            <b className={stressed ? 'text-pc-err' : 'text-pc-green'}>{stressed ? 'Stressed' : 'Healthy'}</b>.
+            {record.result.stress.decision_rule === 'svm_predict'
+              ? 'The SVM uses the side of the boundary to call this leaf '
+              : 'This earlier diagnosis used a 50% stress probability threshold and called this leaf '}
+            <b className={stressed ? 'text-pc-err' : 'text-pc-green'}>{stressed ? 'stressed' : 'healthy'}</b>.
+            {' '}The calibrated probability of stress is {pct(s.probability_stressed, 0)}.
           </p>
         </div>
       </div>

@@ -165,14 +165,14 @@ class Predictor:
         }, P
 
     @staticmethod
-    def svm_trace(model, P, p_stress: float, top: int = 6):
+    def svm_trace(model, kernel, p_stress: float, top: int = 6):
         """How the healthy/stressed SVM reached its answer for this leaf.
 
         decision = sum over support vectors of (weight x WL-kernel similarity) + intercept;
         positive values point to "stressed".
         """
         svc = model.svc_
-        k = cosine_kernel(model.Ptr_, P)[0]  # WL-kernel similarity to every training leaf
+        k = kernel[0]  # WL-kernel similarity to every training leaf
         ksv = k[svc.support_]
         coef = svc.dual_coef_[0].copy()
         intercept = float(svc.intercept_[0])
@@ -288,12 +288,16 @@ class Predictor:
         t3 = time.perf_counter()
 
         # 3. healthy vs stressed, 4. ranked conditions
-        p_stress = float(cm['stress'].predict_proba(X)[0][list(cm['stress'].classes_).index(1)])
+        stress_model = cm['stress']
+        kernel = cosine_kernel(stress_model.Ptr_, P)
+        # CV scores SVC.predict. Probability calibration can put 50% away from the SVM boundary.
+        stressed = bool(stress_model.svc_.predict(kernel)[0])
+        p_stress = float(stress_model.svc_.predict_proba(kernel)[0][list(stress_model.classes_).index(1)])
         cond_p = cm['condition'].predict_proba(X)[0]
         cond_order = np.argsort(-cond_p)
         conditions = [{'code': cm['condition'].classes_[i], **CONDITIONS[cm['condition'].classes_[i]],
                        'probability': round(float(cond_p[i]), 4)} for i in cond_order[:3]]
-        svm = self.svm_trace(cm['stress'], P, p_stress)
+        svm = self.svm_trace(stress_model, kernel, p_stress)
         svm['conditions'] = [{'code': cm['condition'].classes_[i], 'name': CONDITIONS[cm['condition'].classes_[i]]['name'],
                               'probability': round(float(cond_p[i]), 4)} for i in cond_order]
         t4 = time.perf_counter()
@@ -335,9 +339,9 @@ class Predictor:
             'quality': {'flag': measured['quality_flag'], 'mask_ratio': round(measured['mask_ratio'], 4)},
             'crop': {'code': crop, 'name': CROPS[crop], 'confidence': round(crop_conf, 4), 'source': crop_source,
                      'alternatives': crop_alts, 'reliability': self.meta['crop_router']['cv_accuracy']},
-            'stress': {'status': 'stressed' if p_stress >= 0.5 else 'healthy',
+            'stress': {'status': 'stressed' if stressed else 'healthy', 'decision_rule': 'svm_predict',
                        'probability_stressed': round(p_stress, 4),
-                       'confidence': round(max(p_stress, 1 - p_stress), 4),
+                       'confidence': round(p_stress if stressed else 1 - p_stress, 4),
                        # balanced accuracy is the headline: 84% of leaves are stressed, so plain accuracy
                        # looks good even for a model that always answers "stressed"
                        'reliability': {'accuracy': info['stress_accuracy'], 'macro_f1': info['stress_macro_f1'],

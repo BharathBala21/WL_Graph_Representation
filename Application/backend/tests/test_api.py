@@ -6,7 +6,7 @@ import os
 import sys
 import tempfile
 
-import pandas as pd
+import numpy as np
 import pytest
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
@@ -16,17 +16,13 @@ sys.path.insert(0, os.path.join(ROOT, 'Application', 'backend'))
 from fastapi.testclient import TestClient  # noqa: E402
 
 from app.conditions import CROPS  # noqa: E402
-from app.main import app  # noqa: E402
+from app.main import app, predictor  # noqa: E402
 
-DATA = os.path.join(ROOT, 'full_pipeline', 'olid_full_features.csv')
+PHOTOS = os.path.join(ROOT, 'Research_Paper', 'data', 'illustrative_images')
 
 
-def leaf_photo(crop, condition):
-    df = pd.read_csv(DATA)
-    row = df[(df.crop == crop) & (df.condition == condition) & (df.quality_flag == 'ACCEPT')].iloc[0]
-    if not os.path.exists(row.image_path):
-        pytest.skip('OLID-I images not available on this machine')
-    with open(row.image_path, 'rb') as f:
+def leaf_photo(filename):
+    with open(os.path.join(PHOTOS, filename), 'rb') as f:
         return f.read()
 
 
@@ -59,7 +55,7 @@ def test_auth_flow(client):
 
 def test_diagnosis_and_history(client):
     h = signup(client, 'bob@example.com')
-    r = client.post('/api/predict', content=leaf_photo('tomato', 'LM'),
+    r = client.post('/api/predict', content=leaf_photo('20_STRESSED_tomato_LM.JPG'),
                     headers={**h, 'Content-Type': 'image/jpeg', 'X-Filename': 'tomato%20leaf.jpg'})
     assert r.status_code == 201, r.text
     rec = r.json()
@@ -71,9 +67,9 @@ def test_diagnosis_and_history(client):
     assert client.get(rec['image_url']).status_code == 200 and client.get(rec['overlay_url']).status_code == 200
 
     # known-crop override
-    r2 = client.post('/api/predict?crop=cucumber', content=leaf_photo('cucumber', 'healthy'),
+    r2 = client.post('/api/predict?crop=ash_gourd', content=leaf_photo('01_NON-STRESSED_ash_gourd_healthy.JPG'),
                      headers={**h, 'Content-Type': 'image/jpeg'})
-    assert r2.status_code == 201 and r2.json()['result']['crop']['code'] == 'cucumber'
+    assert r2.status_code == 201 and r2.json()['result']['crop']['code'] == 'ash_gourd'
     assert r2.json()['result']['crop']['source'] == 'user'
 
     items = client.get('/api/predictions', headers=h).json()
@@ -95,4 +91,23 @@ def test_bad_uploads(client):
     h = signup(client, 'dave@example.com')
     assert client.post('/api/predict', content=b'not an image', headers=h).status_code == 422
     assert client.post('/api/predict', content=b'', headers=h).status_code == 400
-    assert client.post('/api/predict?crop=banana', content=leaf_photo('tomato', 'healthy'), headers=h).status_code == 422
+    assert client.post('/api/predict?crop=banana', content=leaf_photo('07_NON-STRESSED_tomato_healthy.JPG'), headers=h).status_code == 422
+
+
+def test_stress_verdict_uses_evaluated_svm_rule(client, monkeypatch):
+    model = predictor().crop_models['tomato']['stress']
+    svc = model.svc_
+    # Force disagreement regardless of the library's fitted calibration.
+    def opposite_probability(kernel):
+        return np.array([[0.8, 0.2] if label == 1 else [0.2, 0.8] for label in svc.predict(kernel)])
+
+    monkeypatch.setattr(svc, 'predict_proba', opposite_probability)
+    headers = signup(client, 'boundary@example.com')
+    response = client.post('/api/predict?crop=tomato', headers=headers, content=leaf_photo('07_NON-STRESSED_tomato_healthy.JPG'))
+    assert response.status_code == 201, response.text
+    result = response.json()['result']
+    stress = result['stress']
+    assert stress['decision_rule'] == 'svm_predict'
+    assert (stress['status'] == 'stressed') == (result['trace']['svm']['decision'] > 0)
+    assert stress['confidence'] == 0.2
+    assert (stress['status'] == 'stressed') != (stress['probability_stressed'] >= 0.5)

@@ -37,7 +37,7 @@ export const HistoryLogsView: React.FC<HistoryLogsViewProps> = ({ onOpenSample }
   const [error, setError] = useState<string | null>(null);
   const [crop, setCrop] = useState('all');
   const [condition, setCondition] = useState('all');
-  const [outcome, setOutcome] = useState<'all' | 'correct' | 'wrong' | 'misrouted'>('all');
+  const [outcome, setOutcome] = useState<'all' | 'correct' | 'wrong' | 'missed' | 'alarm' | 'misrouted'>('all');
   const [fold, setFold] = useState('all');
   const [page, setPage] = useState(0);
 
@@ -68,21 +68,36 @@ export const HistoryLogsView: React.FC<HistoryLogsViewProps> = ({ onOpenSample }
       .catch((e) => setError(String(e.message || e)));
   }, []);
 
-  const rows = useMemo(
+  const cohort = useMemo(
     () =>
       (log ?? []).filter(
         (r) =>
           (crop === 'all' || r.crop === crop) &&
           (condition === 'all' || r.condition === condition) &&
-          (fold === 'all' || r.fold === Number(fold)) &&
-          (outcome === 'all' || (outcome === 'correct' ? r.ok : outcome === 'wrong' ? !r.ok : !r.routingOk)),
+          (fold === 'all' || r.fold === Number(fold)),
       ),
-    [log, crop, condition, fold, outcome],
+    [log, crop, condition, fold],
   );
+  const rows = useMemo(() => cohort.filter((r) => {
+    switch (outcome) {
+      case 'correct': return r.ok;
+      case 'wrong': return !r.ok;
+      case 'missed': return !r.ok && r.trueStress === 1;
+      case 'alarm': return !r.ok && r.trueStress === 0;
+      case 'misrouted': return !r.routingOk;
+      default: return true;
+    }
+  }), [cohort, outcome]);
+  const counts = useMemo(() => {
+    const matrix = [[0, 0], [0, 0]];
+    for (const r of cohort) matrix[r.trueStress][r.predictedStress] += 1;
+    return matrix;
+  }, [cohort]);
+  const [[tn, fp], [fn, tp]] = counts;
   useEffect(() => setPage(0), [crop, condition, fold, outcome]);
 
-  const acc = rows.length ? rows.filter((r) => r.ok).length / rows.length : null;
-  const routing = rows.length ? rows.filter((r) => r.routingOk).length / rows.length : null;
+  const acc = cohort.length ? (tn + tp) / cohort.length : null;
+  const routing = cohort.length ? cohort.filter((r) => r.routingOk).length / cohort.length : null;
   const pages = Math.max(1, Math.ceil(rows.length / PAGE));
 
   const exportCsv = () => {
@@ -135,10 +150,10 @@ export const HistoryLogsView: React.FC<HistoryLogsViewProps> = ({ onOpenSample }
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Stat icon="filter_alt" label="Images in view" value={log ? num(rows.length) : '…'} sub={`of ${num(RESEARCH.dataset.accepted)}`} />
+        <Stat icon="filter_alt" label="Leaves evaluated" value={log ? num(cohort.length) : '…'} sub={`of ${num(RESEARCH.dataset.accepted)}`} />
         <Stat icon="verified" label="Stress calls correct" value={pct(acc)} sub="Stage 2, end-to-end" />
         <Stat icon="alt_route" label="Routed to right crop" value={pct(routing)} sub="Stage 1" />
-        <Stat icon="error" label="Misclassified" value={log ? num(rows.filter((r) => !r.ok).length) : '…'} sub="stress call wrong" />
+        <Stat icon="error" label="Misclassified" value={log ? num(fp + fn) : '…'} sub="stress call wrong" />
       </div>
 
       <Card className="p-0 overflow-hidden">
@@ -160,9 +175,34 @@ export const HistoryLogsView: React.FC<HistoryLogsViewProps> = ({ onOpenSample }
             ['correct', 'Correct stress call'],
             ['wrong', 'Wrong stress call'],
             ['misrouted', 'Wrong crop (Stage 1)'],
-          ], 'Outcome')}
+            ['missed', 'Missed stress'], ['alarm', 'False alarm'],
+          ], 'Table outcome')}
           {select(fold, setFold, [['all', 'All folds'], ...[0, 1, 2, 3, 4].map((f) => [String(f), `Fold ${f + 1}`] as [string, string])], 'Held-out fold')}
         </div>
+
+        {log && (
+          <section className="p-4 border-b border-pc-line/60">
+            <h2 className="font-title-md text-pc-ink">Stress confusion matrix</h2>
+            <p className="mt-1 font-body-sm text-pc-muted">Counts follow the selected crop, condition and fold. The outcome filter narrows the prediction list below.</p>
+            <div className="mt-4 grid gap-4 md:grid-cols-2 items-center">
+              <table aria-label="Stress confusion matrix" className="w-full text-center font-body-sm text-pc-ink">
+                <thead><tr><th scope="col">Actual class</th><th scope="col">Called healthy</th><th scope="col">Called stressed</th></tr></thead>
+                <tbody>
+                  {counts.map((row, actual) => (
+                    <tr key={actual} className="border-t border-pc-line">
+                      <th scope="row" className="py-2">{actual === 0 ? 'Healthy' : 'Stressed'}</th>
+                      {row.map((count, predicted) => <td key={predicted} className={predicted === actual ? 'bg-pc-low' : 'bg-pc-amber-bg text-pc-amber'}>{num(count)}</td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="font-body-sm text-pc-ink2">
+                <p>Stressed leaves detected · <b>{pct(tp + fn ? tp / (tp + fn) : null)}</b> ({num(tp)} of {num(tp + fn)})</p>
+                <p>Healthy leaves recognized · <b>{pct(tn + fp ? tn / (tn + fp) : null)}</b> ({num(tn)} of {num(tn + fp)})</p>
+              </div>
+            </div>
+          </section>
+        )}
 
         {error && <p className="p-6 text-pc-err font-body-md">Could not load the prediction log ({error}).</p>}
         {!log && !error && <p className="p-6 text-pc-muted font-body-md">Loading {num(RESEARCH.dataset.accepted)} predictions…</p>}

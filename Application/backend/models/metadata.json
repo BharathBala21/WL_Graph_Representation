@@ -1,5 +1,5 @@
 {
-  "trained_at": "2026-11-14T13:32:51+00:00",
+  "trained_at": "2026-11-19T13:37:08+00:00",
   "training_rows": 4387,
   "features": [
     "area",
@@ -64,6 +64,9 @@
       ],
       "stress_accuracy": 0.8474,
       "stress_macro_f1": 0.6068,
+      "stress_balanced_accuracy": 0.6445,
+      "stress_healthy_found": 0.4007,
+      "always_stressed_accuracy": 0.9167,
       "condition_top1_accuracy": 0.5944,
       "condition_top3_accuracy": 0.8946,
       "familiarity": {
@@ -149,10 +152,7 @@
           48.311445,
           0.443376
         ]
-      },
-      "stress_balanced_accuracy": 0.6445,
-      "stress_healthy_found": 0.4007,
-      "always_stressed_accuracy": 0.9167
+      }
     },
     "bitter_gourd": {
       "name": "Bitter gourd",
@@ -174,6 +174,9 @@
       ],
       "stress_accuracy": 0.7344,
       "stress_macro_f1": 0.6704,
+      "stress_balanced_accuracy": 0.6979,
+      "stress_healthy_found": 0.6297,
+      "always_stressed_accuracy": 0.7668,
       "condition_top1_accuracy": 0.4757,
       "condition_top3_accuracy": 0.8341,
       "familiarity": {
@@ -259,10 +262,7 @@
           52.813524,
           0.447194
         ]
-      },
-      "stress_balanced_accuracy": 0.6979,
-      "stress_healthy_found": 0.6297,
-      "always_stressed_accuracy": 0.7668
+      }
     },
     "bottle_gourd": {
       "name": "Bottle gourd",
@@ -284,6 +284,9 @@
       ],
       "stress_accuracy": 0.9125,
       "stress_macro_f1": 0.6523,
+      "stress_balanced_accuracy": 0.6185,
+      "stress_healthy_found": 0.2571,
+      "always_stressed_accuracy": 0.9066,
       "condition_top1_accuracy": 0.5301,
       "condition_top3_accuracy": 0.8554,
       "familiarity": {
@@ -369,10 +372,7 @@
           43.129411,
           0.450664
         ]
-      },
-      "stress_balanced_accuracy": 0.6185,
-      "stress_healthy_found": 0.2571,
-      "always_stressed_accuracy": 0.9066
+      }
     },
     "cucumber": {
       "name": "Cucumber",
@@ -389,6 +389,9 @@
       ],
       "stress_accuracy": 0.9083,
       "stress_macro_f1": 0.8344,
+      "stress_balanced_accuracy": 0.8754,
+      "stress_healthy_found": 0.8286,
+      "always_stressed_accuracy": 0.8583,
       "condition_top1_accuracy": 0.5708,
       "condition_top3_accuracy": 0.9792,
       "familiarity": {
@@ -474,10 +477,7 @@
           51.647055,
           0.483582
         ]
-      },
-      "stress_balanced_accuracy": 0.8754,
-      "stress_healthy_found": 0.8286,
-      "always_stressed_accuracy": 0.8583
+      }
     },
     "eggplant": {
       "name": "Eggplant",
@@ -499,6 +499,9 @@
       ],
       "stress_accuracy": 0.855,
       "stress_macro_f1": 0.7105,
+      "stress_balanced_accuracy": 0.7221,
+      "stress_healthy_found": 0.5386,
+      "always_stressed_accuracy": 0.8625,
       "condition_top1_accuracy": 0.4939,
       "condition_top3_accuracy": 0.8429,
       "familiarity": {
@@ -584,10 +587,7 @@
           41.548036,
           0.423301
         ]
-      },
-      "stress_balanced_accuracy": 0.7221,
-      "stress_healthy_found": 0.5386,
-      "always_stressed_accuracy": 0.8625
+      }
     },
     "ridge_gourd": {
       "name": "Ridge gourd",
@@ -607,6 +607,9 @@
       ],
       "stress_accuracy": 0.7049,
       "stress_macro_f1": 0.5181,
+      "stress_balanced_accuracy": 0.5267,
+      "stress_healthy_found": 0.2697,
+      "always_stressed_accuracy": 0.846,
       "condition_top1_accuracy": 0.5537,
       "condition_top3_accuracy": 0.9112,
       "familiarity": {
@@ -692,10 +695,7 @@
           48.369012,
           0.425419
         ]
-      },
-      "stress_balanced_accuracy": 0.5267,
-      "stress_healthy_found": 0.2697,
-      "always_stressed_accuracy": 0.846
+      }
     },
     "snake_gourd": {
       "name": "Snake gourd",
@@ -713,6 +713,9 @@
       ],
       "stress_accuracy": 0.8959,
       "stress_macro_f1": 0.7442,
+      "stress_balanced_accuracy": 0.72,
+      "stress_healthy_found": 0.4833,
+      "always_stressed_accuracy": 0.8717,
       "condition_top1_accuracy": 0.6373,
       "condition_top3_accuracy": 0.9426,
       "familiarity": {
@@ -798,10 +801,7 @@
           46.007778,
           0.452924
         ]
-      },
-      "stress_balanced_accuracy": 0.72,
-      "stress_healthy_found": 0.4833,
-      "always_stressed_accuracy": 0.8717
+      }
     },
     "tomato": {
       "name": "Tomato",
@@ -821,6 +821,9 @@
       ],
       "stress_accuracy": 0.7897,
       "stress_macro_f1": 0.7622,
+      "stress_balanced_accuracy": 0.7692,
+      "stress_healthy_found": 0.7125,
+      "always_stressed_accuracy": 0.6828,
       "condition_top1_accuracy": 0.6862,
       "condition_top3_accuracy": 0.9586,
       "familiarity": {
@@ -906,10 +909,7 @@
           44.842796,
           0.424358
         ]
-      },
-      "stress_balanced_accuracy": 0.7692,
-      "stress_healthy_found": 0.7125,
-      "always_stressed_accuracy": 0.6828
+      }
     }
   },
   "conditions": {

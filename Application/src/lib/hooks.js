@@ -69,9 +69,11 @@ export function useHealthState() {
   const refresh = useCallback(async () => {
     try {
       const h = await api.health()
+      if (typeof h?.models_loaded !== 'boolean') throw new Error('Invalid health response')
       setHealth(h)
       setStatus('online')
     } catch {
+      setHealth(null)
       setStatus('offline')
     }
   }, [])

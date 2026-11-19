@@ -14,7 +14,7 @@ export interface DiagnosisRecord {
   result: {
     crop: { code: string; name: string; confidence: number; source: 'model' | 'user'; reliability: number;
             alternatives: { code: string; name: string; probability: number }[] };
-    stress: { status: 'healthy' | 'stressed'; probability_stressed: number; confidence: number;
+    stress: { status: 'healthy' | 'stressed'; probability_stressed: number; confidence: number; decision_rule?: 'svm_predict';
               reliability: { accuracy: number; macro_f1: number; balanced_accuracy?: number | null;
                              healthy_found?: number | null; always_stressed_accuracy?: number | null } };
     conditions: { code: string; name: string; type: string; probability: number }[];
@@ -88,9 +88,8 @@ export const DiagnosisResult: React.FC<Props> = ({ record, onDelete, onSaveNote,
                   </span>
                 )}
                 <span className="font-body-md text-pc-ink2">
-                  {verdict === 'model'
-                    ? `${pct(r.stress.confidence, 0)} confident`
-                    : `Model's best guess: ${stressed ? 'Stressed' : 'Healthy'} (${pct(r.stress.confidence, 0)})`}
+                  {verdict !== 'model' && `Model prediction · ${stressed ? 'Stressed' : 'Healthy'}. `}
+                  Estimated probability of stress · {pct(r.stress.probability_stressed, 0)}
                 </span>
                 {weakCrop && (
                   <Chip className="bg-pc-amber-bg text-pc-amber">
@@ -227,7 +226,8 @@ export const DiagnosisResult: React.FC<Props> = ({ record, onDelete, onSaveNote,
             <SectionTitle icon="hub" title="How this was decided" />
             <ul className="font-body-sm text-[13px] text-pc-ink2 flex flex-col gap-1.5">
               <li>• Leaf separated from the background and measured (38 measurements).</li>
-              <li>• Crop identified by a Random Forest (correct {pct(r.crop.reliability, 0)} of the time in testing).</li>
+              <li>{r.crop.source === 'user' ? `• You selected ${r.crop.name} for this diagnosis.` :
+                `• Crop identified by a Random Forest (correct ${pct(r.crop.reliability, 0)} of the time in testing).`}</li>
               <li>
                 • Measurements turned into a <b>{r.model.graph_name}</b> graph and compared with the <b>WL graph kernel</b> (depth {r.model.wl_depth}).
               </li>

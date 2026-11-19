@@ -10,8 +10,10 @@ per-user history in SQLite.
    Photos where no leaf is found are rejected with a message.
 2. **Crop identified.** A Random Forest routes the leaf to one of 8 crops (as in NB23 Stage 1). The
    user can also choose the crop.
-3. **Healthy vs stressed.** The crop's WL kernel SVM decides, using that crop's best graph type and
-   WL depth from the Level 2 experiments (NB22).
+3. **Healthy vs stressed.** The crop's WL kernel SVM uses the same class decision as the
+   cross-validation code (`SVC.predict`). Its calibrated probability of stress is shown separately.
+   A probability of 50% can fall on either side of the SVM boundary. Older saved diagnoses
+   used a 50% probability threshold and retain their original verdict.
 4. **Top 3 likely conditions.** A second WL kernel SVM ranks the specific conditions.
 5. **Explanation.** The 5 measurements that differ most from healthy leaves of the same crop are shown.
 6. **Spot check** (`app/lesions.py`). The 38 measurements are leaf averages, so a few small spots
@@ -93,5 +95,6 @@ python -m pytest Application/backend/tests -q
 ```
 
 * `test_wl_equivalence.py`: the backend WL engine gives the same kernels as the research implementation.
-* `test_api.py`: register/login, diagnosis of real OLID-I photos, history, notes, delete, and
-  per-user isolation, run against a temporary database.
+* `test_api.py`: register/login, diagnosis of bundled OLID-I photos, agreement with the SVM
+  decision when probability and margin disagree, history, notes, delete, and per-user isolation.
+  Run `python train.py` from the backend directory before the tests. Test accounts use a temporary database.

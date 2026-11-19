@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { RESEARCH } from '../data/research';
 import { Card, Chip, SampleThumb, SectionTitle, conditionName, cropName, num } from '../lib';
 import { api } from '../../lib/api';
-import { useAuth } from '../../lib/hooks';
+import { useAuth, useBackend } from '../../lib/hooks';
 import { DiagnosisRecord, DiagnosisResult } from './DiagnosisResult';
 import { PIPELINE_STEPS as STEPS, PipelineWalkthrough, stepSummary } from './PipelineWalkthrough';
 
@@ -15,11 +15,12 @@ interface AnalyzePlantViewProps {
 export const AnalyzePlantView: React.FC<AnalyzePlantViewProps> = ({ onOpenSample }) => {
   const { status: authStatus } = useAuth();
   const signedIn = authStatus === 'signed-in';
+  const { health, status: backendStatus, refresh } = useBackend();
+  const liveReady = backendStatus === 'online' && health?.models_loaded === true;
   const [tab, setTab] = useState<'dataset' | 'upload'>('upload');
   const [crop, setCrop] = useState('tomato');
   const [condition, setCondition] = useState('all');
   const [selected, setSelected] = useState<string | null>(null);
-  const [step, setStep] = useState(-1); // -1 idle, STEPS.length done
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [cropHint, setCropHint] = useState('');
@@ -38,28 +39,21 @@ export const AnalyzePlantView: React.FC<AnalyzePlantViewProps> = ({ onOpenSample
   );
   const sample = RESEARCH.samples.find((s) => s.id === selected);
 
-  // step animation: dataset runs through all steps; an upload waits on the last step for the server
-  useEffect(() => {
-    if (step < 0 || step >= STEPS.length) return;
-    if (tab === 'upload' && step === STEPS.length - 1) return;
-    const t = setTimeout(() => setStep((s) => s + 1), 650);
-    return () => clearTimeout(t);
-  }, [step, tab]);
-  useEffect(() => {
-    if (tab === 'dataset' && step === STEPS.length && sample) {
-      const t = setTimeout(() => onOpenSample(sample.id), 400);
-      return () => clearTimeout(t);
-    }
-  }, [step, sample, onOpenSample, tab]);
   useEffect(() => () => void (preview && URL.revokeObjectURL(preview)), [preview]);
 
   const pickFile = (f: File | undefined) => {
-    if (!f) return;
+    if (!f || busy) return;
+    if (!f.size || f.size > 25 * 1024 * 1024) {
+      setFile(null);
+      setPreview(null);
+      setResult(null);
+      setError('Choose a non-empty image of 25 MB or less.');
+      return;
+    }
     setFile(f);
     setPreview(URL.createObjectURL(f));
     setResult(null);
     setError('');
-    setStep(-1);
   };
 
   const runUpload = async () => {
@@ -67,24 +61,20 @@ export const AnalyzePlantView: React.FC<AnalyzePlantViewProps> = ({ onOpenSample
     setBusy(true);
     setError('');
     setResult(null);
-    setStep(0);
     try {
       const rec = await api.predict(file, cropHint || undefined);
       setResult(rec);
       setWalkStep(0);
-      setStep(STEPS.length);
       toast.success('Diagnosis saved to My Diagnoses');
       setTimeout(() => (walkRef.current ?? resultRef.current)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     } catch (e: any) {
       setError(e?.message || 'The diagnosis failed.');
-      setStep(-1);
     } finally {
       setBusy(false);
     }
   };
 
-  const running = tab === 'upload' ? busy : step >= 0 && step <= STEPS.length;
-  const canRun = tab === 'dataset' ? !!sample && !running : !!file && signedIn && !busy;
+  const canRun = tab === 'dataset' ? !!sample : !!file && signedIn && liveReady && !busy;
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-[1440px] mx-auto">
@@ -110,7 +100,8 @@ export const AnalyzePlantView: React.FC<AnalyzePlantViewProps> = ({ onOpenSample
             ).map(([id, icon, label]) => (
               <button
                 key={id}
-                onClick={() => (setTab(id), setStep(-1))}
+                disabled={busy}
+                onClick={() => setTab(id)}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg font-title-sm transition-colors ${
                   tab === id ? 'bg-pc-card text-pc-ink shadow-xs' : 'text-pc-muted hover:text-pc-ink'
                 }`}
@@ -152,7 +143,7 @@ export const AnalyzePlantView: React.FC<AnalyzePlantViewProps> = ({ onOpenSample
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {shown.map((s) => (
-                  <SampleThumb key={s.id} sample={s} active={s.id === selected} onClick={() => (setSelected(s.id), setStep(-1))} />
+                  <SampleThumb key={s.id} sample={s} active={s.id === selected} onClick={() => setSelected(s.id)} />
                 ))}
               </div>
               <p className="font-body-sm text-[11px] text-pc-muted mt-3">
@@ -160,6 +151,16 @@ export const AnalyzePlantView: React.FC<AnalyzePlantViewProps> = ({ onOpenSample
                 image's prediction is listed in History &amp; Logs.
               </p>
             </>
+          ) : !liveReady && !busy ? (
+            <div className="flex flex-col items-start gap-3 py-6" role="status">
+              <p className="font-title-md text-pc-ink">{backendStatus === 'checking' ? 'Checking live diagnosis availability…' :
+                backendStatus === 'offline' ? 'Live diagnosis is offline' : 'The diagnosis models are unavailable'}</p>
+              <p className="font-body-sm text-pc-ink2">You can still explore the recorded OLID-I predictions.</p>
+              <div className="flex gap-3">
+                <button onClick={() => setTab('dataset')} className="rounded-lg bg-pc-deep text-white px-4 py-2">Browse dataset</button>
+                <button onClick={() => refresh()} className="rounded-lg border border-pc-line px-4 py-2">Check again</button>
+              </div>
+            </div>
           ) : !signedIn ? (
             <div className="flex flex-col items-center text-center gap-3 py-10">
               <span className="material-symbols-outlined text-[44px] text-pc-green">lock</span>
@@ -179,12 +180,14 @@ export const AnalyzePlantView: React.FC<AnalyzePlantViewProps> = ({ onOpenSample
               <input
                 ref={fileInput}
                 type="file"
+                disabled={busy}
                 accept="image/jpeg,image/png,image/webp,image/bmp"
                 className="hidden"
-                onChange={(e) => pickFile(e.target.files?.[0])}
+                onChange={(e) => { pickFile(e.target.files?.[0]); e.target.value = ''; }}
               />
               <button
                 type="button"
+                disabled={busy}
                 onClick={() => fileInput.current?.click()}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => (e.preventDefault(), pickFile(e.dataTransfer.files?.[0]))}
@@ -203,7 +206,8 @@ export const AnalyzePlantView: React.FC<AnalyzePlantViewProps> = ({ onOpenSample
                 <span className="font-title-sm text-[13px] text-pc-ink2 sm:w-40">Crop (optional)</span>
                 <select
                   value={cropHint}
-                  onChange={(e) => setCropHint(e.target.value)}
+                  disabled={busy}
+                  onChange={(e) => { setCropHint(e.target.value); setResult(null); setError(''); }}
                   className="flex-1 rounded-lg border border-pc-line bg-pc-low px-3 py-2 font-body-md text-pc-ink focus:outline-none focus:ring-2 focus:ring-pc-green/50"
                 >
                   <option value="">Detect automatically</option>
@@ -229,13 +233,12 @@ export const AnalyzePlantView: React.FC<AnalyzePlantViewProps> = ({ onOpenSample
         <Card className="flex flex-col">
           <SectionTitle
             icon="play_circle"
-            title="Pipeline"
+            title={tab === 'dataset' ? 'Recorded prediction' : 'Pipeline'}
             sub={tab === 'dataset' ? (sample ? `${cropName(sample.crop)} · ${sample.file}` : 'Select an image first') : file ? file.name : 'Choose a photo first'}
           />
           {tab === 'dataset' && sample && <img src={sample.image} alt="" className="w-full aspect-[4/3] object-cover rounded-xl mb-4" />}
-          <ol className="flex flex-col gap-2 flex-1">
+          {tab === 'upload' && <ol className="flex flex-col gap-2 flex-1">
             {STEPS.map((s, i) => {
-              const state = step > i ? 'done' : step === i ? 'active' : 'idle';
               const traced = tab === 'upload' && !!result?.result.trace;
               const current = traced && walkStep === i;
               const summary = traced && result ? stepSummary(result, i) : null;
@@ -247,15 +250,15 @@ export const AnalyzePlantView: React.FC<AnalyzePlantViewProps> = ({ onOpenSample
                       ? { type: 'button' as const, onClick: () => (setWalkStep(i), walkRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })) }
                       : {})}
                     className={`w-full text-left flex gap-3 p-3 rounded-xl border transition-colors ${
-                      state === 'active' || current ? 'border-pc-green bg-pc-low' : 'border-pc-line/60'
+                      current ? 'border-pc-green bg-pc-low' : 'border-pc-line/60'
                     } ${traced ? 'hover:border-pc-green/60 hover:bg-pc-low cursor-pointer' : ''}`}
                   >
                     <span
                       className={`material-symbols-outlined text-[20px] ${
-                        state === 'done' ? 'text-pc-green' : state === 'active' ? 'text-pc-green animate-pulse' : 'text-pc-muted'
+                        traced ? 'text-pc-green' : 'text-pc-muted'
                       }`}
                     >
-                      {state === 'done' ? 'check_circle' : s.icon}
+                      {traced ? 'check_circle' : s.icon}
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="font-title-sm text-[13px] text-pc-ink">{s.title}</p>
@@ -270,14 +273,14 @@ export const AnalyzePlantView: React.FC<AnalyzePlantViewProps> = ({ onOpenSample
                 </li>
               );
             })}
-          </ol>
+          </ol>}
           <button
             disabled={!canRun}
-            onClick={() => (tab === 'dataset' ? setStep(0) : runUpload())}
+            onClick={() => { if (tab === 'upload') void runUpload(); else if (sample) onOpenSample(sample.id); }}
             className="mt-4 inline-flex items-center justify-center gap-2 bg-pc-deep text-white px-5 py-3 rounded-lg hover:bg-pc-forest transition-colors font-title-sm disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <span className={`material-symbols-outlined text-[20px] ${running ? 'animate-spin' : ''}`}>{running ? 'progress_activity' : 'play_arrow'}</span>
-            {running ? 'Running…' : tab === 'dataset' ? 'Run pipeline & open diagnostics' : 'Diagnose this leaf'}
+            <span className={`material-symbols-outlined text-[20px] ${busy ? 'animate-spin' : ''}`}>{busy ? 'progress_activity' : 'play_arrow'}</span>
+            {busy ? 'Analyzing photo…' : tab === 'dataset' ? 'Open recorded prediction' : 'Diagnose this leaf'}
           </button>
         </Card>
       </div>
