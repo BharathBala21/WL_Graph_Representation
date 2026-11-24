@@ -1,0 +1,21 @@
+graph,depth,accuracy,macro_f1
+Hybrid,3,0.816045,0.696897
+Feature-Family,3,0.809208,0.691448
+Hybrid,2,0.797126,0.687417
+Feature-Family,2,0.789148,0.681682
+Feature-Similarity kNN,3,0.778664,0.673719
+Feature-Similarity kNN,2,0.762025,0.664668
+Hybrid,1,0.757467,0.659069
+Feature-Family,1,0.75336,0.655746
+Feature-Similarity kNN,1,0.723735,0.637426
+Correlation,3,0.70937,0.621614
+Spatial/Regional,2,0.706409,0.621589
+Spatial/Regional,3,0.708235,0.621201
+Spatial/Regional,1,0.698657,0.617482
+Correlation,2,0.699569,0.617044
+Correlation,1,0.691361,0.611696
+Feature-Similarity kNN,0,0.67472,0.600707
+Feature-Family,0,0.67472,0.600707
+Hybrid,0,0.67472,0.600707
+Correlation,0,0.67472,0.600707
+Spatial/Regional,0,0.67472,0.600707

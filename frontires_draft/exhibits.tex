@@ -1,0 +1,35 @@
+\newcommand{\paperfigure}[4]{\begin{figure}[!htbp]\centering
+\includegraphics[width=#3\linewidth]{figures/Figure#1.jpg}
+\caption{#4}\label{fig:#2}\end{figure}}
+\newcommand{\leafpanel}{\paperfigure{1}{leaf}{0.76}{From image to measurement in ash gourd. The top row shows OLID-I photographs labeled healthy, nitrogen deficient and powdery mildew. The bottom row shows the masks produced by the study algorithm on the supplied JPEGs; percentages give the foreground share of each frame. White denotes retained pixels. These illustrative masks have no independent boundary annotation. Photographs from Orka et al. (2023), OLID-I (DOI 10.5281/zenodo.8105154), CC BY 4.0, resized and arranged for display.}}
+\newcommand{\matrixpanel}{\paperfigure{2}{matrices}{0.86}{How the same 38 measurements produce different neighborhoods. Panel A shows absolute Pearson correlation from white (zero) to dark blue (one). Panels B--F mark edges in black; parentheses give undirected edge counts. Both axes use descriptor order in S7; dividers mark shape, RGB, HSV, Lab, derived color, texture and region families. All matrices use only the training images of the first outer fold.}}
+\newcommand{\traitpanel}{\paperfigure{3}{traits}{0.87}{Direction and magnitude of descriptor shifts within each crop. Positive values (red) indicate that a stressed leaf tends to have a larger measured value than a healthy leaf; negative values (blue) indicate the reverse. Zero represents equal pairwise ranks. Rows use all accepted images of the indicated crop. S12 lists all 38 descriptors.}}
+\newcommand{\depthpanel}{\paperfigure{4}{depth}{0.83}{Mean pooled macro-F1 across the same five outer folds for each of five graph constructions at depths zero to three. At depth zero each curve represents exactly the same comparison. Table~\ref{tab:control} evaluates a separate control that preserves the hybrid graph structure while reassigning its descriptor identities.}}
+\newcommand{\croppanel}{\paperfigure{5}{crops}{0.91}{Stress recognition when crop identity is supplied. Each marker averages five binary-stratified test folds within a crop. Selected WL fixes a crop-specific setting chosen in the original sweep. Nested WL chooses it on the training partition of each outer fold.}}
+\newcommand{\robustpanel}{\paperfigure{6}{robust}{0.88}{Change in pooled macro-F1 relative to clean photographs. Each perturbation started with the same 240 images. Feature models lost 5, 15, 12, 0, 0, 3 and 0 images to mask filtering, respectively, in the order shown. The CNN returned a prediction for each image. S9 compares models on the 217 images retained in every condition.}}
+\newcommand{\costpanel}{\paperfigure{7}{cost}{0.95}{Labeled data and processing time answer different deployment questions. (A) Mean within-crop macro-F1 against the fraction of the outer training fold used. Pretraining on ImageNet precedes subsampling. (B) Estimated single-image processing time for routed inference, combining preprocessing and model measurements. Selected WL and tuned Extra Trees both require full-resolution descriptor extraction.}}
+\newcommand{\cohorttable}{\begin{table}[!htbp]\centering
+\caption{Image retention and binary label distribution by crop. Healthy and stressed columns count accepted images only.}\label{tab:coverage}
+\small\begin{tabular}{lrrrrr}\toprule Crop & Input & Accepted & Retention (\%) & Healthy & Stressed\\\midrule
+\tableinput coverage_rows.tex
+\bottomrule\end{tabular}\end{table}}
+\newcommand{\controltable}{\begin{table}[!htbp]\centering
+\caption{Paired topology controls on held-out images. Each row uses identical train/test images and labels. The permutation column averages five descriptor permutations within the fold. The final column subtracts that mean from the original hybrid score.}\label{tab:control}
+\small\begin{tabular}{lrrrr}\toprule Test fold & Depth zero & Hybrid, depth 3 & Permuted, depth 3 & Difference\\\midrule
+\tableinput control_rows.tex
+\bottomrule\end{tabular}\end{table}}
+\newcommand{\errtable}{\begin{table}[!htbp]\centering
+\caption{From original stress-labeled images to positive screens. For selected source conditions, the pooled hybrid at depth three returned a positive screen on the indicated number of held-out images. The last two columns change the denominator from accepted images to all source images of that condition. Rejected images received no classification.}\label{tab:errors}
+\small\begin{tabular}{lrrrrr}\toprule Condition & Original & Accepted & Positive & Positive/accepted (\%) & Positive/all (\%)\\\midrule
+\tableinput error_rows.tex
+\bottomrule\end{tabular}\end{table}}
+\newcommand{\tasktable}{\begin{table}[!htbp]\centering
+\caption{Macro-F1 under three crop-information protocols. Known-crop results weight the eight crops equally. The last two columns evaluate the same routed experiment on image folds, first using predicted crop and then supplying the true crop. A dash marks an unevaluated configuration.}\label{tab:tasks}
+\small\begin{tabular}{lrrrr}\toprule Model & Pooled & Known crop & Predicted crop & True-crop route\\\midrule
+\tableinput comparison_rows.tex
+\bottomrule\end{tabular}\end{table}}
+\newcommand{\routedtable}{\begin{table}[!htbp]\centering
+\caption{Class-specific performance when crop must be identified. Macro-F1 is the mean and sample standard deviation across five outer folds. Other model entries are fold means. The reference predicts stress on every accepted image.}\label{tab:routed}
+\small\begin{tabular}{lccccc}\toprule Model & Macro-F1 & Balanced accuracy & Healthy recall & Stressed recall & Accuracy\\\midrule
+\tableinput routed_rows.tex
+\bottomrule\end{tabular}\end{table}}

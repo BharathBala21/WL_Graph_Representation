@@ -1,0 +1,110 @@
+\begin{thebibliography}{12}
+\providecommand{\natexlab}[1]{#1}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\selectlanguage}[1]{\relax}
+\providecommand{\bibAnnoteFile}[1]{%
+  \IfFileExists{#1}{\begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ \input{#1}\end{quotation}}{}}
+\providecommand{\bibAnnote}[2]{%
+  \begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ #2\end{quotation}}
+
+\bibitem[{Breiman(2001)}]{Breiman2001}
+Breiman, L. (2001).
+\newblock Random forests.
+\newblock \emph{Machine Learning} 45, 5--32.
+\newblock \doi{10.1023/A:1010933404324}
+\bibAnnoteFile{Breiman2001}
+
+\bibitem[{Cawley and Talbot(2010)}]{Cawley2010}
+Cawley, G.~C. and Talbot, N. L.~C. (2010).
+\newblock On over-fitting in model selection and subsequent selection bias in
+  performance evaluation.
+\newblock \emph{Journal of Machine Learning Research} 11, 2079--2107
+\bibAnnoteFile{Cawley2010}
+
+\bibitem[{Cortes and Vapnik(1995)}]{Cortes1995}
+Cortes, C. and Vapnik, V. (1995).
+\newblock Support-vector networks.
+\newblock \emph{Machine Learning} 20, 273--297.
+\newblock \doi{10.1007/BF00994018}
+\bibAnnoteFile{Cortes1995}
+
+\bibitem[{Gehan et~al.(2017)Gehan, Fahlgren, Abbasi, Berry, Callen, Chavez
+  et~al.}]{Gehan2017}
+Gehan, M.~A., Fahlgren, N., Abbasi, A., Berry, J.~C., Callen, S.~T., Chavez,
+  L., et~al. (2017).
+\newblock {PlantCV} v2: Image analysis software for high-throughput plant
+  phenotyping.
+\newblock \emph{PeerJ} 5, e4088.
+\newblock \doi{10.7717/peerj.4088}
+\bibAnnoteFile{Gehan2017}
+
+\bibitem[{Haralick et~al.(1973)Haralick, Shanmugam, and
+  Dinstein}]{Haralick1973}
+Haralick, R.~M., Shanmugam, K., and Dinstein, I. (1973).
+\newblock Textural features for image classification.
+\newblock \emph{IEEE Transactions on Systems, Man, and Cybernetics} SMC-3,
+  610--621.
+\newblock \doi{10.1109/TSMC.1973.4309314}
+\bibAnnoteFile{Haralick1973}
+
+\bibitem[{Howard et~al.(2019)Howard, Sandler, Chu, Chen, Chen, Tan
+  et~al.}]{Howard2019}
+Howard, A., Sandler, M., Chu, G., Chen, L.-C., Chen, B., Tan, M., et~al.
+  (2019).
+\newblock Searching for {MobileNetV3}.
+\newblock In \emph{Proceedings of the IEEE/CVF International Conference on
+  Computer Vision}. 1314--1324.
+\newblock \doi{10.1109/ICCV.2019.00140}
+\bibAnnoteFile{Howard2019}
+
+\bibitem[{Mohanty et~al.(2016)Mohanty, Hughes, and Salathe}]{Mohanty2016}
+Mohanty, S.~P., Hughes, D.~P., and Salathe, M. (2016).
+\newblock Using deep learning for image-based plant disease detection.
+\newblock \emph{Frontiers in Plant Science} 7, 1419.
+\newblock \doi{10.3389/fpls.2016.01419}
+\bibAnnoteFile{Mohanty2016}
+
+\bibitem[{Orka et~al.(2023)Orka, Uddin, Toushique, and Hossain}]{Orka2023}
+Orka, N.~A., Uddin, M.~N., Toushique, F.~M., and Hossain, M.~S. (2023).
+\newblock {OLID I}: an open leaf image dataset for plant stress recognition.
+\newblock \emph{Frontiers in Plant Science} 14, 1251888.
+\newblock \doi{10.3389/fpls.2023.1251888}
+\bibAnnoteFile{Orka2023}
+
+\bibitem[{Otsu(1979)}]{Otsu1979}
+Otsu, N. (1979).
+\newblock A threshold selection method from gray-level histograms.
+\newblock \emph{IEEE Transactions on Systems, Man, and Cybernetics} 9, 62--66.
+\newblock \doi{10.1109/TSMC.1979.4310076}
+\bibAnnoteFile{Otsu1979}
+
+\bibitem[{Shervashidze et~al.(2011)Shervashidze, Schweitzer, van Leeuwen,
+  Mehlhorn, and Borgwardt}]{Shervashidze2011}
+Shervashidze, N., Schweitzer, P., van Leeuwen, E.~J., Mehlhorn, K., and
+  Borgwardt, K.~M. (2011).
+\newblock Weisfeiler--lehman graph kernels.
+\newblock \emph{Journal of Machine Learning Research} 12, 2539--2561
+\bibAnnoteFile{Shervashidze2011}
+
+\bibitem[{Sriram and Ramraj(2026)}]{Sriram2026}
+Sriram, S. and Ramraj, T. (2026).
+\newblock Perceptual graph kernels for image-derived plant trait interaction
+  analysis in precision agriculture.
+\newblock \emph{Frontiers in Plant Science} 17, 1822052.
+\newblock \doi{10.3389/fpls.2026.1822052}
+\bibAnnoteFile{Sriram2026}
+
+\bibitem[{Tan and Le(2019)}]{Tan2019}
+Tan, M. and Le, Q.~V. (2019).
+\newblock {EfficientNet}: Rethinking model scaling for convolutional neural
+  networks.
+\newblock In \emph{Proceedings of the 36th International Conference on Machine
+  Learning} (PMLR), vol.~97, 6105--6114
+\bibAnnoteFile{Tan2019}
+
+\end{thebibliography}

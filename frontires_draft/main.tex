@@ -1,0 +1,34 @@
+\documentclass[utf8]{FrontiersinHarvard}
+\usepackage{url,hyperref,lineno,booktabs}
+\hypersetup{hidelinks}
+\def\keyFont{\fontsize{8}{11}\helveticabold}
+\def\firstAuthorLast{Merugumala et~al.}
+\def\Authors{Merugumala Sandeep$^1$, Chilukuri Subrahmanya Sri Prakash$^1$, Bala Bharath Chandra Sai$^1$, Muppagowni Vamsidhar$^1$, Yerneni Vishnu Vardhan$^1$ and Sriram S.$^1$}
+\def\Address{$^1$School of Computing, Amrita Vishwa Vidyapeetham, Coimbatore, India}
+\def\corrAuthor{Corresponding author to be confirmed}
+\def\corrEmail{Pending author confirmation}
+\makeatletter\let\tableinput\@@input\makeatother
+\input{exhibits}
+\makeatletter
+\newcommand{\allpanels}{}
+\newcommand{\showpanel}[1]{\ifdefined\submissionlayout\g@addto@macro\allpanels{#1}\else#1\fi}
+\makeatother
+\ifdefined\submissionlayout\else
+\usepackage{placeins,etoolbox}
+\AtBeginDocument{\pretocmd{\subsection}{\FloatBarrier}{}{}}
+\fi
+\raggedbottom
+\begin{document}
+\onecolumn\firstpage{1}\linenumbers
+\title[Feature graphs for leaf stress recognition]{Graph neighborhoods and segmentation coverage in leaf stress recognition across eight crops}
+\author[\firstAuthorLast]{\Authors}\address{}\correspondance{}\extraAuth{}\maketitle
+\input{article}
+\bibliographystyle{Frontiers-Harvard}
+\bibliography{references}
+\ifdefined\submissionlayout\clearpage\allpanels\fi
+\end{document}
+
+
+
+
+
