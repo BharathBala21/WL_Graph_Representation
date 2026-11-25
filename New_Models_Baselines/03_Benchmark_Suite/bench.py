@@ -28,8 +28,10 @@ import time
 import tracemalloc
 import warnings
 
-# LightGBM must be imported before scikit-learn: on Windows, loading sklearn.neighbors first makes
-# LightGBM crash with an access violation (clashing OpenMP runtimes).
+# PyTorch (GNN baselines) and LightGBM must be imported before scikit-learn: on Windows, loading
+# scikit-learn first makes torch fail (WinError 1114, c10.dll) and LightGBM crash with an access
+# violation (clashing OpenMP runtimes).
+import torch  # noqa: F401,I001
 from lightgbm import LGBMClassifier  # noqa: I001
 import numpy as np
 import pandas as pd
@@ -55,6 +57,7 @@ sys.path.insert(0, os.path.join(ROOT, 'Application', 'backend'))
 
 from app.features import FEATURES  # noqa: E402
 from app.wl import GRAPH_NAMES, WLFeaturizer, cosine_kernel  # noqa: E402
+from gnn import GNNClassifier  # noqa: E402
 
 FEAT_CSV = os.path.join(ROOT, 'full_pipeline', 'olid_full_features.csv')
 FOLD_CSV = os.path.join(ROOT, 'full_pipeline', 'cv_fold_assignments.csv')
@@ -127,10 +130,29 @@ def models(task: str, crop: str | None = None) -> dict:
                                          n_jobs=1, random_state=SEED, verbosity=0), balance=True),
         'LightGBM': Encoded(LGBMClassifier(n_estimators=300, learning_rate=0.05, class_weight='balanced', n_jobs=1,
                                            random_state=SEED, verbose=-1)),
+        # graph neural networks added in round 3 (panel review): same leaf graph as WL for this task,
+        # 3 message-passing layers (= WL depth 3); see gnn.py
+        'GCN': GNNClassifier('gcn', graph),
+        'GIN': GNNClassifier('gin', graph),
+        'GAT': GNNClassifier('gat', graph),
     }
 
 
 ROUND2 = ['Decision Tree', 'Naive Bayes (Gaussian)', 'AdaBoost', 'XGBoost', 'LightGBM']
+ROUND3 = ['GCN', 'GIN', 'GAT']                          # graph neural networks
+TUNED3 = ['XGBoost (tuned)', 'GIN (tuned)']             # nested-CV tuned, added in round 3
+GNN_MODELS = ROUND3 + ['GIN (tuned)']
+
+
+def select(task: str, crop: str | None, which: str) -> dict:
+    """Models for one run: 'all' (default zoo), 'round2', 'tuned' (all tuned), 'round3' (GNNs + new tuned)."""
+    if which == 'tuned':
+        return tuned_models(task, crop)
+    if which == 'round3':
+        return {**{k: v for k, v in models(task, crop).items() if k in ROUND3},
+                **{k: v for k, v in tuned_models(task, crop).items() if k in TUNED3}}
+    m = models(task, crop)
+    return {k: v for k, v in m.items() if k in ROUND2} if which == 'round2' else m
 
 
 class Encoded(BaseEstimator, ClassifierMixin):
@@ -183,9 +205,15 @@ def tuned_models(task: str, crop: str | None = None) -> dict:
                                                                                  random_state=SEED),
                                                   {'learning_rate': [0.03, 0.1], 'max_leaf_nodes': [15, 31],
                                                    'l2_regularization': [0.0, 1.0]}),
+        'XGBoost (tuned)': grid(Encoded(XGBClassifier(tree_method='hist', n_jobs=1, random_state=SEED, verbosity=0),
+                                        balance=True),
+                                {'model__n_estimators': [200, 500], 'model__max_depth': [3, 6],
+                                 'model__learning_rate': [0.05, 0.1], 'model__subsample': [0.8, 1.0]}),
     }
     if task == 'level2':
         out['WL + SVM (tuned)'] = grid(WLSVM(), {'graph': list(GRAPH_NAMES), 'h': [1, 2, 3]})
+        # GIN tuned over the same graph types as WL, with 2 or 3 message-passing layers
+        out['GIN (tuned)'] = grid(GNNClassifier('gin'), {'graph': list(GRAPH_NAMES), 'layers': [2, 3]})
     return out
 
 
@@ -287,6 +315,11 @@ def run_fold(model, Xtr, ytr, Xte, yte, measure_memory=False) -> dict:
                 'model_kb': len(pickle.dumps(model)) / 1024, 'n_train': len(ytr), 'n_test': len(yte)})
     if peak is not None:
         row['train_peak_mb'] = peak
+    est = getattr(model, 'best_estimator_', model)
+    if hasattr(est, 'n_parameters'):                      # GNNs: learned weights and epochs trained
+        row.update({'n_parameters': est.n_parameters(), 'epochs_run': est.epochs_run_, 'device': est.device_})
+    if hasattr(model, 'best_params_'):                    # nested CV: the setting chosen on this fold
+        row['best_params'] = str(model.best_params_)
     return row
 
 

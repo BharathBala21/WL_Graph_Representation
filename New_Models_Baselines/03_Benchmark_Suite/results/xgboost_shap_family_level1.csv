@@ -1,0 +1,8 @@
+family,mean_abs_shap,share
+Shape,2.0063,0.2564
+Lab,1.5183,0.1941
+RGB,1.0858,0.1388
+HSV,1.0537,0.1347
+Spatial,1.0293,0.1316
+Texture,0.9206,0.1177
+DerivedColor,0.2095,0.0268

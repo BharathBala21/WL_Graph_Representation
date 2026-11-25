@@ -1,0 +1,6 @@
+2
+Model name:                              Intel(R) Xeon(R) CPU @ 2.00GHz
+               total        used        free      shared  buff/cache   available
+Mem:              12           1           7           0           4          11
+Swap:              0           0           0
+GPU 0: Tesla T4 (UUID: GPU-f86bc57b-2e25-99c2-4e26-d104dbb1884d)

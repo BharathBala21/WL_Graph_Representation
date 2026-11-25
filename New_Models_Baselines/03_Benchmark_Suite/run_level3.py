@@ -8,7 +8,7 @@ the only thing that differs between rows is the Stage-2 stress model.
 Also reported: the same pipeline with the TRUE crop ("oracle" routing), to show how much is lost when the
 crop is identified wrongly.
 
-Usage (from this folder):  python run_level3.py [--models all|default|tuned]
+Usage (from this folder):  python run_level3.py [--models all|default|tuned|round3]
 Writes results/benchmark_level3_folds.csv (merged per model).
 """
 import bench  # first: loads LightGBM before scikit-learn (Windows OpenMP clash)
@@ -78,7 +78,9 @@ def stage2_zoo(which):
     model name contains the crop's own graph setting."""
     first = sorted(bench.WL_LEVEL2)[0]
     out = {}
-    for source, use in ((bench.models, which in ('all', 'default')), (bench.tuned_models, which in ('all', 'tuned'))):
+    round3 = lambda task, crop: bench.select(task, crop, 'round3')
+    for source, use in ((bench.models, which in ('all', 'default')), (bench.tuned_models, which in ('all', 'tuned')),
+                        (round3, which == 'round3')):
         if not use:
             continue
         for n in source('level2', first):
@@ -100,7 +102,11 @@ if __name__ == '__main__':
     which = sys.argv[sys.argv.index('--models') + 1] if '--models' in sys.argv else 'all'
     df = bench.load()
     rows = []
+    path = os.path.join(bench.RESULTS, 'benchmark_level3_folds.csv')
     for fam, stage2 in stage2_zoo(which).items():
+        if which == 'round3' and os.path.exists(path) and (pd.read_csv(path).model == fam).any():
+            print(f'  level3 {fam}: already done', flush=True)  # resume after a disconnect
+            continue
         t0 = time.time()
         for row in level3(df, stage2):
             rows.append({'task': 'level3', 'crop': 'all', 'model': fam, 'model_family': fam, **row})
