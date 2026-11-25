@@ -1,4 +1,4 @@
-\begin{thebibliography}{12}
+\begin{thebibliography}{39}
 \providecommand{\natexlab}[1]{#1}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
@@ -11,6 +11,31 @@
 \providecommand{\bibAnnote}[2]{%
   \begin{quotation}\noindent\textsc{Key:} #1\\
   \textsc{Annotation:}\ #2\end{quotation}}
+
+\bibitem[{Barbedo(2016)}]{Barbedo2016}
+Barbedo, J. G.~A. (2016).
+\newblock A review on the main challenges in automatic plant disease
+  identification based on visible range images.
+\newblock \emph{Biosystems Engineering} 144, 52--60.
+\newblock \doi{10.1016/j.biosystemseng.2016.01.017}
+\bibAnnoteFile{Barbedo2016}
+
+\bibitem[{Barbedo(2018)}]{Barbedo2018}
+Barbedo, J. G.~A. (2018).
+\newblock Impact of dataset size and variety on the effectiveness of deep
+  learning and transfer learning for plant disease classification.
+\newblock \emph{Computers and Electronics in Agriculture} 153, 46--53.
+\newblock \doi{10.1016/j.compag.2018.08.013}
+\bibAnnoteFile{Barbedo2018}
+
+\bibitem[{Borgwardt et~al.(2020)Borgwardt, Ghisu, Llinares-L{\'o}pez, O'Bray,
+  and Rieck}]{Borgwardt2020}
+Borgwardt, K., Ghisu, E., Llinares-L{\'o}pez, F., O'Bray, L., and Rieck, B.
+  (2020).
+\newblock Graph kernels: state-of-the-art and future challenges.
+\newblock \emph{Foundations and Trends in Machine Learning} 13, 531--712.
+\newblock \doi{10.1561/2200000076}
+\bibAnnoteFile{Borgwardt2020}
 
 \bibitem[{Breiman(2001)}]{Breiman2001}
 Breiman, L. (2001).
@@ -26,12 +51,43 @@ Cawley, G.~C. and Talbot, N. L.~C. (2010).
 \newblock \emph{Journal of Machine Learning Research} 11, 2079--2107
 \bibAnnoteFile{Cawley2010}
 
+\bibitem[{Chen and Guestrin(2016)}]{Chen2016}
+Chen, T. and Guestrin, C. (2016).
+\newblock {XGBoost}: A scalable tree boosting system.
+\newblock In \emph{Proceedings of the 22nd ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}. 785--794.
+\newblock \doi{10.1145/2939672.2939785}
+\bibAnnoteFile{Chen2016}
+
 \bibitem[{Cortes and Vapnik(1995)}]{Cortes1995}
 Cortes, C. and Vapnik, V. (1995).
 \newblock Support-vector networks.
 \newblock \emph{Machine Learning} 20, 273--297.
 \newblock \doi{10.1007/BF00994018}
 \bibAnnoteFile{Cortes1995}
+
+\bibitem[{Dietterich(1998)}]{Dietterich1998}
+Dietterich, T.~G. (1998).
+\newblock Approximate statistical tests for comparing supervised classification
+  learning algorithms.
+\newblock \emph{Neural Computation} 10, 1895--1923.
+\newblock \doi{10.1162/089976698300017197}
+\bibAnnoteFile{Dietterich1998}
+
+\bibitem[{Fahlgren et~al.(2015)Fahlgren, Gehan, and Baxter}]{Fahlgren2015}
+Fahlgren, N., Gehan, M.~A., and Baxter, I. (2015).
+\newblock Lights, camera, action: high-throughput plant phenotyping is ready
+  for a close-up.
+\newblock \emph{Current Opinion in Plant Biology} 24, 93--99.
+\newblock \doi{10.1016/j.pbi.2015.02.006}
+\bibAnnoteFile{Fahlgren2015}
+
+\bibitem[{Ferentinos(2018)}]{Ferentinos2018}
+Ferentinos, K.~P. (2018).
+\newblock Deep learning models for plant disease detection and diagnosis.
+\newblock \emph{Computers and Electronics in Agriculture} 145, 311--318.
+\newblock \doi{10.1016/j.compag.2018.01.009}
+\bibAnnoteFile{Ferentinos2018}
 
 \bibitem[{Gehan et~al.(2017)Gehan, Fahlgren, Abbasi, Berry, Callen, Chavez
   et~al.}]{Gehan2017}
@@ -42,6 +98,36 @@ Gehan, M.~A., Fahlgren, N., Abbasi, A., Berry, J.~C., Callen, S.~T., Chavez,
 \newblock \emph{PeerJ} 5, e4088.
 \newblock \doi{10.7717/peerj.4088}
 \bibAnnoteFile{Gehan2017}
+
+\bibitem[{Ghosal et~al.(2018)Ghosal, Blystone, Singh, Ganapathysubramanian,
+  Singh, and Sarkar}]{Ghosal2018}
+Ghosal, S., Blystone, D., Singh, A.~K., Ganapathysubramanian, B., Singh, A.,
+  and Sarkar, S. (2018).
+\newblock An explainable deep machine vision framework for plant stress
+  phenotyping.
+\newblock \emph{Proceedings of the National Academy of Sciences} 115,
+  4613--4618.
+\newblock \doi{10.1073/pnas.1716999115}
+\bibAnnoteFile{Ghosal2018}
+
+\bibitem[{Greene and Cunningham(2006)}]{Greene2006}
+Greene, D. and Cunningham, P. (2006).
+\newblock Practical solutions to the problem of diagonal dominance in kernel
+  document clustering.
+\newblock In \emph{Proceedings of the 23rd International Conference on Machine
+  Learning}. 377--384.
+\newblock \doi{10.1145/1143844.1143892}
+\bibAnnoteFile{Greene2006}
+
+\bibitem[{Grinsztajn et~al.(2022)Grinsztajn, Oyallon, and
+  Varoquaux}]{Grinsztajn2022}
+Grinsztajn, L., Oyallon, E., and Varoquaux, G. (2022).
+\newblock Why do tree-based models still outperform deep learning on typical
+  tabular data?
+\newblock In \emph{Advances in Neural Information Processing Systems 35}.
+  507--520.
+\newblock \doi{10.52202/068431-0037}
+\bibAnnoteFile{Grinsztajn2022}
 
 \bibitem[{Haralick et~al.(1973)Haralick, Shanmugam, and
   Dinstein}]{Haralick1973}
@@ -62,12 +148,90 @@ Howard, A., Sandler, M., Chu, G., Chen, L.-C., Chen, B., Tan, M., et~al.
 \newblock \doi{10.1109/ICCV.2019.00140}
 \bibAnnoteFile{Howard2019}
 
+\bibitem[{Kamilaris and Prenafeta-Bold{\'u}(2018)}]{Kamilaris2018}
+Kamilaris, A. and Prenafeta-Bold{\'u}, F.~X. (2018).
+\newblock Deep learning in agriculture: a survey.
+\newblock \emph{Computers and Electronics in Agriculture} 147, 70--90.
+\newblock \doi{10.1016/j.compag.2018.02.016}
+\bibAnnoteFile{Kamilaris2018}
+
+\bibitem[{Kipf and Welling(2017)}]{Kipf2017}
+Kipf, T.~N. and Welling, M. (2017).
+\newblock Semi-supervised classification with graph convolutional networks.
+\newblock In \emph{International Conference on Learning Representations}
+\bibAnnoteFile{Kipf2017}
+
+\bibitem[{Kornblith et~al.(2019)Kornblith, Shlens, and Le}]{Kornblith2019}
+Kornblith, S., Shlens, J., and Le, Q.~V. (2019).
+\newblock Do better {ImageNet} models transfer better?
+\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
+  and Pattern Recognition}. 2656--2666.
+\newblock \doi{10.1109/CVPR.2019.00277}
+\bibAnnoteFile{Kornblith2019}
+
+\bibitem[{Kriege et~al.(2020)Kriege, Johansson, and Morris}]{Kriege2020}
+Kriege, N.~M., Johansson, F.~D., and Morris, C. (2020).
+\newblock A survey on graph kernels.
+\newblock \emph{Applied Network Science} 5, 6.
+\newblock \doi{10.1007/s41109-019-0195-3}
+\bibAnnoteFile{Kriege2020}
+
+\bibitem[{Lobet(2017)}]{Lobet2017}
+Lobet, G. (2017).
+\newblock Image analysis in plant sciences: publish then perish.
+\newblock \emph{Trends in Plant Science} 22, 559--566.
+\newblock \doi{10.1016/j.tplants.2017.05.002}
+\bibAnnoteFile{Lobet2017}
+
+\bibitem[{Lundberg et~al.(2020)Lundberg, Erion, Chen, DeGrave, Prutkin, Nair
+  et~al.}]{Lundberg2020}
+Lundberg, S.~M., Erion, G., Chen, H., DeGrave, A., Prutkin, J.~M., Nair, B.,
+  et~al. (2020).
+\newblock From local explanations to global understanding with explainable {AI}
+  for trees.
+\newblock \emph{Nature Machine Intelligence} 2, 56--67.
+\newblock \doi{10.1038/s42256-019-0138-9}
+\bibAnnoteFile{Lundberg2020}
+
+\bibitem[{Meyer and Neto(2008)}]{Meyer2008}
+Meyer, G.~E. and Neto, J.~C. (2008).
+\newblock Verification of color vegetation indices for automated crop imaging
+  applications.
+\newblock \emph{Computers and Electronics in Agriculture} 63, 282--293.
+\newblock \doi{10.1016/j.compag.2008.03.009}
+\bibAnnoteFile{Meyer2008}
+
+\bibitem[{Minervini et~al.(2015)Minervini, Scharr, and
+  Tsaftaris}]{Minervini2015}
+Minervini, M., Scharr, H., and Tsaftaris, S.~A. (2015).
+\newblock Image analysis: the new bottleneck in plant phenotyping.
+\newblock \emph{IEEE Signal Processing Magazine} 32, 126--131.
+\newblock \doi{10.1109/MSP.2015.2405111}
+\bibAnnoteFile{Minervini2015}
+
 \bibitem[{Mohanty et~al.(2016)Mohanty, Hughes, and Salathe}]{Mohanty2016}
 Mohanty, S.~P., Hughes, D.~P., and Salathe, M. (2016).
 \newblock Using deep learning for image-based plant disease detection.
 \newblock \emph{Frontiers in Plant Science} 7, 1419.
 \newblock \doi{10.3389/fpls.2016.01419}
 \bibAnnoteFile{Mohanty2016}
+
+\bibitem[{Morris et~al.(2019)Morris, Ritzert, Fey, Hamilton, Lenssen, Rattan
+  et~al.}]{Morris2019}
+Morris, C., Ritzert, M., Fey, M., Hamilton, W.~L., Lenssen, J.~E., Rattan, G.,
+  et~al. (2019).
+\newblock Weisfeiler and {Leman} go neural: higher-order graph neural networks.
+\newblock In \emph{Proceedings of the AAAI Conference on Artificial
+  Intelligence}. vol.~33, 4602--4609.
+\newblock \doi{10.1609/aaai.v33i01.33014602}
+\bibAnnoteFile{Morris2019}
+
+\bibitem[{Nadeau and Bengio(2003)}]{Nadeau2003}
+Nadeau, C. and Bengio, Y. (2003).
+\newblock Inference for the generalization error.
+\newblock \emph{Machine Learning} 52, 239--281.
+\newblock \doi{10.1023/A:1024068626366}
+\bibAnnoteFile{Nadeau2003}
 
 \bibitem[{Orka et~al.(2023)Orka, Uddin, Toushique, and Hossain}]{Orka2023}
 Orka, N.~A., Uddin, M.~N., Toushique, F.~M., and Hossain, M.~S. (2023).
@@ -91,6 +255,21 @@ Shervashidze, N., Schweitzer, P., van Leeuwen, E.~J., Mehlhorn, K., and
 \newblock \emph{Journal of Machine Learning Research} 12, 2539--2561
 \bibAnnoteFile{Shervashidze2011}
 
+\bibitem[{Shwartz-Ziv and Armon(2022)}]{ShwartzZiv2022}
+Shwartz-Ziv, R. and Armon, A. (2022).
+\newblock Tabular data: deep learning is not all you need.
+\newblock \emph{Information Fusion} 81, 84--90.
+\newblock \doi{10.1016/j.inffus.2021.11.011}
+\bibAnnoteFile{ShwartzZiv2022}
+
+\bibitem[{Singh et~al.(2016)Singh, Ganapathysubramanian, Singh, and
+  Sarkar}]{Singh2016}
+Singh, A., Ganapathysubramanian, B., Singh, A.~K., and Sarkar, S. (2016).
+\newblock Machine learning for high-throughput stress phenotyping in plants.
+\newblock \emph{Trends in Plant Science} 21, 110--124.
+\newblock \doi{10.1016/j.tplants.2015.10.015}
+\bibAnnoteFile{Singh2016}
+
 \bibitem[{Sriram and Ramraj(2026)}]{Sriram2026}
 Sriram, S. and Ramraj, T. (2026).
 \newblock Perceptual graph kernels for image-derived plant trait interaction
@@ -106,5 +285,44 @@ Tan, M. and Le, Q.~V. (2019).
 \newblock In \emph{Proceedings of the 36th International Conference on Machine
   Learning} (PMLR), vol.~97, 6105--6114
 \bibAnnoteFile{Tan2019}
+
+\bibitem[{Varma and Simon(2006)}]{Varma2006}
+Varma, S. and Simon, R. (2006).
+\newblock Bias in error estimation when using cross-validation for model
+  selection.
+\newblock \emph{BMC Bioinformatics} 7, 91.
+\newblock \doi{10.1186/1471-2105-7-91}
+\bibAnnoteFile{Varma2006}
+
+\bibitem[{Velickovic et~al.(2018)Velickovic, Cucurull, Casanova, Romero, Lio,
+  and Bengio}]{Velickovic2018}
+Velickovic, P., Cucurull, G., Casanova, A., Romero, A., Lio, P., and Bengio, Y.
+  (2018).
+\newblock Graph attention networks.
+\newblock In \emph{International Conference on Learning Representations}
+\bibAnnoteFile{Velickovic2018}
+
+\bibitem[{Woebbecke et~al.(1995)Woebbecke, Meyer, Von~Bargen, and
+  Mortensen}]{Woebbecke1995}
+Woebbecke, D.~M., Meyer, G.~E., Von~Bargen, K., and Mortensen, D.~A. (1995).
+\newblock Color indices for weed identification under various soil, residue,
+  and lighting conditions.
+\newblock \emph{Transactions of the ASAE} 38, 259--269.
+\newblock \doi{10.13031/2013.27838}
+\bibAnnoteFile{Woebbecke1995}
+
+\bibitem[{Xu et~al.(2019)Xu, Hu, Leskovec, and Jegelka}]{Xu2019}
+Xu, K., Hu, W., Leskovec, J., and Jegelka, S. (2019).
+\newblock How powerful are graph neural networks?
+\newblock In \emph{International Conference on Learning Representations}
+\bibAnnoteFile{Xu2019}
+
+\bibitem[{Yanardag and Vishwanathan(2015)}]{Yanardag2015}
+Yanardag, P. and Vishwanathan, S. V.~N. (2015).
+\newblock Deep graph kernels.
+\newblock In \emph{Proceedings of the 21st ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}. 1365--1374.
+\newblock \doi{10.1145/2783258.2783417}
+\bibAnnoteFile{Yanardag2015}
 
 \end{thebibliography}

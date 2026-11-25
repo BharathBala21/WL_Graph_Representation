@@ -1,0 +1,99 @@
+model,perturbation,rejected
+EfficientNet-B0,blur,0
+EfficientNet-B0,brighter_25,0
+EfficientNet-B0,darker_25,0
+EfficientNet-B0,half_resolution,0
+EfficientNet-B0,jpeg_q20,0
+EfficientNet-B0,noise,0
+EfficientNet-B0,warm_cast,0
+Extra Trees,blur,0
+Extra Trees,brighter_25,80
+Extra Trees,darker_25,23
+Extra Trees,half_resolution,0
+Extra Trees,jpeg_q20,2
+Extra Trees,noise,14
+Extra Trees,warm_cast,57
+Extra Trees (tuned),blur,0
+Extra Trees (tuned),brighter_25,80
+Extra Trees (tuned),darker_25,23
+Extra Trees (tuned),half_resolution,0
+Extra Trees (tuned),jpeg_q20,2
+Extra Trees (tuned),noise,14
+Extra Trees (tuned),warm_cast,57
+Gradient Boosting (HistGB),blur,0
+Gradient Boosting (HistGB),brighter_25,80
+Gradient Boosting (HistGB),darker_25,23
+Gradient Boosting (HistGB),half_resolution,0
+Gradient Boosting (HistGB),jpeg_q20,2
+Gradient Boosting (HistGB),noise,14
+Gradient Boosting (HistGB),warm_cast,57
+LightGBM,blur,0
+LightGBM,brighter_25,80
+LightGBM,darker_25,23
+LightGBM,half_resolution,0
+LightGBM,jpeg_q20,2
+LightGBM,noise,14
+LightGBM,warm_cast,57
+Logistic Regression,blur,0
+Logistic Regression,brighter_25,80
+Logistic Regression,darker_25,23
+Logistic Regression,half_resolution,0
+Logistic Regression,jpeg_q20,2
+Logistic Regression,noise,14
+Logistic Regression,warm_cast,57
+MLP (128-64),blur,0
+MLP (128-64),brighter_25,80
+MLP (128-64),darker_25,23
+MLP (128-64),half_resolution,0
+MLP (128-64),jpeg_q20,2
+MLP (128-64),noise,14
+MLP (128-64),warm_cast,57
+MobileNetV3-Large,blur,0
+MobileNetV3-Large,brighter_25,0
+MobileNetV3-Large,darker_25,0
+MobileNetV3-Large,half_resolution,0
+MobileNetV3-Large,jpeg_q20,0
+MobileNetV3-Large,noise,0
+MobileNetV3-Large,warm_cast,0
+RBF SVM,blur,0
+RBF SVM,brighter_25,80
+RBF SVM,darker_25,23
+RBF SVM,half_resolution,0
+RBF SVM,jpeg_q20,2
+RBF SVM,noise,14
+RBF SVM,warm_cast,57
+Random Forest,blur,0
+Random Forest,brighter_25,80
+Random Forest,darker_25,23
+Random Forest,half_resolution,0
+Random Forest,jpeg_q20,2
+Random Forest,noise,14
+Random Forest,warm_cast,57
+"WL + SVM (hybrid, h=3)",blur,0
+"WL + SVM (hybrid, h=3)",brighter_25,80
+"WL + SVM (hybrid, h=3)",darker_25,23
+"WL + SVM (hybrid, h=3)",half_resolution,0
+"WL + SVM (hybrid, h=3)",jpeg_q20,2
+"WL + SVM (hybrid, h=3)",noise,14
+"WL + SVM (hybrid, h=3)",warm_cast,57
+XGBoost,blur,0
+XGBoost,brighter_25,80
+XGBoost,darker_25,23
+XGBoost,half_resolution,0
+XGBoost,jpeg_q20,2
+XGBoost,noise,14
+XGBoost,warm_cast,57
+XGBoost (tuned),blur,0
+XGBoost (tuned),brighter_25,80
+XGBoost (tuned),darker_25,23
+XGBoost (tuned),half_resolution,0
+XGBoost (tuned),jpeg_q20,2
+XGBoost (tuned),noise,14
+XGBoost (tuned),warm_cast,57
+k-NN (k=5),blur,0
+k-NN (k=5),brighter_25,80
+k-NN (k=5),darker_25,23
+k-NN (k=5),half_resolution,0
+k-NN (k=5),jpeg_q20,2
+k-NN (k=5),noise,14
+k-NN (k=5),warm_cast,57

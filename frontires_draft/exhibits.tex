@@ -4,27 +4,27 @@
 \newcommand{\leafpanel}{\paperfigure{1}{leaf}{0.76}{From image to measurement in ash gourd. The top row shows OLID-I photographs labeled healthy, nitrogen deficient and powdery mildew. The bottom row shows the masks produced by the study algorithm on the supplied JPEGs; percentages give the foreground share of each frame. White denotes retained pixels. These illustrative masks have no independent boundary annotation. Photographs from Orka et al. (2023), OLID-I (DOI 10.5281/zenodo.8105154), CC BY 4.0, resized and arranged for display.}}
 \newcommand{\matrixpanel}{\paperfigure{2}{matrices}{0.86}{How the same 38 measurements produce different neighborhoods. Panel A shows absolute Pearson correlation from white (zero) to dark blue (one). Panels B--F mark edges in black; parentheses give undirected edge counts. Both axes use descriptor order in S7; dividers mark shape, RGB, HSV, Lab, derived color, texture and region families. All matrices use only the training images of the first outer fold.}}
 \newcommand{\traitpanel}{\paperfigure{3}{traits}{0.87}{Direction and magnitude of descriptor shifts within each crop. Positive values (red) indicate that a stressed leaf tends to have a larger measured value than a healthy leaf; negative values (blue) indicate the reverse. Zero represents equal pairwise ranks. Rows use all accepted images of the indicated crop. S12 lists all 38 descriptors.}}
-\newcommand{\depthpanel}{\paperfigure{4}{depth}{0.83}{Mean pooled macro-F1 across the same five outer folds for each of five graph constructions at depths zero to three. At depth zero each curve represents exactly the same comparison. Table~\ref{tab:control} evaluates a separate control that preserves the hybrid graph structure while reassigning its descriptor identities.}}
+\newcommand{\depthpanel}{\paperfigure{4}{depth}{0.97}{Graph construction, refinement depth and random graphs in the pooled task. (A) Mean macro-F1 across the same five outer folds for five graph constructions at depths zero to three ($C=1$); at depth zero every curve is the same comparison. The dashed line marks the graph-free kernel on triples of descriptor states. (B) Five-fold mean macro-F1 at depth three for random graphs that keep the hybrid graph's edge count in each training fold: permuted descriptor positions, degree-preserving rewiring and random placement of the same number of edges. Vertical lines mark the hybrid graph, the graph-free triple kernel, the private-pattern control and descriptor states alone (depth zero, tuned $C$). S22 lists every graph and fold.}}
 \newcommand{\croppanel}{\paperfigure{5}{crops}{0.91}{Stress recognition when crop identity is supplied. Each marker averages five binary-stratified test folds within a crop. Selected WL fixes a crop-specific setting chosen in the original sweep. Nested WL chooses it on the training partition of each outer fold.}}
-\newcommand{\robustpanel}{\paperfigure{6}{robust}{0.88}{Change in pooled macro-F1 relative to clean photographs. Each perturbation started with the same 240 images. Feature models lost 5, 15, 12, 0, 0, 3 and 0 images to mask filtering, respectively, in the order shown. The CNN returned a prediction for each image. S9 compares models on the 217 images retained in every condition.}}
+\newcommand{\robustpanel}{\paperfigure{6}{robust}{0.9}{Change in pooled macro-F1 relative to clean photographs across all five test folds (240 photographs per fold). Bars show the mean over folds and whiskers the standard deviation. Descriptor models score only photographs that pass segmentation after each change; the image encoder scores every photograph. S27 lists every fold, model and change, including the number of rejected photographs.}}
 \newcommand{\costpanel}{\paperfigure{7}{cost}{0.95}{Labeled data and processing time answer different deployment questions. (A) Mean within-crop macro-F1 against the fraction of the outer training fold used. Pretraining on ImageNet precedes subsampling. (B) Estimated single-image processing time for routed inference, combining preprocessing and model measurements. Selected WL and tuned Extra Trees both require full-resolution descriptor extraction.}}
 \newcommand{\cohorttable}{\begin{table}[!htbp]\centering
 \caption{Image retention and binary label distribution by crop. Healthy and stressed columns count accepted images only.}\label{tab:coverage}
 \small\begin{tabular}{lrrrrr}\toprule Crop & Input & Accepted & Retention (\%) & Healthy & Stressed\\\midrule
 \tableinput coverage_rows.tex
 \bottomrule\end{tabular}\end{table}}
-\newcommand{\controltable}{\begin{table}[!htbp]\centering
-\caption{Paired topology controls on held-out images. Each row uses identical train/test images and labels. The permutation column averages five descriptor permutations within the fold. The final column subtracts that mean from the original hybrid score.}\label{tab:control}
-\small\begin{tabular}{lrrrr}\toprule Test fold & Depth zero & Hybrid, depth 3 & Permuted, depth 3 & Difference\\\midrule
-\tableinput control_rows.tex
+\newcommand{\mechtable}{\begin{table}[!htbp]\centering
+\caption{What the refinement gain consists of. Pooled columns give the mean $\pm$ standard deviation of macro-F1 and the mean balanced accuracy (BA) over five outer folds; known-crop scores weight the eight crops equally; the routed column uses a refitted descriptor router. ``Tuned $C$'' and ``nested'' rows choose the SVM cost (and, for WL, graph and depth) in three inner folds of each training partition. The private-pattern control reproduces the scale effect of refined patterns that occur in only one training image without any shared neighborhood. Random-graph rows give the mean and range of five-fold means at depth three and $C=1$. S20--S24 give all folds and selections.}\label{tab:mechanism}
+\footnotesize\begin{tabular}{lrrrr}\toprule Representation & Pooled macro-F1 & Pooled BA & Known crop & Predicted crop\\\midrule
+\tableinput mechanism_rows.tex
 \bottomrule\end{tabular}\end{table}}
 \newcommand{\errtable}{\begin{table}[!htbp]\centering
-\caption{From original stress-labeled images to positive screens. For selected source conditions, the pooled hybrid at depth three returned a positive screen on the indicated number of held-out images. The last two columns change the denominator from accepted images to all source images of that condition. Rejected images received no classification.}\label{tab:errors}
-\small\begin{tabular}{lrrrrr}\toprule Condition & Original & Accepted & Positive & Positive/accepted (\%) & Positive/all (\%)\\\midrule
+\caption{From submitted photographs to positive stress screens for selected conditions. WL is the pooled hybrid kernel at depth three; photographs rejected by segmentation receive no call. EfficientNet-B0 was trained on the same accepted training photographs but scored every held-out photograph, including rejected ones. Percentages use all submitted photographs of the condition as the denominator. S26 also gives counts among accepted photographs and for MobileNetV3.}\label{tab:errors}
+\small\begin{tabular}{lrrrrrr}\toprule & & & \multicolumn{2}{c}{WL (accepted only)} & \multicolumn{2}{c}{EfficientNet-B0 (all)}\\\cmidrule(lr){4-5}\cmidrule(lr){6-7} Condition & Submitted & Accepted & Positive & \% of submitted & Positive & \% of submitted\\\midrule
 \tableinput error_rows.tex
 \bottomrule\end{tabular}\end{table}}
 \newcommand{\tasktable}{\begin{table}[!htbp]\centering
-\caption{Macro-F1 under three crop-information protocols. Known-crop results weight the eight crops equally. The last two columns evaluate the same routed experiment on image folds, first using predicted crop and then supplying the true crop. A dash marks an unevaluated configuration.}\label{tab:tasks}
+\caption{Macro-F1 under three crop-information protocols. Pooled and predicted-crop columns give the mean $\pm$ standard deviation over five outer folds; known-crop results weight the eight crops equally. The last column evaluates the same routed models when the true crop is supplied. Selected WL uses settings chosen on all study folds and is optimistic; nested rows choose settings inside each training partition. The pooled nested WL value and the graph-free triple-kernel row come from the revision rerun (S21, S24), which used a refitted router.}\label{tab:tasks}
 \small\begin{tabular}{lrrrr}\toprule Model & Pooled & Known crop & Predicted crop & True-crop route\\\midrule
 \tableinput comparison_rows.tex
 \bottomrule\end{tabular}\end{table}}
@@ -32,4 +32,24 @@
 \caption{Class-specific performance when crop must be identified. Macro-F1 is the mean and sample standard deviation across five outer folds. Other model entries are fold means. The reference predicts stress on every accepted image.}\label{tab:routed}
 \small\begin{tabular}{lccccc}\toprule Model & Macro-F1 & Balanced accuracy & Healthy recall & Stressed recall & Accuracy\\\midrule
 \tableinput routed_rows.tex
+\bottomrule\end{tabular}\end{table}}
+
+\newcommand{\graphstudytable}{\begin{table}[!htbp]\centering
+\caption{Pooled graph study. Mean macro-F1 across the same five outer folds. WL uses depth three for every graph, including the regional graph. The neural models use three layers. The node-only control retains own-node operations and pooling.}\label{tab:graphstudy}
+\small\begin{tabular}{lrrrr}\toprule Graph & WL + SVM & GIN & GCN & GAT\\\midrule
+\tableinput graphs_rows.tex
+\bottomrule\end{tabular}\end{table}}
+
+\newcommand{\pairedtable}{\begin{table}[!htbp]\centering
+\caption{Known-crop paired comparisons on the same 40 crop--fold splits. Differences are WL minus the comparator in macro-F1; negative values favor the comparator. Wins count strictly positive differences. The last columns give unadjusted two-sided Wilcoxon signed-rank tests on the 40 fold differences and exact tests on the eight crop-mean differences. Rows with selected WL favor WL because only its settings were chosen on the study data.}\label{tab:paired}
+\small\begin{tabular}{llrrrr}\toprule WL setting & Comparator & Mean difference & Wins & Fold $p$ & Crop $p$\\\midrule
+\tableinput paired_rows.tex
+\bottomrule\end{tabular}\end{table}}
+
+\newcommand{\roundthreepanel}{\paperfigure{8}{roundthree}{0.97}{Comparison with graph neural networks and XGBoost. (A) Mean within-crop macro-F1 at each training fraction for the default GNNs, default XGBoost and selected WL. (B) Mean change from each model's clean-image macro-F1 across seven simulated perturbations in the original single-fold study (pooled fold zero, 240 photographs). Scores use images retained by each pipeline after each perturbation. The XGBoost bar uses the tuned model. Selected WL settings were chosen on the study data, which favors WL in panel A.}}
+
+\newcommand{\robusttable}{\begin{table}[!htbp]\centering
+\caption{Robustness across all five pooled test folds (240 photographs per fold, seven simulated changes). Clean is the mean macro-F1 on unchanged photographs. Change is the mean over the seven changes of macro-F1 minus clean macro-F1, summarized as mean $\pm$ standard deviation over folds. ``Retained'' scores each model on the photographs its pipeline accepted after each change; ``common'' restricts every model to photographs with a prediction from every model under every change.}\label{tab:robust}
+\small\begin{tabular}{lrrr}\toprule Model & Clean macro-F1 & Change, retained & Change, common\\\midrule
+\tableinput robust_rows.tex
 \bottomrule\end{tabular}\end{table}}

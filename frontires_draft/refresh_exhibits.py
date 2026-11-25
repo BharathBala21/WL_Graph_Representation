@@ -42,7 +42,8 @@ for model, g in byfold.groupby("model_family"):
     assert g.fold.nunique() == len(g) == 5
     assert g.sort_values("fold").n_test.tolist() == manifest.groupby("fold").size().tolist()
     for col, published in [("macro_f1","Macro-F1"),("balanced_accuracy","Balanced acc."),("specificity_healthy","Specificity (healthy found)")]:
-        assert abs(g[col].mean() - summary.loc[model,published]) < .000051
+        if model in summary.index:
+            assert abs(g[col].mean() - summary.loc[model,published]) < .000051
 for src,dst in [("benchmark_level3_folds","S2_routed_folds"),("summary_level1","S3_pooled"),("summary_level2_per_crop","S4_known_crop"),("summary_robustness_level1","S5_perturbations"),("summary_learning_curve_level2","S6_learning_curves")]:
     shutil.copyfile(RESULT / (src+".csv"), SUP / (dst+".csv"))
 shutil.copyfile(ROOT/"Research_Paper/data/feature_dictionary.csv",SUP/"S7_descriptors.csv")
@@ -165,3 +166,9 @@ flat=pd.read_csv(paper_results/"baseline_summary.csv").rename(columns={"method":
 multi["source"]="best_wl_by_topology.csv"
 flat["source"]="baseline_summary.csv"
 pd.concat([multi,flat],ignore_index=True)[["source","model","selected_height_by_macro_f1","mean_accuracy","mean_macro_f1","sd_macro_f1"]].to_csv(SUP/"S13_multiclass_context.csv",index=False)
+
+from round3_exhibits import update_round3
+update_round3(RESULT, HERE, save)
+
+from round4_exhibits import update_round4
+update_round4(RESULT, HERE, save)

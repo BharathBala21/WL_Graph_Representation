@@ -26,10 +26,17 @@ kernel → SVM). Main study = **Levels 1–3 (healthy vs stressed)**. The 57-cla
   Levels 1–3; robustness (240 photos × 7 changes), learning curves, speed, size, memory, statistics.
 * **Headline results (macro-F1):** Level 3 full pipeline: CNN EfficientNet-B0 0.739, tuned Extra Trees
   0.729, WL (best research setting) 0.706, WL (nested-tuned, fair) 0.683, always-"stressed" 0.456.
-  WL = the most robust *feature-based* model (mean F1 change −0.053; frozen CNNs ≈ 0). Frozen CNN is ~8×
+  Robustness: single-fold WL −0.053 looked best among feature models, but the
+  5-fold rerun puts it among the more robust group, not first (see round-four note); frozen CNNs ≈ 0. Frozen CNN is ~8×
   faster end to end (feature pipeline segments the full 3,024 px photo, ~1.06 s).
-* **Agreed framing:** WL is competitive and the most robust/interpretable feature-based model; it is NOT
-  the most accurate, fastest, or most data-efficient; do not claim it beats CNNs.
+* **Agreed framing:** WL is competitive and interpretable; it is NOT the most accurate, fastest, or most
+  data-efficient; do not claim it beats CNNs.
+* **Round-four revision (Nov 25, 2026; `frontires_draft/`, see its README):** the single-fold "WL most robust"
+  result did NOT hold over 5 folds (WL −0.088±0.032, k-NN −0.083, tuned ET −0.095, EfficientNet −0.003) —
+  say "among the more robust descriptor models", never "most robust". WL's depth gain is mostly joint matching
+  of descriptor states: graph-free triple kernel 0.690 vs hybrid WL 0.697 pooled; 200 random graphs with the
+  hybrid edge count score 0.680–0.712 (hybrid not better); ~1/3 of the gain is a unique-pattern scale effect.
+  Frozen CNN scoring all 4,749 photos flags 90.8% of leaf-miner photos vs 42.5% for the segmentation pipeline.
 
 ## Rules for this project
 

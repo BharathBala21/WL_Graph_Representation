@@ -1,0 +1,9 @@
+condition,original,accepted,wl_positive,MobileNetV3-Large A positive,MobileNetV3-Large A positive among accepted,MobileNetV3-Large B positive,MobileNetV3-Large B positive among accepted,EfficientNet-B0 A positive,EfficientNet-B0 A positive among accepted,EfficientNet-B0 B positive,EfficientNet-B0 B positive among accepted
+Nitrogen + potassium,1044,1010,953,944,919,947,921,969,939,968,938
+Nitrogen,704,673,577,521,512,527,514,533,514,527,512
+Potassium,626,584,469,496,467,493,463,490,460,486,454
+Mite,275,257,172,192,176,196,181,191,179,193,181
+Leaf miner,207,107,88,172,87,185,92,188,93,191,95
+Powdery mildew,79,78,78,79,78,79,78,78,77,79,78
+Pumpkin leaf-eating insect,80,59,35,42,35,45,35,48,37,50,39
+Healthy,786,713,298,233,222,236,227,246,236,235,227

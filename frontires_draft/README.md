@@ -7,7 +7,7 @@ Open **main.pdf** for the reading edition with exhibits near their discussion. *
     pdflatex main
     pdflatex main
 
-The class and author–date bibliography style come from the [official Frontiers template](https://www.frontiersin.org/design/zip/Frontiers_LaTeX_Templates.zip). The supplied PDF equivalent of the publisher's EPS logo allows standard pdfLaTeX builds. Source, finished PDF, separate RGB JPEG figures (350 dpi export), editable tables, bibliography and fourteen supplementary CSVs are included. For the journal, supply the manuscript files and PDF, upload figures individually in numerical order and identify S1–S14 as supplementary data sheets. For a Git checkout, the source files and the PDF are sufficient to rebuild the Overleaf archive.
+The class and author–date bibliography style come from the [official Frontiers template](https://www.frontiersin.org/design/zip/Frontiers_LaTeX_Templates.zip). The supplied PDF equivalent of the publisher's EPS logo allows standard pdfLaTeX builds. Source, finished PDF, separate RGB JPEG figures (350 dpi export), editable tables, bibliography and nineteen supplementary CSVs are included. For the journal, supply the manuscript files and PDF, upload figures individually in numerical order and identify S1–S19 as supplementary data sheets. For a Git checkout, the source files and the PDF are sufficient to rebuild the Overleaf archive.
 
 ## Venue and article type
 
@@ -50,6 +50,31 @@ S9 is an additional analysis of the tracked individual robustness predictions. I
 
 ## Revised analysis, 24 November 2026
 
-Seven figures accompany five tables. S10 contains 35 independently fitted pooled models: five depth-zero fits, five original hybrid depth-three fits and five permutations on each of five folds. S11 contains 4,387 held-out calls of the original hybrid model. S12 describes 38 within-crop descriptor contrasts in eight crops. S13 copies summary values from the separate multiclass reanalysis with the source filenames recorded. S14 traces cucumber image 15, selected by filename and fold before prediction. The permutation study is exploratory. Its five seeds are not independent replications of the collection. Check both the signs and the denominators before updating any result in the abstract.
+Eight figures accompany seven tables in the round-three revision. S10 contains 35 independently fitted pooled models: five depth-zero fits, five original hybrid depth-three fits and five permutations on each of five folds. S11 contains 4,387 held-out calls of the original hybrid model. S12 describes 38 within-crop descriptor contrasts in eight crops. S13 copies summary values from the separate multiclass reanalysis with the source filenames recorded. S14 traces cucumber image 15, selected by filename and fold before prediction. The permutation study is exploratory. Its five seeds are not independent replications of the collection. Check both the signs and the denominators before updating any result in the abstract.
 
 When compiling the submission edition locally, substitute submission for main in all four build commands. The ZIP includes both entry points, figures, generated tables and bibliography. Upload the supplementary CSVs separately. Changes to captions and prose apply to both editions.
+
+
+## Round-three benchmark update
+
+Evidence snapshot: 170ead3. The refreshed manuscript uses the merged fold-level results for GIN, GCN, GAT, tuned GIN and tuned XGBoost. The benchmark summary CSVs predate this update, so the expanded comparison is computed from the fold records by round3_exhibits.py, which refresh_exhibits.py calls. S3, S5 and S6 now contain the underlying pooled, perturbation and learning-curve records. S15 contains the within-crop fold records, S16 the fixed-depth graph study and its timing measurements, S17 the exploratory fold-pair and crop-pair tests, and S18–S19 the default XGBoost TreeSHAP summaries. Source scripts for these additions are gnn.py, run_graph_study.py, run_xgb_explain.py and the benchmark runners in New_Models_Baselines/03_Benchmark_Suite.
+
+The training-time comparison uses only the five graph constructions shared by WL and all three GNNs in the Colab graph study. The earlier local latency measurements remain a separate comparison. Reapply the original graph and prediction controls only if the inputs, folds or WL implementation change.
+
+
+## Round-four revision (25 November 2026)
+
+Responds to an internal pre-submission review. New experiments, all on the archived folds:
+
+| Script | What it does | Data sheets |
+| --- | --- | --- |
+| revision_experiments.py | SVM cost tuning at every depth; private-pattern control (scale effect of patterns unique to one training image); graph-free kernels on matched pairs/triples of descriptor states; vocabulary matching by depth; nested selection over graph x depth x C for pooled, known-crop and routed tasks | S20, S20b, S21, S23, S24 |
+| revision_experiments.py nulls | 100 permuted, 50 degree-preserving rewired and 50 same-edge-count random graphs against the hybrid graph (depth 3, C = 1); resumable | S22, S22b |
+| image_experiments.py | frozen MobileNetV3 / EfficientNet-B0 on all 4,749 photographs, including the 362 rejected by segmentation (coverage cost); robustness repeated on all five pooled test folds (1,201 photographs x 8 versions) | S25-S28 |
+| round4_exhibits.py | mechanism table, Figure 4 (two panels), Figure 6 (five-fold), comparison table with fold SDs, coverage table with the encoder, robustness table, extra paired tests; called by refresh_exhibits.py | - |
+
+Checks: the rerun nested WL reproduces the archived known-crop scores exactly on all 40 crop-fold splits; the fold-0 robustness sample reproduces the original 240 photographs; the accepted-cohort EfficientNet-B0 pooled macro-F1 (0.705) matches the archived value. The routed rerun refits the descriptor router (91.1% correct vs 91.9% archived).
+
+Photographs: image_experiments.py reads the unpacked OLID-I folders from the OLID_IMAGES environment variable (default dataset/OLID-I/images) and writes caches and embeddings to dataset/OLID-I/, which is git-ignored. Run order and commands are in the script docstrings. Then run python frontires_draft/refresh_exhibits.py and rebuild the PDF.
+
+Author actions still required before upload: CRediT roles, corresponding author, funding and conflict statements; archive the code release (e.g. Zenodo DOI) and cite it in the data availability statement; all authors approve the Generative AI statement (it now names both OpenAI Codex and Claude Code).
