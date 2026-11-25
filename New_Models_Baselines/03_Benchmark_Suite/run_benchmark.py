@@ -6,6 +6,7 @@ Usage (from this folder):
     --models round2 : only the classic models added in round 2 (Decision Tree, Naive Bayes, AdaBoost,
                       XGBoost, LightGBM); results are merged into the existing CSV files
     --models tuned  : only the nested-CV tuned models (Level 1 and Level 2)
+    --models round3 : only the GNNs (GCN, GIN, GAT) and the round-3 tuned models (XGBoost, GIN); merged in
 Writes results/benchmark_<task>_folds.csv (one row per model x fold [x crop]) and
 results/feature_extraction_timing.csv.
 """
@@ -20,33 +21,51 @@ import bench
 
 
 def zoo(task, crop, which):
-    if which == 'tuned':
-        return bench.tuned_models(task, crop)
-    m = bench.models(task, crop)
-    return {k: v for k, v in m.items() if k in bench.ROUND2} if which == 'round2' else m
+    return bench.select(task, crop, which)
 
 
 def run_task(df, task, which='all'):
     rows = []
+    path = os.path.join(bench.RESULTS, f'benchmark_{task}_folds.csv')
     crops = sorted(bench.WL_LEVEL2) if task == 'level2' else [None]
     for crop in crops:
         for name in zoo(task, crop, which):
+            if which == 'round3' and os.path.exists(path):  # resume: skip (model, crop) runs already saved
+                old = pd.read_csv(path)
+                if ((old.model == name) & (old.crop == (crop or 'all'))).any():
+                    print(f'  {task} {crop or ""} {name}: already done', flush=True)
+                    continue
             t0 = time.time()
+            done = []
             for fold, Xtr, ytr, Xte, yte in bench.splits(df, task, crop):
                 row = bench.run_fold(zoo(task, crop, which)[name], Xtr, ytr, Xte, yte)
-                if fold == 0 and which != 'tuned':  # peak training memory, in a separate (slower) traced fit
+                if fold == 0 and which not in ('tuned', 'round3'):
+                    # peak training memory, in a separate (slower) traced fit. Not for the GNNs: tracemalloc
+                    # does not see PyTorch's allocations, so their parameter count is reported instead.
                     row['train_peak_mb'] = bench.run_fold(zoo(task, crop, which)[name], Xtr, ytr, Xte, yte,
                                                           measure_memory=True)['train_peak_mb']
-                rows.append({'task': task, 'crop': crop or 'all', 'model': name, 'model_family': bench.family(name),
+                done.append({'task': task, 'crop': crop or 'all', 'model': name, 'model_family': bench.family(name),
                              'fold': fold, **row})
-            last = [r for r in rows if r['model'] == name and r['crop'] == (crop or 'all')]
-            print(f'  {task:8s} {crop or "":13s} {name:38s} macro-F1 {np.mean([r["macro_f1"] for r in last]):.4f}'
+            rows += done
+            print(f'  {task:8s} {crop or "":13s} {name:38s} macro-F1 {np.mean([r["macro_f1"] for r in done]):.4f}'
                   f'  ({time.time() - t0:.0f}s)', flush=True)
-    new = pd.DataFrame(rows)
-    path = os.path.join(bench.RESULTS, f'benchmark_{task}_folds.csv')
-    if which != 'all' and os.path.exists(path):  # merge: replace these models' rows, keep the others
+            if which == 'round3':  # save after every model, so a disconnect loses at most one model
+                save_merged(path, pd.DataFrame(done), task)
+    if which != 'round3' and rows:
+        new = pd.DataFrame(rows)
+        if which != 'all' and os.path.exists(path):  # merge: replace these models' rows, keep the others
+            old = pd.read_csv(path)
+            new = pd.concat([old[~old.model.isin(new.model.unique())], new], ignore_index=True)
+        bench.save(new, f'benchmark_{task}_folds.csv')
+
+
+def save_merged(path, new, task):
+    """Replace the rows of these (model, crop) pairs in the task's CSV, keep everything else."""
+    if os.path.exists(path):
         old = pd.read_csv(path)
-        new = pd.concat([old[~old.model.isin(new.model.unique())], new], ignore_index=True)
+        key = set(zip(new.model, new.crop))
+        old = old[[k not in key for k in zip(old.model, old.crop)]]
+        new = pd.concat([old, new], ignore_index=True)
     bench.save(new, f'benchmark_{task}_folds.csv')
 
 
@@ -86,7 +105,7 @@ if __name__ == '__main__':
         print('==', task, which, flush=True)
         if task == 'extraction':
             run_extraction(df)
-        elif which == 'tuned' and task == '57-class':
+        elif which in ('tuned', 'round3') and task == '57-class':
             print('  (tuned models are run on Level 1 and Level 2 only)')
         else:
             run_task(df, task, which)

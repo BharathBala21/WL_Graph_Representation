@@ -82,7 +82,8 @@ def extract(n=320, workers=3):
                 print(f'  {i + 1}/{len(todo)}  {(time.time() - t0) / (i + 1):.1f}s per photo', flush=True)
 
 
-def evaluate():
+def evaluate(only=None):
+    """only = list of model names to (re)run; their rows are merged into the existing result files."""
     from sklearn.metrics import balanced_accuracy_score, f1_score
     df = bench.load()
     feats = pd.read_csv(FEATURES_OUT).merge(df[['image_path', 'stressed', 'fold']], on='image_path')
@@ -93,7 +94,10 @@ def evaluate():
     train = df[df.fold != TEST_FOLD]
     Xtr, ytr = train[bench.FEATURES].values.astype(float), train.stressed.values
     rows, preds = [], []
-    for name, model in {**bench.models('level1'), **bench.tuned_models('level1')}.items():
+    zoo = {**bench.models('level1'), **bench.tuned_models('level1')}
+    if only:
+        zoo = {k: v for k, v in zoo.items() if k in only}
+    for name, model in zoo.items():
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
             model.fit(Xtr, ytr)
@@ -113,12 +117,22 @@ def evaluate():
                          'balanced_accuracy': balanced_accuracy_score(ok.stressed, pred),
                          'flip_rate': float((pred[common] != base[common]).mean())})
         print(f'  {name:38s} done', flush=True)
-    bench.save(pd.DataFrame(rows), 'robustness_level1.csv')
-    bench.save(pd.concat(preds), 'robustness_level1_predictions.csv')
+    rows, preds = pd.DataFrame(rows), pd.concat(preds)
+    if only:  # merge: replace these models' rows, keep the others
+        old = pd.read_csv(os.path.join(bench.RESULTS, 'robustness_level1.csv'))
+        rows = pd.concat([old[~old.model.isin(rows.model.unique())], rows], ignore_index=True)
+        oldp = pd.read_csv(os.path.join(bench.RESULTS, 'robustness_level1_predictions.csv'))
+        preds = pd.concat([oldp[~oldp.model_family.isin(preds.model_family.unique())], preds], ignore_index=True)
+    bench.save(rows, 'robustness_level1.csv')
+    bench.save(preds, 'robustness_level1_predictions.csv')
 
 
 if __name__ == '__main__':
     if sys.argv[1] == 'extract':
         extract(int(sys.argv[2]) if len(sys.argv) > 2 else 320, int(sys.argv[3]) if len(sys.argv) > 3 else 3)
+    elif len(sys.argv) > 2 and sys.argv[2] == 'round3':   # python run_robustness.py evaluate round3
+        old = pd.read_csv(os.path.join(bench.RESULTS, 'robustness_level1.csv'))
+        todo = [m for m in bench.ROUND3 + ['XGBoost (tuned)'] if m not in set(old.model)]
+        evaluate(todo) if todo else print('robustness round 3: already done')
     else:
         evaluate()
